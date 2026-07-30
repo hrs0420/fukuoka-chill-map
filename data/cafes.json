@@ -1,0 +1,20 @@
+[
+    {
+        "name": "REC COFFEE",
+        "area": "博多駅",
+        "rating": 4.8,
+        "description": "スペシャルティコーヒー"
+    },
+    {
+        "name": "FUK COFFEE",
+        "area": "博多駅",
+        "rating": 4.6,
+        "description": "旅行気分を味わえるカフェ"
+    },
+    {
+        "name": "manu coffee",
+        "area": "大名",
+        "rating": 4.7,
+        "description": "福岡定番カフェ"
+    }
+]
