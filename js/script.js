@@ -1,6 +1,9 @@
 const searchInput = document.getElementById("search");
 const list = document.getElementById("cafe-list");
 
+const wifiCheck = document.getElementById("wifi");
+const outletCheck = document.getElementById("outlet");
+
 
 let cafes = [];
 
@@ -19,6 +22,30 @@ function displayCafes(cafeData) {
             </div>
         ;
     });
+}
+
+//フィルターにかける
+function filterCafes() {
+
+    const keyword = searchInput.ariaValueMax.toLowerCase();
+
+    const filtered = cafes.filter(cafe => {
+
+        const matchKeyword =
+            cafe.name.toLowerCase().includes(keyword);
+
+        const matchWifi =
+            !wifiCheck.checked || cafe.wifi;
+
+        const matchOutlet =
+            !outletCheck.checked || cafe.outlet;
+        
+            return matchKeyword && matchWifi && matchOutlet;
+
+    });
+
+    displayCafes(filtered);
+    
 }
 
 //JSONを読み込む

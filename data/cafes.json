@@ -3,18 +3,24 @@
         "name": "REC COFFEE",
         "area": "博多駅",
         "rating": 4.8,
-        "description": "スペシャルティコーヒー"
+        "description": "スペシャルティコーヒー",
+        "wifi": true,
+        "outlet": true
     },
     {
         "name": "FUK COFFEE",
         "area": "博多駅",
         "rating": 4.6,
-        "description": "旅行気分を味わえるカフェ"
+        "description": "旅行気分を味わえるカフェ",
+        "wifi": true,
+        "outlet": false
     },
     {
         "name": "manu coffee",
         "area": "大名",
         "rating": 4.7,
-        "description": "福岡定番カフェ"
+        "description": "福岡定番カフェ",
+        "wifi": false,
+        "outlet": false
     }
 ]
