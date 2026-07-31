@@ -108,3 +108,28 @@ footer {
 .favorite:hover {
     transform: scale(1.2);
 }
+
+@media (max-width: 768px) {
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+    
+    .search-container,
+    .filter-container {
+        width: 90%;
+        margin: 10px auto;
+    }
+
+    #select,
+    select {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+}
