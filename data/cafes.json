@@ -9,7 +9,8 @@
         "parking": false,
         "hours": "10:00~21:00",
         "address": "〒812-0012 福岡県福岡市博多区博多駅中央街9-1 6F",
-        "image": "images/rec-coffee.jpg"
+        "image": "images/rec-coffee.jpg",
+        "map": "https://maps.app.goo.gl/yCq8bxfSrZXZBV1h7"
     },
     {
         "name": "FUK COFFEE",
@@ -21,7 +22,8 @@
         "parking": false,
         "hours": "8:00~20:00",
         "address": "〒812-0038 福岡県福岡市博多区祇園町6-22",
-        "image": "images/fuk-coffee.jpg"
+        "image": "images/fuk-coffee.jpg",
+        "map": "https://maps.app.goo.gl/P5Ld7QgxaHAVtGyp6"
     },
     {
         "name": "manu coffee大名店",
@@ -33,6 +35,7 @@
         "parking": false,
         "hours": "9:00~0:00",
         "address": "〒810-0041 福岡県福岡市中央区大名1丁目1-3 1F",
-        "image": "images/manu-coffee.jpg"
+        "image": "images/manu-coffee.jpg",
+        "map": "https://maps.app.goo.gl/B2KMx61YhTZ1u38r9"
     }
 ]

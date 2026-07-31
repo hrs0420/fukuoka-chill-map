@@ -41,4 +41,8 @@ fetch("data/cafes.json")
 
         document.getElementById("address").textContent =
             "📍 住所 " + cafe.address;
+
+        document.getElementById("mapLink").href =
+            cafe.map;
+
     });
