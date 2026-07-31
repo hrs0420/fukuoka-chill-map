@@ -9,12 +9,14 @@ let cafes = [];
 
 
 //JSONを読み込む
-fetch("data/cafes.json")
-    .then(response => response.json())
-    .then(data =>{
-        cafes = data;
-        displayCafes(cafes);
-    });
+async function init() {
+    cafes = await loadData("cafes.json");
+
+    displayCafes(cafes);
+}
+
+init();
+
 
 //検索機能
 searchInput.addEventListener("input", () =>{
