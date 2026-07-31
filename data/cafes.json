@@ -1,11 +1,14 @@
 [
     {
-        "name": "REC COFFEE",
+        "name": "REC COFFEE博多マルイ店",
         "area": "博多駅",
         "rating": 4.8,
         "description": "スペシャルティコーヒー",
         "wifi": true,
-        "outlet": true
+        "outlet": true,
+        "parking": false,
+        "hours": "10:00~21:00",
+        "address": "〒812-0012 福岡県福岡市博多区博多駅中央街9-1 6F"
     },
     {
         "name": "FUK COFFEE",
@@ -13,14 +16,20 @@
         "rating": 4.6,
         "description": "旅行気分を味わえるカフェ",
         "wifi": true,
-        "outlet": false
+        "outlet": false,
+        "parking": false,
+        "hours": "8:00~20:00",
+        "address": "〒812-0038 福岡県福岡市博多区祇園町6-22"
     },
     {
-        "name": "manu coffee",
+        "name": "manu coffee大名店",
         "area": "大名",
         "rating": 4.7,
         "description": "福岡定番カフェ",
         "wifi": false,
-        "outlet": false
+        "outlet": false,
+        "parking": false,
+        "hours": "9:00~0:00",
+        "address": "〒810-0041 福岡県福岡市中央区大名1丁目1-3 1F"
     }
 ]
