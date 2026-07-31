@@ -19,14 +19,42 @@ init();
 
 
 //検索機能
-searchInput.addEventListener("input", () =>{
+searchInput.addEventListener("input", filterCafes);
+wifiCheck.addEventListener("change", filterCafes);
+outletCheck.addEventListener("change", filterCafes);
 
-    const keyword = searchInput.value.toLowerCase();
+//いいね機能
+document.addEventListener("click",(e)=>{
 
-    const filtered = cafes.filter(cafe =>
-        cafe.name.toLowerCase().includes(keyword)
-    );
+    if(!e.target.classList.contains("favorite")){
+        return;
+    }
 
-    displayCafes(filtered);
 
+    e.preventDefault();
+    e.stopPropagation();
+
+    const name=e.target.dataset.name;
+
+    let favorites=
+        JSON.parse(localStorage.getItem("favorites"))||[]
+
+        if(favorites.includes(name)){
+            favorites=
+            favorites.filter(f=>f!==name);
+
+            e.target.textContent="🤍";
+
+        }else{
+
+            favorites.push(name);
+
+            e.target.textContent="❤️";
+        }
+
+        localStorage.setItem(
+            "favorites",
+            JSON.stringify(favorites)
+        );
+        filterCafes();
 });
