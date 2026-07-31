@@ -6,6 +6,7 @@ function displayCafes(cafeData) {
         list.innerHTML += `
         <a href="detail.html?name=${encodeURIComponent(cafe.name)}" class="card-link">
             <div class="card">
+                <img src="${cafe.image}" alt="${cafe.name}" class="cafe-image">
                 <h2>${cafe.name}</h2>
                 <p>📍 ${cafe.area}</p>
                 <p>⭐ ${cafe.rating}</p>
