@@ -3,7 +3,7 @@ const list = document.getElementById("cafe-list");
 
 const wifiCheck = document.getElementById("wifi");
 const outletCheck = document.getElementById("outlet");
-
+const areaSelect = document.getElementById("area");
 
 let cafes = [];
 
@@ -22,6 +22,7 @@ init();
 searchInput.addEventListener("input", filterCafes);
 wifiCheck.addEventListener("change", filterCafes);
 outletCheck.addEventListener("change", filterCafes);
+areaSelect.addEventListener("change", filterCafes);
 
 //いいね機能
 document.addEventListener("click",(e)=>{

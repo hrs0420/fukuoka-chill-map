@@ -42,7 +42,14 @@ function filterCafes() {
         const matchOutlet =
             !outletCheck.checked || cafe.outlet;
         
-            return matchKeyword && matchWifi && matchOutlet;
+        const matchArea =
+            areaSelect.value === "" ||
+            cafe.area === areaSelect.value;
+
+        return matchKeyword &&
+            matchWifi &&
+            matchOutlet&&
+            matchArea;
 
     });
 
