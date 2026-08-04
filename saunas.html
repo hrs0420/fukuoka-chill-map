@@ -2,17 +2,58 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>サウナ | Fukuoka Chill Map</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-<h1>♨ サウナ一覧</h1>
+<header>
+    <h1>♨ サウナ一覧</h1>
+</header>
+<div class="search-container">
+    <input 
+        type="text"
+        id="search"
+        placeholder="サウナ名で検索...">
+</div>
 
-<p>準備中です。</p>
+<div class="filter-container">
+
+    <label>
+        <input type="checkbox" id="wifi">
+        Wi-Fiあり
+    </label>
+
+    <label>
+        <input type="checkbox" id="outlet">
+        コンセントあり
+    </label>
+    <label>
+        エリア
+        <select id="area">
+            <option value="">すべて</option>
+            <option value="博多駅">博多駅</option>
+            <option value="天神">天神</option>
+            <option value="大名">大名</option>
+        </select>
+    </label>
+</div>
+
+<main class="cards" id="cafe-list">
 
 
-<a href="index.html">← トップへ戻る</a>
+</main>
+
+<p style="text-align: center;">
+    <a href="index.html">← トップへ戻る</a>
+</p>
+
+<script src="js/utils.js"></script>
+<script src="js/cafe.js"></script>
+<script src="js/script.js"></script>
+
 </body>
+
 </html>
