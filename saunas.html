@@ -22,37 +22,44 @@
 <div class="filter-container">
 
     <label>
-        <input type="checkbox" id="wifi">
-        Wi-Fiあり
+        <input type="checkbox" id="onsen">
+        温浴あり
     </label>
 
     <label>
-        <input type="checkbox" id="outlet">
-        コンセントあり
+        <input type="checkbox" id="loyly">
+        ロウリュあり
     </label>
+
+    <label>
+        <input type="checkbox" id="stay">
+        宿泊可能
+    </label>
+
+    <label>
+        <input type="checkbox" id="parking">
+        駐車場あり
+    </label>
+
     <label>
         エリア
         <select id="area">
-            <option value="">すべて</option>
-            <option value="博多駅">博多駅</option>
+            <option value="">すべてのエリア</option>
+            <option value="中州">中州</option>
             <option value="天神">天神</option>
-            <option value="大名">大名</option>
+            <option value="筑紫野">筑紫野</option>
         </select>
     </label>
 </div>
 
-<main class="cards" id="cafe-list">
-
-
-</main>
+<div id="sauna-list" class="card-grid"></div>
 
 <p style="text-align: center;">
     <a href="index.html">← トップへ戻る</a>
 </p>
 
 <script src="js/utils.js"></script>
-<script src="js/cafe.js"></script>
-<script src="js/script.js"></script>
+<script src="js/sauna.js"></script>
 
 </body>
 
