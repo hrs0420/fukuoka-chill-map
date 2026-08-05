@@ -1,0 +1,80 @@
+[
+    {
+        "id" : "ohori-park",
+        "name" : "大濠公園周回コース",
+        "area" : "大濠",
+        "rating" : "4.9",
+        "distance" : "2.0km",
+        "surface" : "ゴムチップ舗装",
+        "lighted" : true,
+        "locker" : true,
+        "bathroom" : true,
+        "description" : "1周約2kmで平坦、夜間も明るく走りやすい福岡定番のランニングスポット",
+        "image" : "images/ohori-running.jpg"
+    },
+    {
+        "id" : "momochi-beach",
+        "name" : "シーサイドももちコース",
+        "area" : "百道",
+        "rating" : "4.4",
+        "distance" : "3.5km",
+        "surface" : "アスファルト/ 石 / 砂浜",
+        "lighted" : false,
+        "locker" : false,
+        "bathroom" : true,
+        "description" : "海風を感じながら走れるロケーション抜群のコース。明け方や夕暮れ時が特におすすめ",
+        "image" : "images/momochi-running.jpg"        
+    },
+    {
+        "id" : "west-park",
+        "name" : "西公園コース",
+        "area" : "大濠",
+        "rating" : "4.6",
+        "distance" : "1.4km",
+        "surface" : "アスファルト",
+        "lighted" : true,
+        "locker" : false,
+        "bathroom" : true,
+        "description" : "クセになるアップダウン。正面の坂はトレーニングにもってこいの距離と勾配",
+        "image" : "images/west-park.jpg"        
+    },
+    {
+        "id" : "muromi-river",
+        "name" : "室見川コース",
+        "area" : "室見",
+        "rating" : "4.4",
+        "distance" : "4.6km",
+        "surface" : "アスファルト",
+        "lighted" : false,
+        "locker" : false,
+        "bathroom" : true,
+        "description" : "川沿いの整備された直線コース。水と緑が調和しており自然を感じながら気持ちよく走れる",
+        "image" : "images/muromi-river.jpg"        
+    },
+    {
+        "id" : "fukuoka-airport",
+        "name" : "福岡空港コース",
+        "area" : "福岡空港",
+        "rating" : "4.2",
+        "distance" : "10.0km",
+        "surface" : "アスファルト",
+        "lighted" : true,
+        "locker" : false,
+        "bathroom" : false,
+        "description" : "アスファルトの道でも信号や橋がなく長距離を走るのに快適。博多駅から地下鉄で5分の好立地",
+        "image" : "images/fukuoka-airport.jpg"        
+    },
+    {
+        "id" : "shika-no-shima",
+        "name" : "志賀島コース",
+        "area" : "志賀島",
+        "rating" : "4.5",
+        "distance" : "12.0km",
+        "surface" : "アスファルト",
+        "lighted" : true,
+        "locker" : false,
+        "bathroom" : true,
+        "description" : "陸続きの島を一周しながら自然を満喫。",
+        "image" : "images/shika-no-shima.jpg"        
+    }
+]

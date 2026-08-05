@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ランニング | Fukuoka Chill Map</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <h1>🏃 ランニングスポット一覧</h1>
+</header>
+
+<div class="search-container">
+    <input type="text" id="search" placeholder="スポット名で検索...">
+</div>
+
+<div class="filter-container">
+    <label><input type="checkbox" id="lighted"> 夜間照明あり</label>
+    <label><input type="checkbox" id="locker"> ロッカーあり</label>
+    <label><input type="checkbox" id="bathroom"> トイレあり</label> 
+    <label>
+        エリア
+        <select id="area">
+            <option value="">すべてのエリア</option>
+            <option value="大濠">大濠</option>
+            <option value="百道">百道</option>
+            <option value="室見">室見</option>
+            <option value="福岡空港">福岡空港</option>
+            <option value="志賀岛">志賀島</option>
+        </select>
+    </label>
+</div>
+
+<div id="running-list" class="card-grid"></div>
+
+<p style="text-align: center;">
+    <a href="index.html">← トップへ戻る</a>
+</p>
+
+<script src="js/utils.js"></script>
+<script src="js/running.js"></script>
+</body>
+</html>

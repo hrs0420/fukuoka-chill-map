@@ -39,6 +39,12 @@ fetch("data/cafes.json")
         document.getElementById("hours").textContent =
             "🕙営業時間 " + cafe.hours;
 
+        document.getElementById("closed").textContent =
+            "🚫 定休日 " + cafe.closed;
+
+        document.getElementById("payment").textContent =
+            "💰 支払方法 " + cafe.payment;
+
         document.getElementById("address").textContent =
             "📍 住所 " + cafe.address;
 
