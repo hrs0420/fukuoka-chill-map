@@ -2,81 +2,81 @@
 const searchInput = document.getElementById("search");
 const onsenCheck = document.getElementById("onsen");
 const loylyCheck = document.getElementById("loyly");
-const stayCheck = document.getElementById("stay"); // hotel から stay に修正
+const hotelCheck = document.getElementById("hotel");
 const parkingCheck = document.getElementById("parking");
 const areaSelect = document.getElementById("area");
 const saunaList = document.getElementById("sauna-list");
 
 let saunas = [];
 
-// 初期化（utils.js の loadData を使用）
+// 初期化
 async function init() {
     saunas = await loadData("saunas.json");
     displaySaunas(saunas);
 
-    // 変更時にフィルターを発動
-    searchInput.addEventListener("input", filterSaunas);
-    onsenCheck.addEventListener("change", filterSaunas);
-    loylyCheck.addEventListener("change", filterSaunas);
-    stayCheck.addEventListener("change", filterSaunas);
-    parkingCheck.addEventListener("change", filterSaunas);
-    areaSelect.addEventListener("change", filterSaunas);
+    // イベントリスナーの登録
+    if (searchInput) searchInput.addEventListener("input", filterSaunas);
+    if (onsenCheck) onsenCheck.addEventListener("change", filterSaunas);
+    if (loylyCheck) loylyCheck.addEventListener("change", filterSaunas);
+    if (hotelCheck) hotelCheck.addEventListener("change", filterSaunas);
+    if (parkingCheck) parkingCheck.addEventListener("change", filterSaunas);
+    if (areaSelect) areaSelect.addEventListener("change", filterSaunas);
 }
 
 // フィルター処理
 function filterSaunas() {
-    const keyword = searchInput.value.toLowerCase();
+    const keyword = searchInput ? searchInput.value.toLowerCase() : "";
 
     const filtered = saunas.filter(sauna => {
         const matchKeyword = sauna.name.toLowerCase().includes(keyword) || 
                              sauna.description.toLowerCase().includes(keyword);
         
-        const matchOnsen = !onsenCheck.checked || sauna.onsen;
-        const matchLoyly = !loylyCheck.checked || sauna.loyly;
-        const matchStay = !stayCheck.checked || sauna.stay; // hotel から stay に修正
-        const matchParking = !parkingCheck.checked || sauna.parking;
-        
-        const matchArea = areaSelect.value === "" || sauna.area === areaSelect.value;
+        const matchOnsen = !onsenCheck || !onsenCheck.checked || sauna.onsen;
+        const matchLoyly = !loylyCheck || !loylyCheck.checked || sauna.loyly;
+        const matchHotel = !hotelCheck || !hotelCheck.checked || sauna.stay || sauna.hotel;
+        const matchParking = !parkingCheck || !parkingCheck.checked || sauna.parking;
+        const matchArea = !areaSelect || areaSelect.value === "" || sauna.area === areaSelect.value;
 
-        return matchKeyword && matchOnsen && matchLoyly && matchStay && matchParking && matchArea;
+        return matchKeyword && matchOnsen && matchLoyly && matchHotel && matchParking && matchArea;
     });
 
     displaySaunas(filtered);
 }
 
-// カード一覧表示処理
-function displaySaunas(data) {
+// サウナ一覧表示処理
+// sauna.js の表示処理部分
+function displaySaunas(saunaData) {
+    if (!saunaList) return;
     saunaList.innerHTML = "";
 
-    if (data.length === 0) {
+    if (saunaData.length === 0) {
         saunaList.innerHTML = "<p>該当するサウナが見つかりませんでした。</p>";
         return;
     }
 
-    data.forEach(sauna => {
+    saunaData.forEach(sauna => {
+        const card = document.createElement("div");
+        card.className = "card";
 
         const tags = [
             sauna.onsen ? "♨️ 温泉" : "",
             sauna.loyly ? "🔥 ロウリュ" : "",
-            sauna.stay ? "🏨 宿泊" : "",
+            (sauna.stay || sauna.hotel) ? "🏨 宿泊" : "",
             sauna.parking ? "🚗 駐車場" : ""
         ].filter(Boolean).join(" | ");
 
-        saunaList.innerHTML += `
-        <a href="sauna-detail.html?name=${encodeURIComponent(sauna.name)}" class="card-link">
-            <div class="card">
+        // ✨ 詳細ページ（sauna-detail.html）へ遷移するカードリンク
+        card.innerHTML = `
+                <a href="sauna-detail.html?name=${encodeURIComponent(sauna.name)}" style="text-decoration: none; color: inherit;">
                 <img src="${sauna.image}" alt="${sauna.name}" class="cafe-image">
-
                 <h3>${sauna.name}</h3>
-
                 <p>⭐ ${sauna.rating} (${sauna.area})</p>
-
-                <p><small>${tags}</small></p>
-
+                <p><small style="color: #666;">${tags}</small></p>
                 <p>${sauna.description}</p>
-            </div>
-        </a>
+            </a>
         `;
+
+        saunaList.appendChild(card);
     });
 }
 init();

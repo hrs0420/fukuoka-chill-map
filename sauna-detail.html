@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-    
-    <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>サウナ詳細 | Fukuoka Chill Map</title>
-    
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     
-    <header>
-        <h1 id="title"></h1>
+<header>
+    <h1 id="title"></h1>
 </header>
 
 <div class="detail">
-    
     <p id="area"></p>
     <p id="rating"></p>
     <p id="onsen"></p>
@@ -27,15 +23,21 @@
     <p id="hours"></p>
     <p id="address"></p>
     
+    <p style="margin-top: 15px;">
+        <a id="mapLink" target="_blank" rel="noopener noreferrer" style="color: #0066cc; font-weight: bold; text-decoration: underline;">
+            📍 Googleマップで場所を見る
+        </a>
+    </p>
+
     <hr>
     <p id="description"></p>
-    
 </div>
 
 <p style="text-align: center;">
     <a href="saunas.html">← サウナ一覧へ戻る</a>
 </p>
 
+<script src="js/utils.js"></script>
 <script src="js/sauna-detail.js"></script>
 
 </body>
