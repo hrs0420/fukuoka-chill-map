@@ -65,9 +65,9 @@ function displaySaunas(saunaData) {
             sauna.parking ? "🚗 駐車場" : ""
         ].filter(Boolean).join(" | ");
 
-        // ✨ 詳細ページ（sauna-detail.html）へ遷移するカードリンク
+        // ✨ encodeURIComponent(sauna.name) で個別の店名をURLに持たせます
         card.innerHTML = `
-                <a href="sauna-detail.html?name=${encodeURIComponent(sauna.name)}" style="text-decoration: none; color: inherit;">
+            <a href="sauna-detail.html?name=${encodeURIComponent(sauna.name)}" style="text-decoration: none; color: inherit; display: block;">
                 <img src="${sauna.image}" alt="${sauna.name}" class="cafe-image">
                 <h3>${sauna.name}</h3>
                 <p>⭐ ${sauna.rating} (${sauna.area})</p>
