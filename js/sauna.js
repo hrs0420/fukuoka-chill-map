@@ -54,27 +54,29 @@ function displaySaunas(data) {
     }
 
     data.forEach(sauna => {
-        const card = document.createElement("div");
-        card.className = "card";
 
-        // タグのテキスト生成
         const tags = [
             sauna.onsen ? "♨️ 温泉" : "",
             sauna.loyly ? "🔥 ロウリュ" : "",
-            sauna.stay ? "🏨 宿泊" : "", // hotel から stay に修正
+            sauna.stay ? "🏨 宿泊" : "",
             sauna.parking ? "🚗 駐車場" : ""
         ].filter(Boolean).join(" | ");
 
-        card.innerHTML = `
-            <img src="${sauna.image}" alt="${sauna.name}" style="width:100%; height:180px; object-fit:cover; border-radius:8px;">
-            <h3>${sauna.name}</h3>
-            <p>⭐ ${sauna.rating} (${sauna.area})</p>
-            <p><small>${tags}</small></p>
-            <p>${sauna.description}</p>
-        `;
+        saunaList.innerHTML += `
+        <a href="sauna-detail.html?name=${encodeURIComponent(sauna.name)}" class="card-link">
+            <div class="card">
+                <img src="${sauna.image}" alt="${sauna.name}" class="cafe-image">
 
-        saunaList.appendChild(card);
+                <h3>${sauna.name}</h3>
+
+                <p>⭐ ${sauna.rating} (${sauna.area})</p>
+
+                <p><small>${tags}</small></p>
+
+                <p>${sauna.description}</p>
+            </div>
+        </a>
+        `;
     });
 }
-
 init();
