@@ -11,7 +11,8 @@
         "hours": "24時間営業",
         "address": "〒812-0038 福岡県福岡市博多区祇園町8-12 2F",
         "image": "images/wellbe-sauna.jpg",
-        "map" : "https://maps.app.goo.gl/LvGp3AJ6aZaBH28q7"
+        "map" : "https://maps.app.goo.gl/LvGp3AJ6aZaBH28q7",
+        "ikitai": "https://sauna-ikitai.com/saunas/3768"
     },
 
     {
@@ -26,7 +27,8 @@
         "hours": "10:30~0:00",
         "address": "〒818-0053 福岡県筑紫野市天拝坂２丁目４−３",
         "image": "images/tenpai-no-sato.jpg",
-        "map" : "https://maps.app.goo.gl/U3RPbDBaD5nyLLzy6"
+        "map" : "https://maps.app.goo.gl/U3RPbDBaD5nyLLzy6",
+        "ikitai": "https://sauna-ikitai.com/saunas/3814"
     },
 
     {
@@ -41,7 +43,8 @@
         "hours": "平日：12:00~0:00 土日祝：10:00~23:00",
         "address": "〒818-0053 福岡県筑紫野市天拝坂２丁目４−３",
         "image": "images/SHIAGARU-sauna.jpg",
-        "map" : "https://maps.app.goo.gl/YGL1g1sEptsrCadF7"
+        "map" : "https://maps.app.goo.gl/YGL1g1sEptsrCadF7",
+        "ikitai": "https://sauna-ikitai.com/saunas/80161"
     },
     {
         "name": "サウナヨーガン福岡天神",
@@ -55,7 +58,8 @@
         "hours": "7:30-0:00, 水曜: 13:00~0:00",
         "address": "〒810-0073 福岡県福岡市中央区舞鶴1丁目5-6 平和台ホテル天神 9F",
         "image": "images/sauna-yogan.jpg",
-        "map" : "https://maps.app.goo.gl/5iko24c8rHfEgZfGA"
+        "map" : "https://maps.app.goo.gl/5iko24c8rHfEgZfGA",
+        "ikitai":"https://sauna-ikitai.com/saunas/80097"
     },
     {
         "name": "ヒナタの杜",
@@ -69,7 +73,8 @@
         "hours": "9:00-0:00",
         "address": "〒819-0001 福岡県福岡市西区小戸2丁目1-87 ヒナタの杜",
         "image": "images/hinata-no-mori.jpg",
-        "map" : "https://maps.app.goo.gl/6qq7yS2ErURzFj5o6"
+        "map" : "https://maps.app.goo.gl/6qq7yS2ErURzFj5o6",
+        "ikitai":"https://sauna-ikitai.com/saunas/7272"
     },
     {
         "name": "伊都の湯どころ",
@@ -83,7 +88,8 @@
         "hours": "10:00~23:00",
         "address": "〒819-1111 福岡県糸島市泊765",
         "image": "images/ito-no-yudokoro.jpg",
-        "map" : "https://maps.app.goo.gl/xDuysQuMppPdpL688"
+        "map" : "https://maps.app.goo.gl/xDuysQuMppPdpL688",
+        "ikitai":"https://sauna-ikitai.com/saunas/3777"
     },
     {
         "name": "游心の湯",
@@ -97,7 +103,8 @@
         "hours": "9:00~25:00",
         "address": "〒830-0056 福岡県久留米市本山1丁目7-10",
         "image": "images/yuusin-no-yu.jpg",
-        "map" : "https://maps.app.goo.gl/jS8y1RkmYNeGyhfQ9"
+        "map" : "https://maps.app.goo.gl/jS8y1RkmYNeGyhfQ9",
+        "ikitai":"https://sauna-ikitai.com/saunas/3874"
     },
     {
         "name": "照葉スパリゾート 本店",
@@ -111,6 +118,22 @@
         "hours": "8:00~26:00",
         "address": "〒813-0017 福岡県福岡市東区香椎照葉5丁目2-15 照葉スパリゾート 本館 1F",
         "image": "images/teriha.jpg",
-        "map" : "https://maps.app.goo.gl/sqxwgQzESGXWEqKt7"
+        "map" : "https://maps.app.goo.gl/sqxwgQzESGXWEqKt7",
+        "ikitai":"https://sauna-ikitai.com/saunas/3749"
+    },
+    {
+        "name": "FURO & SAUNA THE VANISH",
+        "area": "糟屋郡",
+        "rating": 4.9,
+        "description":"薪サウナの香りでリラックス",
+        "onsen": true,
+        "loyly": true,
+        "stay": false,
+        "parking": true,
+        "hours": "10:00~0:00",
+        "address": "〒811-2501 福岡県糟屋郡久山町久原１８２２ Nayuta 2F",
+        "image": "images/vanish.jpg",
+        "map" : "https://maps.app.goo.gl/aZzARg3Z4uPWpRfb6",
+        "ikitai":"https://sauna-ikitai.com/saunas/81567"
     }
 ]

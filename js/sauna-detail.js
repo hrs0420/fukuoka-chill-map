@@ -43,6 +43,16 @@ async function initDetail() {
             mapLink.style.display = "none";
         }
     }
+    // 6. サウナイキタイのリンク設定
+    const ikitaiLink = document.getElementById("ikitaiLink");
+    if (ikitaiLink) {
+        if (sauna.ikitai) {
+            ikitaiLink.href = sauna.ikitai;
+            ikitaiLink.style.display = "inline-block";
+        } else {
+            ikitaiLink.style.display = "none";
+        }
+    }
 }
 
 initDetail();
