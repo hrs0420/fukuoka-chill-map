@@ -11,9 +11,25 @@
 <body>
 
 <header>
-    <h1>Fukuoka Chill Map</h1>
-    
-    <p>福岡の休日をもっと楽しもう。</p>
+    <div class="header-container">
+        <h1>Fukuoka Chill Map</h1>
+            
+        <p>福岡の休日をもっと楽しもう。</p>
+        
+        <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <nav class="nav-menu" id="nav-menu">
+        <a href="index.html" class="nav-link">トップに戻る</a>
+        <a href="cafes.html" class="nav-link">☕ カフェ</a>
+        <a href="saunas.html" class="nav-link">🧖 サウナ</a>
+        <a href="running.html" class="nav-link">🏃 ランニング</a>
+        <a href="favorites.html" class="nav-link">❤️ お気に入り</a>
+    </nav>
 </header>
 
 <main>
@@ -48,5 +64,5 @@
 
 </html>
 
-
+<script src="js/utils.js"></script>
 <script src="js/script.js"></script>

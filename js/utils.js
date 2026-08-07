@@ -24,3 +24,16 @@ function isFavorite(category, id) {
     const favs = getFavorites(category);
     return favs.includes(id);
 }
+
+// ---ハンバーガーメニューの開閉処理---
+document.addEventListener("DOMContentLoaded", () => {
+    const hamburger = document.getElementById("hamburger-btn");
+    const navMenu = document.getElementById("nav-menu");
+
+    if (hamburger && navMenu) {
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            navMenu.classList.toggle("active");
+        });
+    }
+});
