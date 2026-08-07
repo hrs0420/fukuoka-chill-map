@@ -20,11 +20,22 @@ header {
     align-items: center;
     max-width: 1100px;
     margin: 0 auto;
+    gap: 15px;
 }
 
 header h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 24px;
+    color: #ffffff;
+    white-space: nowrap;
+    margin-right: auto;
+}
+/*福岡ランドマーク画像*/
+.header-monument-img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 15px;
 }
 
 /* ハンバーガーボタン（三本線） */
@@ -222,9 +233,12 @@ footer {
 /* --- スマホ対応 (レスポンシブ) --- */
 @media (max-width: 768px) {
     header h1 {
-        font-size: 20px;
+        font-size: 18px;
     }
-
+    header-monument-img {
+        height: 35px;
+        margin-right: 10px;
+    }
     .cards {
         flex-direction: column;
         align-items: center;
