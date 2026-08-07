@@ -1,5 +1,6 @@
 [
     {
+        "id": "sauna_1",
         "name": "ウェルビー福岡",
         "area": "中州",
         "rating": 4.8,
@@ -15,7 +16,8 @@
         "ikitai": "https://sauna-ikitai.com/saunas/3768"
     },
 
-    {
+    {   
+        "id": "sauna_2",
         "name": "天拝の郷",
         "area": "筑紫野",
         "rating": 4.7,
@@ -32,6 +34,7 @@
     },
 
     {
+        "id": "sauna_3",
         "name": "SHIAGARU SAUNA福岡天神",
         "area": "天神",
         "rating": 4.8,
@@ -47,6 +50,7 @@
         "ikitai": "https://sauna-ikitai.com/saunas/80161"
     },
     {
+        "id": "sauna_4",
         "name": "サウナヨーガン福岡天神",
         "area": "天神",
         "rating": 4.7,
@@ -62,6 +66,7 @@
         "ikitai":"https://sauna-ikitai.com/saunas/80097"
     },
     {
+        "id": "sauna_5",
         "name": "ヒナタの杜",
         "area": "小戸",
         "rating": 4.9,
@@ -77,6 +82,7 @@
         "ikitai":"https://sauna-ikitai.com/saunas/7272"
     },
     {
+        "id": "sauna_6",
         "name": "伊都の湯どころ",
         "area": "糸島",
         "rating": 4.5,
@@ -92,6 +98,7 @@
         "ikitai":"https://sauna-ikitai.com/saunas/3777"
     },
     {
+        "id": "sauna_7",
         "name": "游心の湯",
         "area": "久留米",
         "rating": 4.5,
@@ -107,6 +114,7 @@
         "ikitai":"https://sauna-ikitai.com/saunas/3874"
     },
     {
+        "id": "sauna_8",
         "name": "照葉スパリゾート 本店",
         "area": "照葉",
         "rating": 4.8,
@@ -122,6 +130,7 @@
         "ikitai":"https://sauna-ikitai.com/saunas/3749"
     },
     {
+        "id": "sauna_9",
         "name": "FURO & SAUNA THE VANISH",
         "area": "糟屋郡",
         "rating": 4.9,

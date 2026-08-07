@@ -1,6 +1,6 @@
 [
     {
-        "id" : "ohori-park",
+        "id" : "running_1",
         "name" : "大濠公園周回コース",
         "area" : "大濠",
         "rating" : "4.9",
@@ -13,7 +13,7 @@
         "image" : "images/ohori-running.jpg"
     },
     {
-        "id" : "momochi-beach",
+        "id" : "running_2",
         "name" : "シーサイドももちコース",
         "area" : "百道",
         "rating" : "4.4",
@@ -26,7 +26,7 @@
         "image" : "images/momochi-running.jpg"        
     },
     {
-        "id" : "west-park",
+        "id" : "running_3",
         "name" : "西公園コース",
         "area" : "大濠",
         "rating" : "4.6",
@@ -39,7 +39,7 @@
         "image" : "images/west-park.jpg"        
     },
     {
-        "id" : "muromi-river",
+        "id" : "running_4",
         "name" : "室見川コース",
         "area" : "室見",
         "rating" : "4.4",
@@ -52,7 +52,7 @@
         "image" : "images/muromi-river.jpg"        
     },
     {
-        "id" : "fukuoka-airport",
+        "id" : "running_5",
         "name" : "福岡空港コース",
         "area" : "福岡空港",
         "rating" : "4.2",
@@ -65,7 +65,7 @@
         "image" : "images/fukuoka-airport.jpg"        
     },
     {
-        "id" : "shika-no-shima",
+        "id" : "running_6",
         "name" : "志賀島コース",
         "area" : "志賀島",
         "rating" : "4.5",
