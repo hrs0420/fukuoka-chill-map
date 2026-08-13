@@ -66,7 +66,7 @@ function displaySpots(data) {
         ].filter(Boolean).join(" | ");
 
         list.innerHTML += `
-        <a href="detail.html?name=${encodeURIComponent(spot.name)}" class="card-link">
+        <a href="detail.html?name=${encodeURIComponent(spot.name)}&type=running" class="card-link">
             <div class="card">
                 <img src="${spot.image}" alt="${spot.name}" class="cafe-image">
                 <h2>

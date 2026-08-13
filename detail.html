@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>カフェ詳細</title>
+    <title>スポット詳細</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="images/Fukuoka-monuments.jpg" type="image/jpeg">
 </head>
@@ -16,7 +16,7 @@
         <a href="index.html">
             <img src="images/fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
         </a>
-        <h1 id="title">カフェ詳細</h1>
+        <h1 id="title">スポット詳細</h1>
         <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く">
             <span></span>
             <span></span>
@@ -35,16 +35,18 @@
 
 <div class="detail">
     <h2 id="spot-name"></h2>
-    
+
     <p id="area"></p>
     <p id="rating"></p>
-    <p id="wifi"></p>
-    <p id="outlet"></p>
-    <p id="parking"></p>
-    <p id="hours"></p>
-    <p id="closed"></p>
-    <p id="payment"></p>
-    <p id="address"></p>
+
+    <!--
+        カテゴリ固有の項目（Wi-Fi / 電源 / 温泉 / ロウリュ / 距離 / 路面 など）は
+        ここに detail.js が動的に <p> を追加する。
+        HTML側には何も固定で書かない ＝ 表示内容は detail.js の FIELD_CONFIG だけで管理する。
+    -->
+    <div id="detail-fields"></div>
+
+    <p id="address" style="display: none;"></p>
 
     <div class="map-wrapping">
         <iframe
@@ -63,6 +65,12 @@
     <a id="mapLink" href="#" target="_blank" class="map-button">
         Googleマップで大きく見る
     </a>
+
+    <div style="margin-top: 15px;">
+        <a id="ikitaiLink" href="#" target="_blank" class="map-button" style="display: none; background-color: #e67e22;">
+            サウナイキタイで見る
+        </a>
+    </div>
     
     <hr>
 
@@ -116,7 +124,7 @@
 </div>
 
 <p style="text-align: center; margin: 30px 0;">
-    <a href="cafes.html">←一覧へ戻る</a>   
+    <a href="index.html">←ホームへ戻る</a>   
 </p>
 
 <footer>

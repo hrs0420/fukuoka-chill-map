@@ -59,7 +59,7 @@ function displaySaunas(saunaData) {
 
     saunaData.forEach(sauna => {
         list.innerHTML += `
-        <a href="detail.html?name=${encodeURIComponent(sauna.name)}" class="card-link">
+        <a href="detail.html?name=${encodeURIComponent(sauna.name)}&type=sauna" class="card-link">
             <div class="card">
                 <img src="${sauna.image}" alt="${sauna.name}" class="cafe-image">
                 <h2>

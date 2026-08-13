@@ -61,7 +61,7 @@ function displayTopRanking() {
         topListContainer.innerHTML += `
             <div class="card">
                 <span class="favorite" data-name="${escapeHTML(cafe.name)}">${heartIcon}</span>
-                <a href="detail.html?name=${encodeURIComponent(cafe.name)}" class="card-link">
+                <a href="detail.html?name=${encodeURIComponent(cafe.name)}&type=cafe" class="card-link">
                     <img src="${cafe.image || 'images/default.jpg'}" alt="${escapeHTML(cafe.name)}" class="cafe-image">
                     <h3>${escapeHTML(cafe.name)}</h3>
                     <p>📍 ${escapeHTML(cafe.area || '福岡')}</p>
@@ -207,7 +207,7 @@ function displayCafes(cafeList) {
         list.innerHTML += `
             <div class="card">
                 <span class="favorite" data-name="${escapeHTML(cafe.name)}">${heartIcon}</span>
-                <a href="detail.html?name=${encodeURIComponent(cafe.name)}" class="card-link">
+                <a href="detail.html?name=${encodeURIComponent(cafe.name)}&type=cafe" class="card-link">
                     <img src="${cafe.image || 'images/default.jpg'}" alt="${escapeHTML(cafe.name)}" class="cafe-image">
                     <h3>${escapeHTML(cafe.name)}</h3>
                     <p>📍 ${escapeHTML(cafe.area || '福岡')}</p>
