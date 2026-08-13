@@ -3,6 +3,7 @@ body {
     margin: 0;
     font-family: sans-serif;
     background: #f5f5f5;
+    color: #333;
 }
 
 /* --- ヘッダー・ハンバーガーメニュー --- */
@@ -10,8 +11,8 @@ header {
     position: relative;
     background: #2c3e50;
     color: white;
-    padding: 30px 20px 20px;
-    box-sizing: border-radius;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .header-container {
@@ -28,9 +29,8 @@ header h1 {
     font-size: 24px;
     color: #ffffff;
     white-space: nowrap;
-    margin-right: auto;
 }
-/*福岡ランドマーク画像*/
+
 .header-monument-img {
     height: 50px;
     width: auto;
@@ -38,7 +38,7 @@ header h1 {
     margin-right: 15px;
 }
 
-/* ハンバーガーボタン（三本線） */
+/* ハンバーガーボタン */
 .hamburger {
     display: flex;
     flex-direction: column;
@@ -52,7 +52,6 @@ header h1 {
     z-index: 100;
 }
 
-/* 三本線の線の見た目 */
 .hamburger span {
     display: block;
     width: 100%;
@@ -62,7 +61,6 @@ header h1 {
     transition: all 0.3s ease;
 }
 
-/* クリック時の「×」アニメーション */
 .hamburger.active span:nth-child(1) {
     transform: translateY(9.5px) rotate(45deg);
 }
@@ -73,7 +71,6 @@ header h1 {
     transform: translateY(-9.5px) rotate(-45deg);
 }
 
-/* 開閉するメニュー（初期状態は非表示） */
 .nav-menu {
     position: absolute;
     top: 100%;
@@ -94,17 +91,15 @@ header h1 {
     z-index: 99;
 }
 
-/* メニューが開いた状態 */
 .nav-menu.active {
     max-height: 250px;
     padding: 15px 20px;
 }
 
-/* メニュー内のリンク */
 .nav-menu .nav-link,
-.nav-menu a nav-link:visited,
-.nav-menu a nav-link:active,
-.nav-menu a nav-link:hover {
+.nav-menu a.nav-link:visited,
+.nav-menu a.nav-link:active,
+.nav-menu a.nav-link:hover {
     color: #ffffff !important;
     text-decoration: none !important;
     font-size: 1rem;
@@ -118,74 +113,161 @@ header h1 {
     opacity: 0.7;
 }
 
-/* --- コンテンツエリア・カード --- */
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    padding: 50px;
-}
+/* --- コンテンツ配置エリア（共通設定） --- */
 
-.card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+/* 1. トップページの「チルスポット」セクション＆カテゴリーカード */
+.cards {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 30px 20px;
+    padding: 30px 20px 10px;
+    box-sizing: border-box;
 }
 
+.cards h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+/* 3つのカードを横並びにするレイアウト（PC・タブレット） */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* チルスポットカード専用の基本スタイル */
+.category-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.category-icon {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.category-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+.category-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* 2. 各一覧ページ・ランキングの「グリッドコンテナ」 */
+#top-rated-list,
+#cafe-list,
+#sauna-list,
+#running-list,
+#favorites-list,
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 20px 50px;
+    box-sizing: border-box;
+}
+
+/* --- スポットカードデザイン（共通） --- */
 .card {
     background: white;
     width: 100%;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     text-decoration: none;
-    color: black;
+    color: inherit;
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-    transform: scale(1.03);
-    transition: .2s;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card h2 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #2c3e50;
+}
+
+.card p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
 }
 
 .card-link {
     text-decoration: none;
     color: inherit;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
-.cafe-image {
+/* スポットカード画像 */
+.cafe-image,
+.card img {
     width: 100%;
     height: 180px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 8px;
     margin-bottom: 15px;
-    transition: transform 0.2s;
+    display: block;
 }
 
 /* --- いいねボタン --- */
 .favorite {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 22px;
     cursor: pointer;
-    float: right;
-    font-size: 24px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
+    padding: 4px 8px;
     user-select: none;
+    transition: transform 0.2s;
 }
 
 .favorite:hover {
-    transform: scale(1.3);
+    transform: scale(1.2);
 }
 
 /* --- 検索・フィルター --- */
 .search-container {
     display: flex;
     justify-content: center;
-    margin: 30px 0;
+    margin: 30px 0 15px;
 }
 
 #search {
@@ -200,6 +282,7 @@ header h1 {
 .filter-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 20px;
     margin-bottom: 30px;
     font-size: 16px;
@@ -223,17 +306,59 @@ header h1 {
 
 .detail hr {
     margin: 20px 0;
+    border: none;
+    border-top: 1px solid #eee;
 }
 
+/* --- トップページランキング & 新着口コミ --- */
+.top-ranking, .recent-reviews {
+    padding: 30px 20px 10px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.top-ranking h2, .recent-reviews h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+.review-mini-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.review-mini-card {
+    background: #fff;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-left: 4px solid #2c3e50;
+}
+
+.review-mini-card h4 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+}
+
+.review-mini-card .stars {
+    color: #f39c12;
+}
+
+/* --- フッター --- */
 footer {
     text-align: center;
-    padding: 30px 20px;
+    padding: 40px 20px;
     color: #666;
 }
+
 footer p {
     margin: 0 0 10px 0;
     font-size: 14px;
 }
+
 .footer-monument-img {
     display: block;
     margin: 0 auto;
@@ -242,8 +367,244 @@ footer p {
     opacity: 0.6;
     transition: opacity 0.3s;
 }
+
 .footer-monument-img:hover {
     opacity: 0.9;
+}
+
+/* --- 口コミ・コメント欄 --- */
+.detail-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.rating-summary {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.big-rating {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f39c12;
+}
+
+.count-text {
+    color: #777;
+    font-size: 14px;
+}
+
+.comment-form {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.comment-form h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.submit-btn {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submit-btn:hover {
+    background: #1a252f;
+}
+
+.comment-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.comment-author {
+    font-weight: bold;
+}
+
+.comment-score {
+    color: #f39c12;
+    font-size: 14px;
+}
+
+.comment-text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+}
+
+.map-wrapping {
+    margin: 20px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background-color: #eee;
+}
+
+.google-map {
+    display: block;
+    width: 100%;
+    height: 300px;
+    border: 0;
+}
+
+.map-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #e74c3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* --- ポップアップ（モーダル） --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 9999;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0);
+}
+
+.modal-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.modal-content h3 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+}
+
+.modal-content p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.modal-btn {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal-btn:hover {
+    background: #1a252f;
+}
+
+.delete-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 13px;
+    margin-left: 10px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.delete-btn:hover {
+    opacity: 1;
+}
+
+body.admin-mode .delete-btn {
+    display: inline-block;
+}
+
+#copyright {
+    cursor: pointer;
+    user-select: none;
 }
 
 /* --- スマホ対応 (レスポンシブ) --- */
@@ -251,21 +612,23 @@ footer p {
     header h1 {
         font-size: 18px;
     }
-    header-monument-img {
+
+    .header-monument-img {
         height: 35px;
         margin-right: 10px;
     }
-    .cards {
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-    }
 
+    .category-grid,
+    #top-rated-list,
+    #cafe-list,
+    #sauna-list,
+    #running-list,
+    #favorites-list,
     .card-grid {
         grid-template-columns: 1fr;
         padding: 15px;
     }
-    
+
     .search-container,
     .filter-container {
         width: 90%;

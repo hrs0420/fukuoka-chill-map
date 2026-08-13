@@ -15,10 +15,10 @@ async function init() {
         const favSaunas = JSON.parse(localStorage.getItem("saunaFavorites")) || [];
         const favRunning = JSON.parse(localStorage.getItem("runningFavorites")) || [];
 
-        // フィルタリングして表示
-        displayFavorites(cafeList, cafes, favCafes, "favorites");
-        displayFavorites(saunaList, saunas, favSaunas, "saunaFavorites");
-        displayFavorites(runningList, runningSpots, favRunning, "runningFavorites");
+        // フィルタリングして表示 (カテゴリタイプを渡す)
+        displayFavorites(cafeList, cafes, favCafes, "favorites", "cafe");
+        displayFavorites(saunaList, saunas, favSaunas, "saunaFavorites", "sauna");
+        displayFavorites(runningList, runningSpots, favRunning, "runningFavorites", "running");
     } catch (error) {
         console.error("データの読み込みに失敗しました:", error);
     }
@@ -41,18 +41,16 @@ document.addEventListener("click", (e) => {
 });
 
 // お気に入りカードを描画する関数
-function displayFavorites(container, allData, favoriteNames, storageKey) {
+function displayFavorites(container, allData, favoriteNames, storageKey, type) {
     if (!container) return;
     
     container.innerHTML = "";
 
-    // データが存在しない場合のガード処理
     if (!allData || !Array.isArray(allData)) {
         container.innerHTML = "<p style='color: #888;'>データを読み込めませんでした。</p>";
         return;
     }
 
-    // いいねされているデータだけを抽出
     const filteredData = allData.filter(item => favoriteNames.includes(item.name));
 
     if (filteredData.length === 0) {
@@ -61,8 +59,9 @@ function displayFavorites(container, allData, favoriteNames, storageKey) {
     }
 
     filteredData.forEach(item => {
+        // ★ type パラメータを追加
         container.innerHTML += `
-        <a href="detail.html?name=${encodeURIComponent(item.name)}" class="card-link">
+        <a href="detail.html?name=${encodeURIComponent(item.name)}&type=${type}" class="card-link">
             <div class="card">
                 <img src="${item.image}" alt="${item.name}" class="cafe-image">
                 <h2>

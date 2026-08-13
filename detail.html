@@ -6,17 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カフェ詳細</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="images/Fukuoka-monuments.jpg" type="image/jpeg">
 </head>
 
 <body>
-
 
 <header>
     <div class="header-container">
         <a href="index.html">
             <img src="images/fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
         </a>
-        <h1 id="title"></h1>
+        <h1 id="title">カフェ詳細</h1>
         <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く">
             <span></span>
             <span></span>
@@ -34,6 +34,7 @@
 </header>
 
 <div class="detail">
+    <h2 id="spot-name"></h2>
     
     <p id="area"></p>
     <p id="rating"></p>
@@ -44,32 +45,88 @@
     <p id="closed"></p>
     <p id="payment"></p>
     <p id="address"></p>
-    <a id="mapLink" target="_blank">
-        Googleマップで見る
+
+    <div class="map-wrapping">
+        <iframe
+            id="google-map" 
+            src="" 
+            class="google-map"
+            width="100%" 
+            height="300" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+    
+    <a id="mapLink" href="#" target="_blank" class="map-button">
+        Googleマップで大きく見る
     </a>
     
     <hr>
 
     <p id="description"></p>
-
 </div>
 
-<p style="text-align: center;">
+<div class="detail-section">
+    <h3>💬 口コミ・評価</h3>
+
+    <div class="rating-summary">
+        <span class="big-rating" id="average-rating">⭐ 0.0</span>
+        <span class="count-text" id="review-count">(0件の口コミ)</span>
+    </div>
+
+    <form id="comment-form" class="comment-form">
+        <h4>口コミを投稿する</h4>
+
+        <div class="form-group">
+            <label for="reviewer-name">お名前:</label>
+            <input type="text" id="reviewer-name" placeholder="匿名" required>
+        </div>
+        <div class="form-group">
+            <label for="review-score">評価:</label>
+            <select id="review-score" required>
+                <option value="5">⭐⭐⭐⭐⭐(5 - 最高)</option>
+                <option value="4">⭐⭐⭐⭐(4 - 良い)</option>
+                <option value="3" selected>⭐⭐⭐(3 - 普通)</option>
+                <option value="2">⭐⭐(2 - 微妙)</option>
+                <option value="1">⭐(1 - 悪い)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="review-comment">コメント</label>
+            <textarea id="review-comment" rows="3" placeholder="お店の雰囲気や感想を書こう！" required></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">投稿する</button>
+    </form>
+
+    <div id="comments-list" class="comments-list"></div>
+</div>
+
+<div id="custom-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-icon">🎉</div>
+        <h3>投稿が完了しました！</h3>
+        <p>貴重な口コミ・評価をありがとうございます。</p>
+        <button type="button" class="modal-btn" onclick="document.getElementById('custom-modal').classList.remove('active');">閉じる</button>
+    </div>
+</div>
+
+<p style="text-align: center; margin: 30px 0;">
     <a href="cafes.html">←一覧へ戻る</a>   
 </p>
+
+<footer>
+    <p id="copyright">© 2026 Fukuoka Chill Map</p>
+    <img src="images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
+</footer>
 
 <script src="js/utils.js"></script>
 <script src="js/detail.js"></script>
 
-<footer>
-
-<p>© 2026 Fukuoka Chill Map</p>
-    <img src="images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
-</footer>
-
 </body>
 
 </html>
-
-
-

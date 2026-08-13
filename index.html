@@ -2,10 +2,10 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewpoint" content="width=device-width", >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fukuoka Chill Map</title>
-
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="images/Fukuoka-monuments.jpg" type="image/jpeg">
 </head>
 
 <body>
@@ -15,8 +15,7 @@
         <a href="index.html">
             <img src="images/fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
         </a>
-        <h1>Fukuoka Chill Map</h1>
-            
+        <h1 id="title">Fukuoka Chill Map</h1>
         <p>福岡の休日をもっと楽しもう。</p>
         
         <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く">
@@ -35,37 +34,54 @@
     </nav>
 </header>
 
-<main>
+<main class="container">
 
-<section class="cards">
+    <section class="section cards">
+        <h2>✨ Chill Map</h2>
+        <div class="category-grid">
+            <a href="cafes.html" class="card category-card">
+                <span class="category-icon">☕</span>
+                <div class="category-info">
+                    <h3>カフェ</h3>
+                    <p>福岡のおしゃれなカフェを探そう。</p>
+                </div>
+            </a>
+            <a href="saunas.html" class="card category-card">
+                <span class="category-icon">♨️</span>
+                <div class="category-info">
+                    <h3>サウナ</h3>
+                    <p>ととのうスポットを探そう。</p>
+                </div>
+            </a>
+            <a href="running.html" class="card category-card">
+                <span class="category-icon">🏃</span>
+                <div class="category-info">
+                    <h3>ランニング</h3>
+                    <p>福岡の気持ちいいランニングコースを探そう。</p>
+                </div>
+            </a>
+        </div>
+    </section>
 
-    <a href="cafes.html" class="card">
-        <h2>☕ カフェ</h2>
-        <p>福岡のおしゃれなカフェを探そう。</p>
-    </a>
-    <a href="saunas.html" class="card">
-        <h2>♨ サウナ</h2>
-        <p>ととのうスポットを探そう。</p>
-    </a>
+    <section class="section top-ranking">
+        <h2>🏆 高評価スポット TOP3</h2>
+        <div id="top-rated-list" class="card-grid"></div>
+    </section>
 
-    <a href="running.html" class="card">
-        <h2>🏃 ランニング</h2>
-        <p>福岡の気持ちいいランニングコースを探そう。</p>
-    </a>
-
-</section>
+    <section class="section recent-reviews">
+        <h2>💬 新着の口コミ</h2>
+        <div id="recent-reviews-list" class="review-mini-list"></div>
+    </section>
 
 </main>
 
 <footer>
-
-<p>© 2026 Fukuoka Chill Map</p>
-    <img src="images/fukuoka-monuments-black.jpg" class="footer-monument-img">
+    <p id="copyright">© 2026 Fukuoka Chill Map</p>
+    <img src="images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
 </footer>
-
-</body>
-
-</html>
 
 <script src="js/utils.js"></script>
 <script src="js/script.js"></script>
+</body>
+
+</html>
