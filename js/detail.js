@@ -144,6 +144,71 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     setText("description", spot.description || "");
 
+
+    // --- SEO: スポットごとのtitle / description / canonical / OGP / JSON-LD ---
+    document.title = `${spot.name}（${spot.area}） | Fukuoka Chill Map`;
+
+    function setMeta(nameOrProp, content, isProperty = false) {
+        const attr = isProperty ? "property" : "name";
+        let el = document.querySelector(`meta[${attr}="${nameOrProp}"]`);
+        if (!el) {
+            el = document.createElement("meta");
+            el.setAttribute(attr, nameOrProp);
+            document.head.appendChild(el);
+        }
+        el.setAttribute("content", content);
+    }
+
+    const shortDesc = (spot.description || "").slice(0, 110);
+    const pageUrl = `${location.origin}${location.pathname}?name=${encodeURIComponent(spot.name)}&type=${spotType}`;
+    const imageUrl = new URL(spot.image, location.origin).href;
+
+    setMeta("description", shortDesc);
+    setMeta("og:type", "place", true);
+    setMeta("og:title", spot.name, true);
+    setMeta("og:description", shortDesc, true);
+    setMeta("og:image", imageUrl, true);
+    setMeta("og:url", pageUrl, true);
+    setMeta("twitter:card", "summary_large_image");
+
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+        canonicalTag = document.createElement("link");
+        canonicalTag.setAttribute("rel", "canonical");
+        document.head.appendChild(canonicalTag);
+    }
+    canonicalTag.setAttribute("href", pageUrl);
+
+    // 構造化データ（JSON-LD）：Googleにレビュー星などを認識させる
+    const schemaType = { cafe: "CafeOrCoffeeShop", sauna: "HealthClub", running: "TouristAttraction" }[spotType];
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": schemaType,
+        "name": spot.name,
+        "description": spot.description || "",
+        "image": imageUrl,
+        "url": pageUrl,
+    };
+
+    if (spot.address) {
+        jsonLd.address = { "@type": "PostalAddress", "streetAddress": spot.address };
+    }
+
+    if (spot.rating) {
+        jsonLd.aggregateRating = {
+            "@type": "AggregateRating",
+            "ratingValue": spot.rating,
+            "reviewCount": Math.max(1, (spot.reviews || []).length),
+        };
+    }
+
+    const ldScript = document.createElement("script");
+    ldScript.type = "application/ld+json";
+    ldScript.textContent = JSON.stringify(jsonLd);
+    document.head.appendChild(ldScript);
+
+    
     // Googleマップ
     const searchTarget = spot.address || spot.name;
     const encodedQuery = encodeURIComponent(searchTarget);

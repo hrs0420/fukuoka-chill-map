@@ -1,0 +1,47 @@
+// generate-sitemap.js
+// 実行方法: ターミナルで「node generate-sitemap.js」
+// data/*.json から自動でURLを拾ってsitemap.xmlを出力する
+
+const fs = require("fs");
+const path = require("path");
+
+const BASE_URL = "https://hrs0420.github.io/fukuoka-chill-map";
+
+const CATEGORIES = [
+  { type: "cafe", file: "data/cafes.json" },
+  { type: "sauna", file: "data/saunas.json" },
+  { type: "running", file: "data/running.json" },
+];
+
+const staticUrls = [
+  { loc: "/index.html", priority: "1.0", changefreq: "weekly" },
+  { loc: "/list.html?category=cafe", priority: "0.8", changefreq: "weekly" },
+  { loc: "/list.html?category=sauna", priority: "0.8", changefreq: "weekly" },
+  { loc: "/list.html?category=running", priority: "0.8", changefreq: "weekly" },
+];
+
+let urls = [...staticUrls];
+
+CATEGORIES.forEach(({ type, file }) => {
+  const data = JSON.parse(fs.readFileSync(path.join(__dirname, file), "utf-8"));
+  data.forEach(item => {
+    urls.push({
+      loc: `/detail.html?name=${encodeURIComponent(item.name)}&type=${type}`,
+      priority: "0.6",
+      changefreq: "monthly",
+    });
+  });
+});
+
+const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url>
+    <loc>${BASE_URL}${u.loc}</loc>
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join("\n")}
+</urlset>
+`;
+
+fs.writeFileSync(path.join(__dirname, "sitemap.xml"), xml);
+console.log(`sitemap.xml を生成しました（${urls.length}件のURL）`);

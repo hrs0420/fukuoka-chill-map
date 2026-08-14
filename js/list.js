@@ -30,6 +30,30 @@ async function init() {
 
     document.title = `${config.pageTitle} | Fukuoka Chill Map`;
     document.getElementById("page-title").textContent = config.pageTitle;
+    // --- SEO: カテゴリごとのtitle / description / canonical / OGP ---
+    function setMeta(nameOrProp, content, isProperty = false) {
+        const attr = isProperty ? "property" : "name";
+        let el = document.querySelector(`meta[${attr}="${nameOrProp}"]`);
+        if (!el) {
+            el = document.createElement("meta");
+            el.setAttribute(attr, nameOrProp);
+            document.head.appendChild(el);
+        }
+        el.setAttribute("content", content);
+    }
+
+    setMeta("description", `福岡の${config.pageTitle}。エリアや条件で絞り込んで検索できます。`);
+    setMeta("og:title", `${config.pageTitle} | Fukuoka Chill Map`, true);
+    setMeta("og:type", "website", true);
+
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+        canonicalTag = document.createElement("link");
+        canonicalTag.setAttribute("rel", "canonical");
+        document.head.appendChild(canonicalTag);
+    }
+    // 検索キーワードや並び替え条件はcanonicalに含めない（重複コンテンツ対策）
+    canonicalTag.setAttribute("href", `${location.origin}${location.pathname}?category=${category}`);
 
     allItems = await loadData(config.dataFile);
 
