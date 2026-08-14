@@ -20,8 +20,31 @@
 
 ## ディレクトリ構成
 
-![1786671711727](image/README/1786671711727.png)
-
+```
+fukuoka-chill-map/
+├── .vscode/
+├── css/
+│   └── style.css
+├── data/
+│   ├── cafes.json
+│   ├── running.json
+│   └── saunas.json
+├── images/            # 各スポット・ロゴ等の画像一式
+├── js/
+│   ├── categories.js
+│   ├── detail.js
+│   ├── favorites.js
+│   ├── list.js
+│   ├── script.js
+│   └── utils.js
+├── detail.html
+├── favorites.html
+├── index.html
+├── list.html
+├── README.md
+├── robots.txt
+└── sitemap.xml
+```
 
 ### カテゴリ管理の仕組み
 
@@ -34,6 +57,34 @@
 
 **表示項目を追加・変更したいときは `js/categories.js` を編集するだけでよく、
 `list.html` / `list.js` / `detail.html` を直接触る必要はない。**
+
+## SEO対策
+
+検索エンジン経由での流入を増やすため、以下の対策を実施している。
+
+- `robots.txt`（クロール許可設定 / お気に入りページは除外）
+- `sitemap.xml`（検索エンジンへのURL一覧の提供）
+- 各ページの `title` / `meta description` の個別最適化
+  - `index.html`：静的に設定
+  - `list.html`：`list.js` がカテゴリごとに動的に設定
+  - `detail.html`：`detail.js` がスポットごとに動的に設定
+- OGP / Twitter Card 設定（SNSシェア時のカード表示対応）
+- 構造化データ（JSON-LD）を `detail.html` に埋め込み（Googleにレビュー星評価等を認識させるため）
+- `favorites.html` は `noindex` 設定（ユーザーごとにlocalStorageで内容が異なるため、検索結果には出さない）
+- Google Search Console 登録・サイトマップ送信済み
+
+### スポット（カフェ・サウナ・ランニング）を追加した時の注意
+
+`cafes.json` / `saunas.json` / `running.json` にデータを追加しただけでは `sitemap.xml` は自動更新されない。
+新しいスポットの詳細ページURLを `sitemap.xml` に手動で1行追加すること。
+
+```xml
+<url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=スポット名&type=カテゴリ</loc><priority>0.6</priority></url>
+```
+
+- `name=` の部分はURLエンコードが必要（ブラウザで該当ページを開き、アドレスバーのURLをそのままコピーするのが確実）
+- XMLの仕様上 `&` は `&amp;` と書く必要がある
+- 追加頻度が増えてきたら、Node.jsでの自動生成スクリプト導入を検討する
 
 ## 今後追加予定
 
