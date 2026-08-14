@@ -5,6 +5,11 @@
  * 汎用エンジンです。cafe/sauna/running を名指しした分岐（if文など）は
  * このファイルには一切書きません。
  * 表示内容を変えたいときは categories.js の CATEGORY_CONFIG を編集してください。
+ *
+ * ★今回追加した部分★
+ * 検索・絞り込み・並び替えの状態をURLの ?q=...&area=...&sort=... に反映する。
+ * ページ読み込み時にはURLの値を初期状態として使うので、
+ * 「この条件で絞り込んだ状態のURL」をそのまま共有・ブックマークできる。
  */
 
 let allItems = [];   // 現在のカテゴリの全データ
@@ -35,30 +40,37 @@ async function init() {
     render();
 }
 
-// 検索ボックスを生成
+// 検索ボックスを生成（URLに ?q= があれば初期値として反映）
 function buildSearchBar() {
     const container = document.getElementById("search-container");
     container.innerHTML = `
         <input type="text" id="search" placeholder="${config.searchPlaceholder}">
     `;
-    document.getElementById("search").addEventListener("input", render);
+
+    const input = document.getElementById("search");
+    input.value = new URLSearchParams(window.location.search).get("q") || "";
+    input.addEventListener("input", render);
 }
 
-// チェックボックス・エリア選択・並び替えを生成
+// チェックボックス・エリア選択・並び替えを生成（URLの値があれば初期状態として反映）
 function buildFilterBar() {
     const container = document.getElementById("filter-container");
     container.innerHTML = "";
+
+    const urlParams = new URLSearchParams(window.location.search);
 
     // --- カテゴリ固有のチェックボックス（categories.js の filters から生成） ---
     config.filters.forEach(f => {
         const label = document.createElement("label");
         label.innerHTML = `<input type="checkbox" id="filter-${f.key}"> ${f.label}`;
         container.appendChild(label);
-        label.querySelector("input").addEventListener("change", render);
+
+        const checkbox = label.querySelector("input");
+        checkbox.checked = urlParams.get(f.key) === "1"; // URLに ?wifi=1 等があればON
+        checkbox.addEventListener("change", render);
     });
 
     // --- エリア選択（固定値を書かず、読み込んだデータから自動生成） ---
-    // ※ こうしておくと「JSONのエリア名とHTMLのvalueが一致しない」バグが原理的に起きなくなる
     const areas = [...new Set(allItems.map(item => item.area).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, "ja"));
 
@@ -71,7 +83,10 @@ function buildFilterBar() {
         </select>
     `;
     container.appendChild(areaLabel);
-    areaLabel.querySelector("select").addEventListener("change", render);
+
+    const areaSelect = areaLabel.querySelector("select");
+    areaSelect.value = urlParams.get("area") || ""; // 該当する選択肢が無ければ自動的に「すべて」のまま
+    areaSelect.addEventListener("change", render);
 
     // --- 並び替え（categories.js の sortOptions から生成） ---
     const sortLabel = document.createElement("label");
@@ -82,24 +97,27 @@ function buildFilterBar() {
         </select>
     `;
     container.appendChild(sortLabel);
-    sortLabel.querySelector("select").addEventListener("change", render);
+
+    const sortSelect = sortLabel.querySelector("select");
+    sortSelect.value = urlParams.get("sort") || config.sortOptions[0].value;
+    sortSelect.addEventListener("change", render);
 }
 
-// 検索・絞り込み・並び替え・描画をまとめて実行
+// 検索・絞り込み・並び替え・描画・URL同期をまとめて実行
 function render() {
+    updateURL(); // ← 今のフォームの状態をURLに書き戻す
+
     const keyword = (document.getElementById("search")?.value || "").toLowerCase().trim();
     const areaValue = document.getElementById("area")?.value || "";
     const sortValue = document.getElementById("sort")?.value || config.sortOptions[0].value;
 
     const filtered = allItems.filter(item => {
-        // 検索：categories.js の searchFields に列挙されたプロパティを対象に部分一致
         const matchesKeyword = config.searchFields.some(fieldKey =>
             String(item[fieldKey] || "").toLowerCase().includes(keyword)
         );
 
         const matchesArea = !areaValue || item.area === areaValue;
 
-        // チェックボックス：categories.js の filters に列挙された項目をすべて満たすか
         const matchesFilters = config.filters.every(f => {
             const checkbox = document.getElementById(`filter-${f.key}`);
             return !checkbox.checked || item[f.key] === true;
@@ -111,6 +129,29 @@ function render() {
     filtered.sort((a, b) => sortCompare(a, b, sortValue));
 
     displayList(filtered);
+}
+
+// 現在のフォームの状態を読み取り、URLの ?q=...&area=...&sort=... に反映する
+function updateURL() {
+    const params = new URLSearchParams(window.location.search);
+    // category はそのまま維持する（この関数では触らない）
+
+    const keyword = document.getElementById("search")?.value || "";
+    const areaValue = document.getElementById("area")?.value || "";
+    const sortValue = document.getElementById("sort")?.value || "";
+
+    // 値が空ならURLからパラメータごと消す（?q=&area=のように空で残さないため）
+    keyword ? params.set("q", keyword) : params.delete("q");
+    areaValue ? params.set("area", areaValue) : params.delete("area");
+    sortValue ? params.set("sort", sortValue) : params.delete("sort");
+
+    config.filters.forEach(f => {
+        const checked = document.getElementById(`filter-${f.key}`)?.checked;
+        checked ? params.set(f.key, "1") : params.delete(f.key);
+    });
+
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    history.replaceState(null, "", newUrl); // ページ再読み込みなしでURLだけ書き換える
 }
 
 // 並び替え比較関数（sortOptionsのvalueに応じて分岐。カテゴリ名では分岐しない）
@@ -144,7 +185,6 @@ function displayList(items) {
     const favorites = JSON.parse(localStorage.getItem(config.storageKey)) || [];
 
     items.forEach(item => {
-        // cardTags が定義されているカテゴリ（今はランニングだけ）だけタグ行を追加
         const tagsLine = config.cardTags
             ? `<p><small style="color: #666;">${config.cardTags(item)}</small></p>`
             : "";

@@ -192,7 +192,12 @@ function initReviews(spotName, jsonReviews) {
                 comment: r.comment || r.text || "",
                 date: "投稿済み",
             })) : []),
-            ...localReviews,
+            ...localReviews.map(r => ({
+                name: r.name || r.author || "匿名",
+                score: parseInt(r.score || r.rating) || 5,
+                comment: r.comment || r.text || "",
+                date: r.date || "",
+            })),
         ];
 
         if (!commentsList) return;
