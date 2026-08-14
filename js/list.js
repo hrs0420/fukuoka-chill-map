@@ -6,10 +6,9 @@
  * このファイルには一切書きません。
  * 表示内容を変えたいときは categories.js の CATEGORY_CONFIG を編集してください。
  *
+ * 検索・絞り込み・並び替えの状態はURLの ?q=...&area=...&sort=... に反映される。
  * ★今回追加した部分★
- * 検索・絞り込み・並び替えの状態をURLの ?q=...&area=...&sort=... に反映する。
- * ページ読み込み時にはURLの値を初期状態として使うので、
- * 「この条件で絞り込んだ状態のURL」をそのまま共有・ブックマークできる。
+ * 検索欄に入力すると、名前が部分一致するスポットを候補として下に表示する（オートコンプリート）。
  */
 
 let allItems = [];   // 現在のカテゴリの全データ
@@ -24,7 +23,6 @@ async function init() {
     config = CATEGORY_CONFIG[category];
 
     if (!config) {
-        // ?category= が無い、または存在しないカテゴリ名だった場合
         alert("ページが見つかりません。");
         window.location.href = "index.html";
         return;
@@ -40,16 +38,88 @@ async function init() {
     render();
 }
 
-// 検索ボックスを生成（URLに ?q= があれば初期値として反映）
+// 検索ボックス＋候補リストを生成
 function buildSearchBar() {
     const container = document.getElementById("search-container");
     container.innerHTML = `
-        <input type="text" id="search" placeholder="${config.searchPlaceholder}">
+        <div class="search-wrapper">
+            <input type="text" id="search" placeholder="${config.searchPlaceholder}" autocomplete="off">
+            <ul id="search-suggestions" class="search-suggestions hidden"></ul>
+        </div>
     `;
 
     const input = document.getElementById("search");
     input.value = new URLSearchParams(window.location.search).get("q") || "";
-    input.addEventListener("input", render);
+
+    input.addEventListener("input", () => {
+        renderSuggestions(input.value);
+        render();
+    });
+
+    // 入力欄にフォーカスした時点で、既に入力済みの文字があれば候補を出す
+    input.addEventListener("focus", () => {
+        renderSuggestions(input.value);
+    });
+
+    // Escapeキーで候補を閉じる
+    input.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") hideSuggestions();
+    });
+
+    // 候補リストの外側をクリックしたら閉じる
+    document.addEventListener("click", (e) => {
+        const wrapper = document.querySelector(".search-wrapper");
+        if (wrapper && !wrapper.contains(e.target)) {
+            hideSuggestions();
+        }
+    });
+}
+
+// 検索候補を描画する
+function renderSuggestions(keyword) {
+    const ul = document.getElementById("search-suggestions");
+    if (!ul) return;
+
+    const trimmed = keyword.trim().toLowerCase();
+    if (!trimmed) {
+        hideSuggestions();
+        return;
+    }
+
+    const matches = allItems
+        .filter(item => item.name.toLowerCase().includes(trimmed))
+        .slice(0, 6); // 候補は多すぎても邪魔なので最大6件
+
+    if (matches.length === 0) {
+        hideSuggestions();
+        return;
+    }
+
+    ul.innerHTML = matches
+        .map(item => `<li data-name="${item.name.replace(/"/g, "&quot;")}">${item.name}</li>`)
+        .join("");
+    ul.classList.remove("hidden");
+
+    ul.querySelectorAll("li").forEach(li => {
+        // click ではなく mousedown を使う理由：
+        // input の blur（フォーカス外れ）が click より先に発火して候補が消えてしまい、
+        // クリックが空振りする問題を避けるため
+        li.addEventListener("mousedown", (e) => {
+            e.preventDefault();
+            const input = document.getElementById("search");
+            input.value = li.dataset.name;
+            hideSuggestions();
+            render();
+        });
+    });
+}
+
+function hideSuggestions() {
+    const ul = document.getElementById("search-suggestions");
+    if (ul) {
+        ul.classList.add("hidden");
+        ul.innerHTML = "";
+    }
 }
 
 // チェックボックス・エリア選択・並び替えを生成（URLの値があれば初期状態として反映）
@@ -59,18 +129,16 @@ function buildFilterBar() {
 
     const urlParams = new URLSearchParams(window.location.search);
 
-    // --- カテゴリ固有のチェックボックス（categories.js の filters から生成） ---
     config.filters.forEach(f => {
         const label = document.createElement("label");
         label.innerHTML = `<input type="checkbox" id="filter-${f.key}"> ${f.label}`;
         container.appendChild(label);
 
         const checkbox = label.querySelector("input");
-        checkbox.checked = urlParams.get(f.key) === "1"; // URLに ?wifi=1 等があればON
+        checkbox.checked = urlParams.get(f.key) === "1";
         checkbox.addEventListener("change", render);
     });
 
-    // --- エリア選択（固定値を書かず、読み込んだデータから自動生成） ---
     const areas = [...new Set(allItems.map(item => item.area).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, "ja"));
 
@@ -85,10 +153,9 @@ function buildFilterBar() {
     container.appendChild(areaLabel);
 
     const areaSelect = areaLabel.querySelector("select");
-    areaSelect.value = urlParams.get("area") || ""; // 該当する選択肢が無ければ自動的に「すべて」のまま
+    areaSelect.value = urlParams.get("area") || "";
     areaSelect.addEventListener("change", render);
 
-    // --- 並び替え（categories.js の sortOptions から生成） ---
     const sortLabel = document.createElement("label");
     sortLabel.innerHTML = `
         並び替え
@@ -105,7 +172,7 @@ function buildFilterBar() {
 
 // 検索・絞り込み・並び替え・描画・URL同期をまとめて実行
 function render() {
-    updateURL(); // ← 今のフォームの状態をURLに書き戻す
+    updateURL();
 
     const keyword = (document.getElementById("search")?.value || "").toLowerCase().trim();
     const areaValue = document.getElementById("area")?.value || "";
@@ -131,16 +198,13 @@ function render() {
     displayList(filtered);
 }
 
-// 現在のフォームの状態を読み取り、URLの ?q=...&area=...&sort=... に反映する
 function updateURL() {
     const params = new URLSearchParams(window.location.search);
-    // category はそのまま維持する（この関数では触らない）
 
     const keyword = document.getElementById("search")?.value || "";
     const areaValue = document.getElementById("area")?.value || "";
     const sortValue = document.getElementById("sort")?.value || "";
 
-    // 値が空ならURLからパラメータごと消す（?q=&area=のように空で残さないため）
     keyword ? params.set("q", keyword) : params.delete("q");
     areaValue ? params.set("area", areaValue) : params.delete("area");
     sortValue ? params.set("sort", sortValue) : params.delete("sort");
@@ -151,10 +215,9 @@ function updateURL() {
     });
 
     const newUrl = `${window.location.pathname}?${params.toString()}`;
-    history.replaceState(null, "", newUrl); // ページ再読み込みなしでURLだけ書き換える
+    history.replaceState(null, "", newUrl);
 }
 
-// 並び替え比較関数（sortOptionsのvalueに応じて分岐。カテゴリ名では分岐しない）
 function sortCompare(a, b, sortValue) {
     switch (sortValue) {
         case "rating-desc":
@@ -172,7 +235,6 @@ function sortCompare(a, b, sortValue) {
     }
 }
 
-// カード一覧を描画
 function displayList(items) {
     const grid = document.getElementById("list-grid");
     grid.innerHTML = "";
@@ -209,7 +271,6 @@ function displayList(items) {
     });
 }
 
-// お気に入りハートのクリック処理（カテゴリ共通）
 document.addEventListener("click", (e) => {
     if (!e.target.classList.contains("favorite") || !config) return;
     e.preventDefault();

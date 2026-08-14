@@ -185,20 +185,24 @@ function initReviews(spotName, jsonReviews) {
     function renderReviews() {
         const localReviews = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-        const allReviews = [
-            ...(Array.isArray(jsonReviews) ? jsonReviews.map(r => ({
-                name: r.author || r.name || "匿名",
-                score: parseInt(r.score || r.rating) || 5,
-                comment: r.comment || r.text || "",
-                date: "投稿済み",
-            })) : []),
-            ...localReviews.map(r => ({
-                name: r.name || r.author || "匿名",
-                score: parseInt(r.score || r.rating) || 5,
-                comment: r.comment || r.text || "",
-                date: r.date || "",
-            })),
-        ];
+        const fromJson = Array.isArray(jsonReviews) ? jsonReviews.map(r => ({
+            name: r.author || r.name || "匿名",
+            score: parseInt(r.score || r.rating) || 5,
+            comment: r.comment || r.text || "",
+            date: "投稿済み",
+            isLocal: false,       // JSON由来＝削除不可
+        })) : [];
+
+        const fromLocal = localReviews.map((r, index) => ({
+            name: r.name || r.author || "匿名",
+            score: parseInt(r.score || r.rating) || 5,
+            comment: r.comment || r.text || "",
+            date: r.date || "",
+            isLocal: true,        // localStorage由来＝削除可能
+            localIndex: index,    // 削除する時にこのindexで特定する
+        }));
+
+        const allReviews = [...fromJson, ...fromLocal];
 
         if (!commentsList) return;
         commentsList.innerHTML = "";
@@ -218,11 +222,18 @@ function initReviews(spotName, jsonReviews) {
 
         [...allReviews].reverse().forEach(r => {
             const stars = "★".repeat(r.score) + "☆".repeat(Math.max(0, 5 - r.score));
+
+            // 削除ボタンはlocalStorage由来の口コミにだけ付ける
+            // 表示のON/OFF自体はCSSの body.admin-mode .delete-btn が担当する
+            const deleteBtn = r.isLocal
+                ? `<button class="delete-btn" data-index="${r.localIndex}">削除</button>`
+                : "";
+
             commentsList.innerHTML += `
                 <div class="comment-card">
                     <div class="comment-header">
                         <span class="comment-author">${escapeHTML(r.name)}</span>
-                        <span class="comment-score">${stars}</span>
+                        <span class="comment-score">${stars}${deleteBtn}</span>
                     </div>
                     <p class="comment-text">${escapeHTML(r.comment)}</p>
                     ${r.date ? `<div class="comment-date">${escapeHTML(r.date)}</div>` : ""}
@@ -259,6 +270,24 @@ function initReviews(spotName, jsonReviews) {
             const modal = document.getElementById("custom-modal");
             if (modal) modal.classList.add("active");
         };
+    }
+
+    // 削除ボタンのクリック処理（イベント委譲：後から追加される要素にも効く）
+    if (commentsList) {
+        commentsList.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("delete-btn")) return;
+
+            const index = parseInt(e.target.dataset.index);
+            if (isNaN(index)) return;
+
+            if (!confirm("この口コミを削除しますか？")) return;
+
+            const localReviews = JSON.parse(localStorage.getItem(storageKey)) || [];
+            localReviews.splice(index, 1); // 該当の1件だけ取り除く
+            localStorage.setItem(storageKey, JSON.stringify(localReviews));
+
+            renderReviews();
+        });
     }
 
     renderReviews();

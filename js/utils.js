@@ -37,3 +37,50 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+// --- 管理者モード（©マークを5回クリック→パスワードで切り替え） ---
+(function () {
+    const ADMIN_PASSWORD = "20000420"; // ★好きなパスワードに変更してください
+
+    let clickCount = 0;
+    let clickTimer = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // ページを開いた時点で既に管理者モードが有効なら復元する
+        if (sessionStorage.getItem("adminMode") === "true") {
+            document.body.classList.add("admin-mode");
+        }
+
+        const copyright = document.getElementById("copyright");
+        if (!copyright) return;
+
+        copyright.addEventListener("click", () => {
+            clickCount++;
+
+            // 2秒以内に5回クリックしないとカウントをリセット
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+
+            if (clickCount >= 5) {
+                clickCount = 0;
+
+                if (document.body.classList.contains("admin-mode")) {
+                    // 既にONならパスワード無しでOFFに戻す
+                    document.body.classList.remove("admin-mode");
+                    sessionStorage.removeItem("adminMode");
+                    alert("管理者モードを解除しました。");
+                    return;
+                }
+
+                const input = prompt("管理者パスワードを入力してください：");
+                if (input === ADMIN_PASSWORD) {
+                    document.body.classList.add("admin-mode");
+                    sessionStorage.setItem("adminMode", "true");
+                    alert("管理者モードに変更しました。");
+                } else if (input !== null) {
+                    // キャンセルではなく、間違ったパスワードを入力した場合だけ警告
+                    alert("パスワードが違います。");
+                }
+            }
+        });
+    });
+})();
