@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>お気に入り一覧 | Fukuoka Chill Map</title>
+    <title id="page-title-tag">一覧 | Fukuoka Chill Map</title>
     <link rel="icon" href="images/Fukuoka-monuments.jpg" type="image/jpeg">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+
 <header>
     <div class="header-container">
         <a href="index.html">
             <img src="images/fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
         </a>
-        <h1>❤️ お気に入り一覧</h1>
+        <!-- カテゴリ名（☕カフェ一覧 など）は list.js が categories.js の設定から差し込む -->
+        <h1 id="page-title"></h1>
+
         <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く">
             <span></span>
             <span></span>
@@ -29,37 +33,23 @@
         <a href="favorites.html" class="nav-link">❤️ お気に入り</a>
     </nav>
 </header>
-<main class="container">
-    <section>
-        <h2>☕ カフェ</h2>
-        <div id="favorite-cafe" class="card-grid"></div>
-    </section>
 
-    <section>
-        <h2>♨ サウナ</h2>
-        <div id="favorite-sauna" class="card-grid"></div>
-    </section>
+<!-- 検索欄・チェックボックス・エリア・並び替えは、すべて list.js が動的に生成する -->
+<div class="search-container" id="search-container"></div>
+<div class="filter-container" id="filter-container"></div>
 
-    <section>
-        <h2>🏃 ランニングスポット</h2>
-        <div id="favorite-running" class="card-grid"></div>
-    </section>
+<main class="card-grid" id="list-grid"></main>
 
-</main>
-
-<p style="text-align: center; margin-top: 30px;">
-    <a href="index.html">←トップへ戻る</a>
+<p style="text-align: center;">
+    <a href="index.html">← トップへ戻る</a>
 </p>
 
 <script src="js/utils.js"></script>
 <script src="js/categories.js"></script>
-<script src="js/favorites.js"></script>
-
-
+<script src="js/list.js"></script>
 
 <footer>
-
-<p>© 2026 Fukuoka Chill Map</p>
+    <p>© 2026 Fukuoka Chill Map</p>
     <img src="images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
 </footer>
 

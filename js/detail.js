@@ -39,11 +39,10 @@ const FIELD_CONFIG = {
 };
 
 // カテゴリ名 → JSONファイル名
-const DATA_FILES = {
-    cafe: "cafes.json",
-    sauna: "saunas.json",
-    running: "running.json",
-};
+// ※ categories.js の CATEGORY_CONFIG から生成する（ファイル名をここで二重に持たない）
+const DATA_FILES = Object.fromEntries(
+    Object.entries(CATEGORY_CONFIG).map(([key, cfg]) => [key, cfg.dataFile])
+);
 
 document.addEventListener("DOMContentLoaded", async () => {
     const params = new URLSearchParams(window.location.search);

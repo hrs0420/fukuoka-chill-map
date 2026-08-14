@@ -1,6 +1,11 @@
+/*
+ * トップページ（index.html）専用のスクリプト。
+ * カフェ・サウナ・ランニングの一覧絞り込みロジックは list.js に統合したため、
+ * ここには「高評価TOP3」と「新着口コミ」の表示だけが残っている。
+ */
+
 let cafes = [];
 
-// --- データの読み込み & 初期表示 ---
 async function init() {
     try {
         const response = await fetch("data/cafes.json");
@@ -11,29 +16,11 @@ async function init() {
         console.error("カフェデータの読み込みエラー:", error);
     }
 
-    // データの読み込み成否に関わらず各描画処理を実行
     displayTopRanking();
     displayRecentReviews();
-    filterCafes();
-    setupEventListeners();
 }
 
-// ページ読み込み完了時に実行
 document.addEventListener("DOMContentLoaded", init);
-
-
-// --- イベントリスナーの一括設定 ---
-function setupEventListeners() {
-    const searchInput = document.getElementById("search");
-    const wifiCheck = document.getElementById("wifi");
-    const outletCheck = document.getElementById("outlet");
-    const areaSelect = document.getElementById("area");
-
-    if (searchInput) searchInput.addEventListener("input", filterCafes);
-    if (wifiCheck) wifiCheck.addEventListener("change", filterCafes);
-    if (outletCheck) outletCheck.addEventListener("change", filterCafes);
-    if (areaSelect) areaSelect.addEventListener("change", filterCafes);
-}
 
 
 // --- トップページ：高評価 TOP3 の描画 ---
@@ -46,7 +33,6 @@ function displayTopRanking() {
         return;
     }
 
-    // 評価（rating）が高い順にソートしてTOP3を取得
     const top3 = [...cafes]
         .sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0))
         .slice(0, 3);
@@ -74,16 +60,13 @@ function displayTopRanking() {
 }
 
 
-// --- トップページ：新着口コミの描画 ---
-// --- トップページ：新着口コミの描画（実際のデータのみ） ---
-// --- トップページ：新着口コミの描画（詳細ページの投稿データを自動全取得） ---
+// --- トップページ：新着口コミの描画（detail.jsでLocalStorageに保存された口コミを自動収集） ---
 function displayRecentReviews() {
     const recentContainer = document.getElementById("recent-reviews-list");
     if (!recentContainer) return;
 
     let allReviews = [];
 
-    // 1. JSONから元々の口コミを集める（もしあれば）
     cafes.forEach(cafe => {
         if (cafe.reviews && Array.isArray(cafe.reviews)) {
             cafe.reviews.forEach(r => {
@@ -97,13 +80,10 @@ function displayRecentReviews() {
         }
     });
 
-    // 2. detail.js で LocalStorage に保存された店舗別口コミ（`comments_店舗名`）をすべて検索して取得
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        
-        // "comments_" または "reviews_" で始まるキーを探す
+
         if (key && (key.startsWith("comments_") || key.startsWith("reviews_"))) {
-            // キー名からスポット名を取り出す（例: "comments_BASKING COFFEE ropponmatsu" -> "BASKING COFFEE ropponmatsu"）
             const spotName = key.replace(/^(comments_|reviews_)/, "");
             const savedReviews = JSON.parse(localStorage.getItem(key)) || [];
 
@@ -120,7 +100,6 @@ function displayRecentReviews() {
         }
     }
 
-    // 3. 単体キー (user_reviews) がある場合も念のため合体
     const userReviews = JSON.parse(localStorage.getItem("user_reviews")) || [];
     if (Array.isArray(userReviews)) {
         userReviews.forEach(r => {
@@ -135,13 +114,11 @@ function displayRecentReviews() {
 
     recentContainer.innerHTML = "";
 
-    // 口コミが全くない場合
     if (allReviews.length === 0) {
         recentContainer.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888;'>まだ口コミが投稿されていません。</p>";
         return;
     }
 
-    // 最新の口コミ（配列の後ろにあるもの）から最大4件を取り出して表示
     const recent4 = allReviews.reverse().slice(0, 4);
 
     recent4.forEach(review => {
@@ -157,70 +134,8 @@ function displayRecentReviews() {
     });
 }
 
-// --- カフェ一覧：絞り込み & 描画処理 ---
-function filterCafes() {
-    const list = document.getElementById("cafe-list");
-    if (!list) return;
 
-    const searchInput = document.getElementById("search");
-    const wifiCheck = document.getElementById("wifi");
-    const outletCheck = document.getElementById("outlet");
-    const areaSelect = document.getElementById("area");
-
-    const keyword = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    const isWifiOnly = wifiCheck ? wifiCheck.checked : false;
-    const isOutletOnly = outletCheck ? outletCheck.checked : false;
-    const selectedArea = areaSelect ? areaSelect.value : "";
-
-    const filteredCafes = cafes.filter(cafe => {
-        const matchesKeyword = cafe.name.toLowerCase().includes(keyword) || 
-                               (cafe.description && cafe.description.toLowerCase().includes(keyword));
-        const matchesWifi = !isWifiOnly || cafe.wifi === true;
-        const matchesOutlet = !isOutletOnly || cafe.outlet === true;
-        const matchesArea = !selectedArea || cafe.area === selectedArea;
-
-        return matchesKeyword && matchesWifi && matchesOutlet && matchesArea;
-    });
-
-    displayCafes(filteredCafes);
-}
-
-
-// --- カフェカードのレンダリング ---
-function displayCafes(cafeList) {
-    const list = document.getElementById("cafe-list");
-    if (!list) return;
-
-    list.innerHTML = "";
-
-    if (cafeList.length === 0) {
-        list.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888;'>条件に合うカフェが見つかりませんでした。</p>";
-        return;
-    }
-
-    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-
-    cafeList.forEach(cafe => {
-        const isFav = favorites.includes(cafe.name);
-        const heartIcon = isFav ? "❤️" : "🤍";
-
-        list.innerHTML += `
-            <div class="card">
-                <span class="favorite" data-name="${escapeHTML(cafe.name)}">${heartIcon}</span>
-                <a href="detail.html?name=${encodeURIComponent(cafe.name)}&type=cafe" class="card-link">
-                    <img src="${cafe.image || 'images/default.jpg'}" alt="${escapeHTML(cafe.name)}" class="cafe-image">
-                    <h3>${escapeHTML(cafe.name)}</h3>
-                    <p>📍 ${escapeHTML(cafe.area || '福岡')}</p>
-                    <p>⭐ ${cafe.rating || '0.0'}</p>
-                    <p style="font-size: 13px; color: #666;">${escapeHTML(cafe.description || '')}</p>
-                </a>
-            </div>
-        `;
-    });
-}
-
-
-// --- いいね（お気に入り）クリックイベント ---
+// --- いいね（お気に入り）クリックイベント：トップページの高評価TOP3用 ---
 document.addEventListener("click", (e) => {
     if (!e.target.classList.contains("favorite")) return;
 

@@ -1,55 +1,30 @@
-// 各表示エリアの要素取得
-const cafeList = document.getElementById("favorite-cafes");
-const saunaList = document.getElementById("favorite-saunas");
-const runningList = document.getElementById("favorite-running");
+/*
+ * お気に入り一覧ページ。
+ * list.js と同じ categories.js の設定（CATEGORY_CONFIG）を再利用することで、
+ * データファイル名・お気に入りキー名などの二重管理をなくしている。
+ */
+
+document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-    try {
-        // 全データの読み込み
-        const cafes = await loadData("cafes.json");
-        const saunas = await loadData("saunas.json");
-        const runningSpots = await loadData("running.json");
+    // CATEGORY_CONFIG に定義された cafe / sauna / running を順番に処理
+    for (const [categoryKey, categoryConfig] of Object.entries(CATEGORY_CONFIG)) {
+        const container = document.getElementById(`favorite-${categoryKey}`);
+        if (!container) continue; // このページに該当セクションが無ければスキップ
 
-        // ローカルストレージからお気に入りリストを取得
-        const favCafes = JSON.parse(localStorage.getItem("favorites")) || [];
-        const favSaunas = JSON.parse(localStorage.getItem("saunaFavorites")) || [];
-        const favRunning = JSON.parse(localStorage.getItem("runningFavorites")) || [];
-
-        // フィルタリングして表示 (カテゴリタイプを渡す)
-        displayFavorites(cafeList, cafes, favCafes, "favorites", "cafe");
-        displayFavorites(saunaList, saunas, favSaunas, "saunaFavorites", "sauna");
-        displayFavorites(runningList, runningSpots, favRunning, "runningFavorites", "running");
-    } catch (error) {
-        console.error("データの読み込みに失敗しました:", error);
+        try {
+            const allData = await loadData(categoryConfig.dataFile);
+            const favoriteNames = JSON.parse(localStorage.getItem(categoryConfig.storageKey)) || [];
+            renderFavorites(container, allData, favoriteNames, categoryConfig);
+        } catch (error) {
+            console.error(`${categoryKey} の読み込みに失敗しました:`, error);
+            container.innerHTML = "<p style='color: #888;'>データを読み込めませんでした。</p>";
+        }
     }
 }
 
-// お気に入り解除のクリックイベント
-document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("favorite")) {
-        e.preventDefault();
-        const name = e.target.dataset.name;
-        const storageKey = e.target.dataset.key;
-
-        let favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
-        favorites = favorites.filter(favName => favName !== name);
-        localStorage.setItem(storageKey, JSON.stringify(favorites));
-
-        // 画面を再読み込みしてお気に入りを更新
-        init();
-    }
-});
-
-// お気に入りカードを描画する関数
-function displayFavorites(container, allData, favoriteNames, storageKey, type) {
-    if (!container) return;
-    
+function renderFavorites(container, allData, favoriteNames, categoryConfig) {
     container.innerHTML = "";
-
-    if (!allData || !Array.isArray(allData)) {
-        container.innerHTML = "<p style='color: #888;'>データを読み込めませんでした。</p>";
-        return;
-    }
 
     const filteredData = allData.filter(item => favoriteNames.includes(item.name));
 
@@ -59,9 +34,8 @@ function displayFavorites(container, allData, favoriteNames, storageKey, type) {
     }
 
     filteredData.forEach(item => {
-        // ★ type パラメータを追加
         container.innerHTML += `
-        <a href="detail.html?name=${encodeURIComponent(item.name)}&type=${type}" class="card-link">
+        <a href="detail.html?name=${encodeURIComponent(item.name)}&type=${categoryConfig.type}" class="card-link">
             <div class="card">
                 <img src="${item.image}" alt="${item.name}" class="cafe-image">
                 <h2>
@@ -69,7 +43,7 @@ function displayFavorites(container, allData, favoriteNames, storageKey, type) {
                     <span 
                         class="favorite" 
                         data-name="${item.name}"
-                        data-key="${storageKey}">
+                        data-key="${categoryConfig.storageKey}">
                         ❤️
                     </span>
                 </h2>
@@ -82,5 +56,18 @@ function displayFavorites(container, allData, favoriteNames, storageKey, type) {
     });
 }
 
-// 初期化実行
-init();
+// お気に入り解除のクリックイベント
+document.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("favorite")) return;
+    e.preventDefault();
+
+    const name = e.target.dataset.name;
+    const storageKey = e.target.dataset.key;
+
+    let favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
+    favorites = favorites.filter(favName => favName !== name);
+    localStorage.setItem(storageKey, JSON.stringify(favorites));
+
+    // 画面を再読み込みしてお気に入りを更新
+    init();
+});
