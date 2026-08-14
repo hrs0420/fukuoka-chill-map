@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /favorites.html
+
+Sitemap: https://hrs0420.github.io/fukuoka-chill-map/sitemap.xml
