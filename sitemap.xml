@@ -1,47 +1,35 @@
-// generate-sitemap.js
-// 実行方法: ターミナルで「node generate-sitemap.js」
-// data/*.json から自動でURLを拾ってsitemap.xmlを出力する
-
-const fs = require("fs");
-const path = require("path");
-
-const BASE_URL = "https://hrs0420.github.io/fukuoka-chill-map";
-
-const CATEGORIES = [
-  { type: "cafe", file: "data/cafes.json" },
-  { type: "sauna", file: "data/saunas.json" },
-  { type: "running", file: "data/running.json" },
-];
-
-const staticUrls = [
-  { loc: "/index.html", priority: "1.0", changefreq: "weekly" },
-  { loc: "/list.html?category=cafe", priority: "0.8", changefreq: "weekly" },
-  { loc: "/list.html?category=sauna", priority: "0.8", changefreq: "weekly" },
-  { loc: "/list.html?category=running", priority: "0.8", changefreq: "weekly" },
-];
-
-let urls = [...staticUrls];
-
-CATEGORIES.forEach(({ type, file }) => {
-  const data = JSON.parse(fs.readFileSync(path.join(__dirname, file), "utf-8"));
-  data.forEach(item => {
-    urls.push({
-      loc: `/detail.html?name=${encodeURIComponent(item.name)}&type=${type}`,
-      priority: "0.6",
-      changefreq: "monthly",
-    });
-  });
-});
-
-const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `  <url>
-    <loc>${BASE_URL}${u.loc}</loc>
-    <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority}</priority>
-  </url>`).join("\n")}
-</urlset>
-`;
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/index.html</loc><priority>1.0</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=cafe</loc><priority>0.8</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=sauna</loc><priority>0.8</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=running</loc><priority>0.8</priority></url>
 
-fs.writeFileSync(path.join(__dirname, "sitemap.xml"), xml);
-console.log(`sitemap.xml を生成しました（${urls.length}件のURL）`);
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=REC%20COFFEE%E5%8D%9A%E5%A4%9A&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=FUK%20COFFEE&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=manu%20coffee%E5%A4%A7%E5%90%8D%E5%BA%97&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=unplugged%20COFFEE%20STAND%20fukuoka&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=Basking%20Coffee%20ropponmatsu&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E7%8F%88%E7%90%A0%20%E7%BE%8E%E7%BE%8E&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E3%83%95%E3%82%B0%E3%83%AC%E3%83%B3&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E3%81%9D%E3%81%B5%E7%8F%88%E7%90%A0&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=SCHOOL%20BUS%20COFFEE%20STOP%20FUKUOKA&amp;type=cafe</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=Cafe%2B82&amp;type=cafe</loc><priority>0.6</priority></url>
+
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E3%82%A6%E3%82%A7%E3%83%AB%E3%83%93%E3%83%BC%E7%A6%8F%E5%B2%A1&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E5%A4%A9%E6%8B%9D%E3%81%AE%E9%83%B7&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=SHIAGARU%20SAUNA%E7%A6%8F%E5%B2%A1%E5%A4%A9%E7%A5%9E&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E3%82%B5%E3%82%A6%E3%83%8A%E3%83%A8%E3%83%BC%E3%82%AC%E3%83%B3%E7%A6%8F%E5%B2%A1%E5%A4%A9%E7%A5%9E&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E3%83%92%E3%83%8A%E3%82%BF%E3%81%AE%E6%9D%9C&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E4%BC%8A%E9%83%BD%E3%81%AE%E6%B9%AF%E3%81%A9%E3%81%93%E3%82%8D&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E6%B8%B8%E5%BF%83%E3%81%AE%E6%B9%AF&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E7%85%A7%E8%91%89%E3%82%B9%E3%83%91%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88%20%E6%9C%AC%E5%BA%97&amp;type=sauna</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=FURO%20%26%20SAUNA%20THE%20VANISH&amp;type=sauna</loc><priority>0.6</priority></url>
+
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E5%A4%A7%E6%BF%A0%E5%85%AC%E5%9C%92%E5%91%A8%E5%9B%9E%E3%82%B3%E3%83%BC%E3%82%B9&amp;type=running</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E3%82%B7%E3%83%BC%E3%82%B5%E3%82%A4%E3%83%89%E3%82%82%E3%82%82%E3%81%A1%E3%82%B3%E3%83%BC%E3%82%B9&amp;type=running</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E8%A5%BF%E5%85%AC%E5%9C%92%E3%82%B3%E3%83%BC%E3%82%B9&amp;type=running</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E5%AE%A4%E8%A6%8B%E5%B7%9D%E3%82%B3%E3%83%BC%E3%82%B9&amp;type=running</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E7%A6%8F%E5%B2%A1%E7%A9%BA%E6%B8%AF%E3%82%B3%E3%83%BC%E3%82%B9&amp;type=running</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=%E5%BF%97%E8%B3%80%E5%B3%B6%E3%82%B3%E3%83%BC%E3%82%B9&amp;type=running</loc><priority>0.6</priority></url>
+</urlset>
