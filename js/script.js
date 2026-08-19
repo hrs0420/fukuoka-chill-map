@@ -46,14 +46,18 @@ function displayTopRanking() {
 
         topListContainer.innerHTML += `
             <div class="card">
-                <span class="favorite" data-name="${escapeHTML(cafe.name)}">${heartIcon}</span>
                 <a href="detail.html?name=${encodeURIComponent(cafe.name)}&type=cafe" class="card-link">
-                    <img src="${cafe.image || 'images/default.jpg'}" alt="${escapeHTML(cafe.name)}" class="cafe-image">
-                    <h3>${escapeHTML(cafe.name)}</h3>
-                    <p>📍 ${escapeHTML(cafe.area || '福岡')}</p>
-                    <p>⭐ ${cafe.rating || '0.0'}</p>
-                    <p style="font-size: 13px; color: #666;">${escapeHTML(cafe.description || '')}</p>
+                    <div class="card-media">
+                        <img src="${cafe.image || 'images/default.jpg'}" alt="${escapeHTML(cafe.name)}" class="cafe-image">
+                        <span class="rating-badge">⭐ ${cafe.rating || '0.0'}</span>
+                    </div>
+                    <div class="card-body">
+                        <h3>${escapeHTML(cafe.name)}</h3>
+                        <p class="card-area">📍 ${escapeHTML(cafe.area || '福岡')}</p>
+                        <p class="card-desc">${escapeHTML(cafe.description || '')}</p>
+                    </div>
                 </a>
+                <span class="favorite" data-name="${escapeHTML(cafe.name)}">${heartIcon}</span>
             </div>
         `;
     });

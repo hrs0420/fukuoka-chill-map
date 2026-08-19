@@ -271,24 +271,26 @@ function displayList(items) {
     const favorites = JSON.parse(localStorage.getItem(config.storageKey)) || [];
 
     items.forEach(item => {
-        const tagsLine = config.cardTags
-            ? `<p><small style="color: #666;">${config.cardTags(item)}</small></p>`
+        const tagsHTML = config.cardTags
+            ? `<div class="card-tag-row">${config.cardTags(item).map(t => `<span class="card-tag">${t}</span>`).join("")}</div>`
             : "";
 
         grid.innerHTML += `
         <a href="detail.html?name=${encodeURIComponent(item.name)}&type=${config.type}" class="card-link">
             <div class="card">
-                <img src="${item.image}" alt="${item.name}" class="cafe-image">
-                <h2>
-                    ${item.name}
+                <div class="card-media">
+                    <img src="${item.image}" alt="${item.name}" class="cafe-image">
+                    <span class="rating-badge">⭐ ${item.rating}</span>
                     <span class="favorite" data-name="${item.name}">
                         ${favorites.includes(item.name) ? "❤️" : "🤍"}
                     </span>
-                </h2>
-                <p>📍 ${item.area}</p>
-                <p>⭐ ${item.rating}</p>
-                ${tagsLine}
-                <p>${item.description}</p>
+                </div>
+                <div class="card-body">
+                    <h2>${item.name}</h2>
+                    <p class="card-area">📍 ${item.area}</p>
+                    ${tagsHTML}
+                    <p class="card-desc">${item.description}</p>
+                </div>
             </div>
         </a>
         `;

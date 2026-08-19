@@ -90,7 +90,7 @@ const CATEGORY_CONFIG = {
             item.lighted ? "💡 ナイター" : "",
             item.locker ? "🎒 ロッカー" : "",
             item.bathroom ? "🚽 トイレ" : "",
-        ].filter(Boolean).join(" | "),
+        ].filter(Boolean),
     },
 
 };
