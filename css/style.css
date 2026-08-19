@@ -459,6 +459,15 @@ header h1 {
     gap: 20px;
 }
 
+.review-mini-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-mini-header h4 {
+    margin: 0;
+}
 .review-mini-card {
     background: #fff;
     padding: 18px;

@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // 既にONならパスワード無しでOFFに戻す
                     document.body.classList.remove("admin-mode");
                     sessionStorage.removeItem("adminMode");
+                    document.dispatchEvent(new CustomEvent("adminModeChanged"));
                     alert("管理者モードを解除しました。");
                     return;
                 }
@@ -75,10 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (input === ADMIN_PASSWORD) {
                     document.body.classList.add("admin-mode");
                     sessionStorage.setItem("adminMode", "true");
+                    document.dispatchEvent(new CustomEvent("adminModeChanged"));
                     alert("管理者モードに変更しました。");
                 } else if (input !== null) {
-                    // キャンセルではなく、間違ったパスワードを入力した場合だけ警告
-                    alert("パスワードが違います。");
                 }
             }
         });

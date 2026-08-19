@@ -64,56 +64,62 @@ function displayTopRanking() {
 }
 
 
-// --- トップページ：新着口コミの描画（detail.jsでLocalStorageに保存された口コミを自動収集） ---
-function displayRecentReviews() {
-    const recentContainer = document.getElementById("recent-reviews-list");
-    if (!recentContainer) return;
-
-    let allReviews = [];
-
+// --- トップページ：口コミの収集（JSON由来＋localStorage由来をまとめる） ---
+function collectAllReviews() {
+    const jsonReviews = [];
     cafes.forEach(cafe => {
         if (cafe.reviews && Array.isArray(cafe.reviews)) {
             cafe.reviews.forEach(r => {
-                allReviews.push({
+                jsonReviews.push({
                     spotName: cafe.name,
-                    author: r.author || '匿名',
-                    score: parseInt(r.score) || 5,
-                    comment: r.comment || ''
+                    author: r.author || r.name || '匿名',
+                    score: parseInt(r.score || r.rating) || 5,
+                    comment: r.comment || r.text || '',
+                    isLocal: false,
                 });
             });
         }
     });
 
+    const localReviews = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
+        if (!key || !key.startsWith("comments_")) continue;
 
-        if (key && (key.startsWith("comments_") || key.startsWith("reviews_"))) {
-            const spotName = key.replace(/^(comments_|reviews_)/, "");
-            const savedReviews = JSON.parse(localStorage.getItem(key)) || [];
+        const spotName = key.replace(/^comments_/, "");
+        const saved = JSON.parse(localStorage.getItem(key)) || [];
 
-            if (Array.isArray(savedReviews)) {
-                savedReviews.forEach(r => {
-                    allReviews.push({
-                        spotName: spotName,
-                        author: r.name || r.author || r.reviewerName || '匿名',
-                        score: parseInt(r.score || r.rating) || 5,
-                        comment: r.comment || r.text || ''
-                    });
+        if (Array.isArray(saved)) {
+            saved.forEach((r, idx) => {
+                localReviews.push({
+                    spotName,
+                    author: r.name || r.author || '匿名',
+                    score: parseInt(r.score || r.rating) || 5,
+                    comment: r.comment || r.text || '',
+                    isLocal: true,
+                    storageKey: key,
+                    localIndex: idx,
                 });
-            }
+            });
         }
     }
 
-    const userReviews = JSON.parse(localStorage.getItem("user_reviews")) || [];
-    if (Array.isArray(userReviews)) {
-        userReviews.forEach(r => {
-            allReviews.push({
-                spotName: r.spotName || r.cafeName || 'スポット',
-                author: r.author || r.name || '匿名',
-                score: parseInt(r.score) || 5,
-                comment: r.comment || ''
-            });
-        });
+    return [...jsonReviews, ...localReviews];
+}
+
+// --- トップページ：新着口コミの描画（通常時は4件のみ／管理者モードは全件＋削除可） ---
+function displayRecentReviews() {
+    const recentContainer = document.getElementById("recent-reviews-list");
+    if (!recentContainer) return;
+
+    const isAdmin = document.body.classList.contains("admin-mode");
+    const allReviews = collectAllReviews();
+
+    const headingEl = document.getElementById("recent-reviews-heading");
+    if (headingEl) {
+        headingEl.textContent = isAdmin
+            ? `💬 口コミ管理（全${allReviews.length}件）`
+            : "💬 新着の口コミ";
     }
 
     recentContainer.innerHTML = "";
@@ -123,13 +129,22 @@ function displayRecentReviews() {
         return;
     }
 
-    const recent4 = allReviews.reverse().slice(0, 4);
+    const reversed = [...allReviews].reverse();
+    const listToShow = isAdmin ? reversed : reversed.slice(0, 4);
 
-    recent4.forEach(review => {
-        const stars = "★".repeat(review.score) + "☆".repeat(5 - review.score);
+    listToShow.forEach(review => {
+        const stars = "★".repeat(review.score) + "☆".repeat(Math.max(0, 5 - review.score));
+
+        const deleteBtn = review.isLocal
+            ? `<button class="delete-btn" data-storage-key="${review.storageKey}" data-index="${review.localIndex}">削除</button>`
+            : "";
+
         recentContainer.innerHTML += `
             <div class="review-mini-card">
-                <h4>${escapeHTML(review.spotName)}</h4>
+                <div class="review-mini-header">
+                    <h4>${escapeHTML(review.spotName)}</h4>
+                    ${deleteBtn}
+                </div>
                 <div class="stars">${stars}</div>
                 <p style="font-size: 14px; margin: 8px 0; color: #444;">"${escapeHTML(review.comment)}"</p>
                 <span style="font-size: 12px; color: #888;">by ${escapeHTML(review.author)}</span>
@@ -138,6 +153,35 @@ function displayRecentReviews() {
     });
 }
 
+// --- 管理者モードでの口コミ削除（トップページ） ---
+document.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("delete-btn")) return;
+    if (!e.target.closest("#recent-reviews-list")) return;
+
+    e.preventDefault();
+
+    const storageKey = e.target.dataset.storageKey;
+    const index = parseInt(e.target.dataset.index);
+    if (!storageKey || isNaN(index)) return;
+
+    if (!confirm("この口コミを削除しますか？")) return;
+
+    const reviews = JSON.parse(localStorage.getItem(storageKey)) || [];
+    reviews.splice(index, 1);
+
+    if (reviews.length > 0) {
+        localStorage.setItem(storageKey, JSON.stringify(reviews));
+    } else {
+        localStorage.removeItem(storageKey);
+    }
+
+    displayRecentReviews();
+});
+
+// --- 管理者モードのON/OFF切り替えを検知して再描画 ---
+document.addEventListener("adminModeChanged", () => {
+    displayRecentReviews();
+});
 
 // --- いいね（お気に入り）クリックイベント：トップページの高評価TOP3用 ---
 document.addEventListener("click", (e) => {
