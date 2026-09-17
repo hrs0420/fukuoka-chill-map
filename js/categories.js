@@ -94,3 +94,29 @@ const CATEGORY_CONFIG = {
     },
 
 };
+
+// カテゴリごとの詳細表示項目 / 申請フォームの入力項目（共通で使う）
+const FIELD_CONFIG = {
+    cafe: [
+        { key: "wifi", label: "Wi-Fi", icon: "📶", type: "bool" },
+        { key: "outlet", label: "電源", icon: "🔌", type: "bool" },
+        { key: "parking", label: "駐車場", icon: "🅿️", type: "bool" },
+        { key: "hours", label: "営業時間", icon: "🕒", type: "text" },
+        { key: "closed", label: "定休日", icon: "🗓️", type: "text" },
+        { key: "payment", label: "決済方法", icon: "💳", type: "text" },
+    ],
+    sauna: [
+        { key: "onsen", label: "温泉", icon: "♨️", type: "bool" },
+        { key: "loyly", label: "ロウリュ", icon: "🔥", type: "bool" },
+        { key: "stay", label: "宿泊", icon: "🛌", type: "bool", trueText: "可能", falseText: "不可" },
+        { key: "parking", label: "駐車場", icon: "🅿️", type: "bool" },
+        { key: "hours", label: "営業時間", icon: "🕒", type: "text" },
+    ],
+    running: [
+        { key: "distance", label: "1周", icon: "🏃", type: "text" },
+        { key: "surface", label: "路面", icon: "🛣", type: "text" },
+        { key: "lighted", label: "ナイター(夜間照明)", icon: "💡", type: "bool" },
+        { key: "locker", label: "ロッカー", icon: "🎒", type: "bool" },
+        { key: "bathroom", label: "トイレ", icon: "🚽", type: "bool" },
+    ],
+};

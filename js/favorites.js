@@ -13,7 +13,7 @@ async function init() {
         if (!container) continue; // このページに該当セクションが無ければスキップ
 
         try {
-            const allData = await loadData(categoryConfig.dataFile);
+            const allData = await getCombinedSpots(categoryConfig);
             const favoriteNames = JSON.parse(localStorage.getItem(categoryConfig.storageKey)) || [];
             renderFavorites(container, allData, favoriteNames, categoryConfig);
         } catch (error) {

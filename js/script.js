@@ -6,12 +6,10 @@
 
 let cafes = [];
 
+
 async function init() {
     try {
-        const response = await fetch("data/cafes.json");
-        if (response.ok) {
-            cafes = await response.json();
-        }
+        cafes = await getCombinedSpots(CATEGORY_CONFIG.cafe);
     } catch (error) {
         console.error("カフェデータの読み込みエラー:", error);
     }

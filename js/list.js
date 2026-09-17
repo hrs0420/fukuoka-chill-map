@@ -55,7 +55,7 @@ async function init() {
     // 検索キーワードや並び替え条件はcanonicalに含めない（重複コンテンツ対策）
     canonicalTag.setAttribute("href", `${location.origin}${location.pathname}?category=${category}`);
 
-    allItems = await loadData(config.dataFile);
+    allItems = await getCombinedSpots(config);
 
     buildSearchBar();
     buildFilterBar();
@@ -282,7 +282,7 @@ function displayList(items) {
                     <img src="${item.image}" alt="${item.name}" class="cafe-image">
                     <span class="rating-badge">⭐ ${item.rating}</span>
                     <span class="favorite" data-name="${item.name}">
-                        ${favorites.includes(item.name) ? "❤️" : "🤍"}
+                        ${favorites.includes(item.name) ? "❤️" : "🩶"}
                     </span>
                 </div>
                 <div class="card-body">

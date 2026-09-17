@@ -13,31 +13,6 @@
 // icon  : 絵文字
 // type  : "bool"（true/false系） or "text"（文字列そのまま）
 // trueText / falseText : bool項目で「あり/なし」以外の表現にしたい場合に指定
-const FIELD_CONFIG = {
-    cafe: [
-        { key: "wifi", label: "Wi-Fi", icon: "📶", type: "bool" },
-        { key: "outlet", label: "電源", icon: "🔌", type: "bool" },
-        { key: "parking", label: "駐車場", icon: "🅿️", type: "bool" },
-        { key: "hours", label: "営業時間", icon: "🕒", type: "text" },
-        { key: "closed", label: "定休日", icon: "🗓️", type: "text" },
-        { key: "payment", label: "決済方法", icon: "💳", type: "text" },
-    ],
-    sauna: [
-        { key: "onsen", label: "温泉", icon: "♨️", type: "bool" },
-        { key: "loyly", label: "ロウリュ", icon: "🔥", type: "bool" },
-        { key: "stay", label: "宿泊", icon: "🛌", type: "bool", trueText: "可能", falseText: "不可" },
-        { key: "parking", label: "駐車場", icon: "🅿️", type: "bool" },
-        { key: "hours", label: "営業時間", icon: "🕒", type: "text" },
-    ],
-    running: [
-        { key: "distance", label: "1周", icon: "🏃", type: "text" },
-        { key: "surface", label: "路面", icon: "🛣", type: "text" },
-        { key: "lighted", label: "ナイター(夜間照明)", icon: "💡", type: "bool" },
-        { key: "locker", label: "ロッカー", icon: "🎒", type: "bool" },
-        { key: "bathroom", label: "トイレ", icon: "🚽", type: "bool" },
-    ],
-};
-
 // カテゴリ名 → JSONファイル名
 // ※ categories.js の CATEGORY_CONFIG から生成する（ファイル名をここで二重に持たない）
 const DATA_FILES = Object.fromEntries(
@@ -57,27 +32,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const cleanName = decodeURIComponent(rawName).trim();
 
-    async function fetchJSON(fileName) {
+    async function fetchCombined(categoryKey) {
+        const cfg = CATEGORY_CONFIG[categoryKey];
+        if (!cfg) return [];
         try {
-            const res = await fetch(`data/${fileName}`);
-            return res.ok ? await res.json() : [];
+            return await getCombinedSpots(cfg);
         } catch (err) {
-            console.error(`データ読み込みエラー(${fileName}):`, err);
+            console.error(`データ読み込みエラー(${categoryKey}):`, err);
             return [];
         }
     }
 
     let spot = null;
-    let spotType = typeParam && DATA_FILES[typeParam] ? typeParam : null;
+    let spotType = typeParam && CATEGORY_CONFIG[typeParam] ? typeParam : null;
 
     if (spotType) {
-        // typeが分かっている場合はそのJSONだけ読めばよい（無駄なfetchをしない）
-        const data = await fetchJSON(DATA_FILES[spotType]);
+        const data = await fetchCombined(spotType);
         spot = data.find(s => matchSpot(s, cleanName));
     } else {
-        // typeが無いリンクからアクセスされた場合の後方互換：3種類とも探す
-        for (const [key, file] of Object.entries(DATA_FILES)) {
-            const data = await fetchJSON(file);
+        for (const key of Object.keys(CATEGORY_CONFIG)) {
+            const data = await fetchCombined(key);
             const found = data.find(s => matchSpot(s, cleanName));
             if (found) {
                 spot = found;
