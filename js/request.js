@@ -33,8 +33,36 @@ document.addEventListener("DOMContentLoaded", () => {
     categorySelect.addEventListener("change", renderCategoryFields);
     renderCategoryFields();
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    const imageInput = document.getElementById("image");
+    const imagePreview = document.getElementById("image-preview");
+
+    imageInput.addEventListener("change", () => {
+        const file = imageInput.files[0];
+        if (!file) {
+            imagePreview.style.display = "none";
+            return;
+        }
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreview.style.display = "block";
+    });
+
+    const openConfirmBtn = document.getElementById("open-confirm-btn");
+    const confirmModal = document.getElementById("confirm-submit-modal");
+    const cancelConfirmBtn = document.getElementById("cancel-confirm-btn");
+    const proceedSubmitBtn = document.getElementById("proceed-submit-btn");
+
+    // 「依頼を送信する」ボタン：まずHTML標準の必須項目チェックをした上で確認モーダルを開く
+    openConfirmBtn.addEventListener("click", () => {
+        if (!form.reportValidity()) return; // 必須項目が未入力ならブラウザ標準の警告を出して中断
+        confirmModal.classList.add("active");
+    });
+
+    cancelConfirmBtn.addEventListener("click", () => {
+        confirmModal.classList.remove("active");
+    });
+
+    proceedSubmitBtn.addEventListener("click", async () => {
+        confirmModal.classList.remove("active");
         statusEl.textContent = "送信中...";
 
         const category = categorySelect.value;
@@ -43,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
             name: document.getElementById("name").value.trim(),
             area: document.getElementById("area").value.trim(),
             description: document.getElementById("description").value.trim(),
-            image: document.getElementById("image").value.trim() || "images/default.jpg",
             address: document.getElementById("address").value.trim(),
             map: document.getElementById("map").value.trim(),
             rating: null,
@@ -57,24 +84,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        const payload = {
-            category,
-            data,
-            submitter_name: document.getElementById("submitter-name").value.trim(),
-            submitter_note: document.getElementById("submitter-note").value.trim(),
-        };
+        const formData = new FormData();
+        formData.append("category", category);
+        formData.append("data_json", JSON.stringify(data));
+        formData.append("submitter_name", document.getElementById("submitter-name").value.trim());
+        formData.append("submitter_note", document.getElementById("submitter-note").value.trim());
+
+        const imageFile = document.getElementById("image").files[0];
+        if (imageFile) {
+            formData.append("image", imageFile);
+        }
 
         try {
             const res = await fetch(`${API_BASE_URL}/api/submissions`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
+                body: formData,
             });
 
             if (!res.ok) throw new Error("送信に失敗しました");
 
             statusEl.textContent = "";
             form.reset();
+            imagePreview.style.display = "none";
             renderCategoryFields();
             document.getElementById("submit-success-modal").classList.add("active");
         } catch (err) {
