@@ -35,12 +35,12 @@
 </header>
 
 <div class="detail">
-    <p style="text-align: center; color: #6b6b63;">
-        あなたの知っている福岡のChillスポットを教えてください。<br>
-        管理者が内容確認後、サイトに掲載されます。
-    </p>
-
     <form id="request-form" class="comment-form">
+        <p class="form-intro">
+            あなたの知っている福岡のchillスポットを教えてください。<br>
+            管理者が内容を確認した後、サイトに掲載されます。
+        </p>
+
         <div class="form-group">
             <label for="category">カテゴリ</label>
             <select id="category" required>
@@ -67,8 +67,11 @@
 
         <div class="form-group">
             <label for="image">スポットの画像</label>
-            <input type="file" id="image" accept="image/png, image/jpeg, image/webp">
-            <img id="image-preview" style="display:none; margin-top:10px; max-width:100%; height:180px; object-fit:cover; border-radius:8px;">
+            <div class="file-drop-wrapper">
+                <input type="file" id="image" accept="image/png, image/jpeg, image/webp">
+                <p class="file-drop-hint">JPG / PNG / WEBP（5MBまで）</p>
+            </div>
+            <img id="image-preview" style="display:none; margin-top:10px; width:100%; max-width:100%; height:180px; object-fit:cover; border-radius:8px;">
         </div>
 
         <div class="form-group">
@@ -94,7 +97,6 @@
             <label for="submitter-note">管理者へのメモ（任意）</label>
             <textarea id="submitter-note" rows="2" placeholder="補足情報があれば"></textarea>
         </div>
-
 
         <button type="button" id="open-confirm-btn" class="submit-btn">依頼を送信する</button>
     </form>
@@ -124,7 +126,6 @@
             <button type="button" class="modal-btn" id="continue-btn" style="background:var(--color-accent);">📝 続けて入力する</button>
         </div>
     </div>
-</div>
 </div>
 
 <footer>

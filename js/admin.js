@@ -72,14 +72,16 @@ function renderSubmissions(submissions) {
     listEl.innerHTML = "";
 
     if (submissions.length === 0) {
-        listEl.innerHTML = "<p style='color:#888;'>該当する依頼はありません。</p>";
+        listEl.innerHTML = "<p style='color:#888; text-align:center;'>該当する依頼はありません。</p>";
         return;
     }
 
+    const categoryLabel = { cafe: "☕ カフェ", sauna: "🧖 サウナ", running: "🏃 ランニング" };
+    const statusLabel = { pending: "承認待ち", approved: "承認済み", rejected: "却下済み" };
+
     submissions.forEach(sub => {
         const card = document.createElement("div");
-        card.className = "comment-card";
-        card.style.marginBottom = "20px";
+        card.className = "submission-card";
 
         const fieldEntries = Object.entries(sub.data)
             .map(([key, val]) => `
@@ -90,10 +92,16 @@ function renderSubmissions(submissions) {
             `).join("");
 
         card.innerHTML = `
-            <p><strong>カテゴリ:</strong> ${sub.category} ｜ <strong>状態:</strong> ${sub.status} ｜ <strong>依頼日:</strong> ${sub.created_at}</p>
-            <p><strong>依頼者:</strong> ${sub.submitter_name || "匿名"} ｜ <strong>メモ:</strong> ${sub.submitter_note || "なし"}</p>
-            ${fieldEntries}
-            <div style="display:flex; gap:10px; margin-top:10px; flex-wrap: wrap;">
+            <div class="submission-card-header">
+                <h4>${sub.data.name || "(名称未設定)"}</h4>
+                <span class="status-badge ${sub.status}">${statusLabel[sub.status] || sub.status}</span>
+            </div>
+            <p class="submission-meta">
+                ${categoryLabel[sub.category] || sub.category} ｜ 依頼者: ${sub.submitter_name || "匿名"} ｜ ${sub.created_at}
+                ${sub.submitter_note ? `｜ メモ: ${sub.submitter_note}` : ""}
+            </p>
+            <div class="submission-field-grid">${fieldEntries}</div>
+            <div class="submission-actions">
                 <button class="submit-btn save-btn" data-id="${sub.id}">保存</button>
                 <button class="submit-btn approve-btn" data-id="${sub.id}" style="background:var(--color-primary);">承認</button>
                 <button class="submit-btn reject-btn" data-id="${sub.id}" style="background:var(--color-rose);">却下</button>

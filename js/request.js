@@ -4,23 +4,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("request-form");
     const statusEl = document.getElementById("form-status");
 
+    
     function renderCategoryFields() {
         const category = categorySelect.value;
         const fields = FIELD_CONFIG[category] || [];
         fieldsContainer.innerHTML = "";
 
-        fields.forEach(field => {
+        fields.forEach((field, index) => {
             const wrapper = document.createElement("div");
-            wrapper.className = "form-group";
 
             if (field.type === "bool") {
+                const inputId = `field-${field.key}-${index}`;
+                wrapper.className = "checkbox-field";
                 wrapper.innerHTML = `
-                    <label>
-                        <input type="checkbox" data-field="${field.key}" data-type="bool">
-                        ${field.icon} ${field.label}
-                    </label>
+                    <input type="checkbox" id="${inputId}" data-field="${field.key}" data-type="bool">
+                    <label for="${inputId}">${field.icon} ${field.label}</label>
                 `;
             } else {
+                wrapper.className = "form-group";
                 wrapper.innerHTML = `
                     <label>${field.icon} ${field.label}</label>
                     <input type="text" data-field="${field.key}" data-type="text">
