@@ -18,17 +18,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 wrapper.className = "checkbox-field";
                 wrapper.innerHTML = `
                     <input type="checkbox" id="${inputId}" data-field="${field.key}" data-type="bool">
-                    <label for="${inputId}">${field.icon} ${field.label}</label>
+                    <label for="${inputId}"><i data-lucide="${field.icon}"></i> ${field.label}</label>
                 `;
             } else {
                 wrapper.className = "form-group";
                 wrapper.innerHTML = `
-                    <label>${field.icon} ${field.label}</label>
+                    <label><i data-lucide="${field.icon}"></i> ${field.label}</label>
                     <input type="text" data-field="${field.key}" data-type="text">
                 `;
             }
             fieldsContainer.appendChild(wrapper);
         });
+
+        if (window.lucide) lucide.createIcons();
     }
 
     categorySelect.addEventListener("change", renderCategoryFields);

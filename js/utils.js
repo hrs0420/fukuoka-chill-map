@@ -5,11 +5,24 @@ const API_BASE_URL = "http://127.0.0.1:5000";
 // 承認済みの投稿スポットを取得する（バックエンド未接続時は空配列を返す）
 async function fetchApprovedSpots(category) {
     try {
-        const res = await fetch(`${API_BASE_URL}/api/spots?category=${category}`);
+        // バックエンドが起動していない場合に長時間待たされないよう、1.5秒でタイムアウトさせる
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
+
+        const res = await fetch(`${API_BASE_URL}/api/spots?category=${category}`, {
+            signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
         if (!res.ok) return [];
         return await res.json();
     } catch (err) {
-        console.warn("承認済みスポットの取得に失敗しました(バックエンド未接続の可能性):", err);
+        // AbortErrorはタイムアウトによる意図的な中断なので、警告レベルを下げて静かにログする
+        if (err.name === "AbortError") {
+            console.info("承認済みスポットの取得がタイムアウトしました(バックエンド未起動の可能性)");
+        } else {
+            console.warn("承認済みスポットの取得に失敗しました:", err);
+        }
         return [];
     }
 }

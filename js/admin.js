@@ -142,13 +142,13 @@ function renderSubmissions(submissions) {
                 return `
                     <div class="checkbox-field">
                         <input type="checkbox" id="admin-${sub.id}-${field.key}" data-key="${field.key}" data-type="bool" ${value ? "checked" : ""}>
-                        <label for="admin-${sub.id}-${field.key}">${field.icon} ${field.label}</label>
+                        <label for="admin-${sub.id}-${field.key}"><i data-lucide="${field.icon}"></i> ${field.label}</label>
                     </div>
                 `;
             }
             return `
                 <div class="form-group">
-                    <label>${field.icon} ${field.label}</label>
+                    <label><i data-lucide="${field.icon}"></i> ${field.label}</label>
                     <input type="text" data-key="${field.key}" data-type="text" value="${String(value ?? "").replace(/"/g, "&quot;")}">
                 </div>
             `;
@@ -174,6 +174,7 @@ function renderSubmissions(submissions) {
         `;
         listEl.appendChild(card);
     });
+    if (window.lucide) lucide.createIcons();
 }
 
 document.addEventListener("click", async (e) => {

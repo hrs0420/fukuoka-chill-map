@@ -82,15 +82,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     // タイトル・基本情報
     setText("title", spot.name);
     setText("spot-name", spot.name);
-    setText("area", `📍 エリア: ${spot.area || "情報なし"}`);
-    setText("rating", `⭐ 評価: ${spot.rating || "0.0"}`);
+
+    const areaEl = document.getElementById("area");
+    if (areaEl) {
+        areaEl.className = "detail-meta";
+        areaEl.innerHTML = `<i data-lucide="map-pin"></i> <span>エリア: ${spot.area || "情報なし"}</span>`;
+    }
+
+    const ratingEl = document.getElementById("rating");
+    if (ratingEl) {
+        ratingEl.className = "detail-meta";
+        ratingEl.innerHTML = `<i data-lucide="star"></i> <span>評価: ${spot.rating || "0.0"}</span>`;
+    }
 
     // カテゴリ固有項目をFIELD_CONFIGに沿って動的に生成
     const fieldsContainer = document.getElementById("detail-fields");
     fieldsContainer.innerHTML = "";
 
     (FIELD_CONFIG[spotType] || []).forEach(field => {
-        // JSON側にそのキーが無ければ何も表示しない
         if (spot[field.key] === undefined || spot[field.key] === null || spot[field.key] === "") return;
 
         let valueText;
@@ -103,15 +112,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const p = document.createElement("p");
-        p.textContent = `${field.icon} ${field.label}: ${valueText}`;
+        p.className = "detail-field";
+        p.innerHTML = `<i data-lucide="${field.icon}"></i> <span>${field.label}: ${valueText}</span>`;
         fieldsContainer.appendChild(p);
     });
 
-    // 住所（無いデータ＝ running.json もあるので、ある場合だけ表示）
+    if (window.lucide) lucide.createIcons();
+
     const addressEl = document.getElementById("address");
     if (spot.address) {
-        addressEl.textContent = `🏠 住所: ${spot.address}`;
-        addressEl.style.display = "block";
+        addressEl.className = "detail-meta";
+        addressEl.innerHTML = `<i data-lucide="home"></i> <span>住所: ${spot.address}</span>`;
+        addressEl.style.display = "flex";
     } else {
         addressEl.style.display = "none";
     }
@@ -210,6 +222,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 口コミ機能の初期化
     initReviews(spot.name, spot.reviews || []);
+    initReviews(spot.name, spot.reviews || []);
+    if (window.lucide) lucide.createIcons();
 });
 
 
@@ -221,6 +235,16 @@ function initReviews(spotName, jsonReviews) {
     const avgRatingEl = document.getElementById("average-rating");
     const countTextEl = document.getElementById("review-count");
 
+/* 変更後 */
+    function buildStarIcons(score) {
+        let html = "";
+        for (let i = 0; i < 5; i++) {
+            const filled = i < score;
+            html += `<i data-lucide="star" class="${filled ? "star-filled" : "star-empty"}"></i>`;
+        }
+        return `<span class="stars-row">${html}</span>`;
+    }
+
     function renderReviews() {
         const localReviews = JSON.parse(localStorage.getItem(storageKey)) || [];
 
@@ -229,7 +253,7 @@ function initReviews(spotName, jsonReviews) {
             score: parseInt(r.score || r.rating) || 5,
             comment: r.comment || r.text || "",
             date: "投稿済み",
-            isLocal: false,       // JSON由来＝削除不可
+            isLocal: false,
         })) : [];
 
         const fromLocal = localReviews.map((r, index) => ({
@@ -237,8 +261,8 @@ function initReviews(spotName, jsonReviews) {
             score: parseInt(r.score || r.rating) || 5,
             comment: r.comment || r.text || "",
             date: r.date || "",
-            isLocal: true,        // localStorage由来＝削除可能
-            localIndex: index,    // 削除する時にこのindexで特定する
+            isLocal: true,
+            localIndex: index,
         }));
 
         const allReviews = [...fromJson, ...fromLocal];
@@ -248,22 +272,21 @@ function initReviews(spotName, jsonReviews) {
 
         if (allReviews.length === 0) {
             commentsList.innerHTML = "<p style='color:#888;'>まだ口コミはありません。</p>";
-            if (avgRatingEl) avgRatingEl.textContent = "⭐ 0.0";
+            if (avgRatingEl) avgRatingEl.innerHTML = `<i data-lucide="star"></i> 0.0`;
             if (countTextEl) countTextEl.textContent = "(0件の口コミ)";
+            if (window.lucide) lucide.createIcons();
             return;
         }
 
         const totalScore = allReviews.reduce((sum, r) => sum + r.score, 0);
         const avgScore = (totalScore / allReviews.length).toFixed(1);
 
-        if (avgRatingEl) avgRatingEl.textContent = `⭐ ${avgScore}`;
+        if (avgRatingEl) avgRatingEl.innerHTML = `<i data-lucide="star"></i> ${avgScore}`;
         if (countTextEl) countTextEl.textContent = `(${allReviews.length}件の口コミ)`;
 
         [...allReviews].reverse().forEach(r => {
-            const stars = "★".repeat(r.score) + "☆".repeat(Math.max(0, 5 - r.score));
+            const starsHTML = buildStarIcons(r.score);
 
-            // 削除ボタンはlocalStorage由来の口コミにだけ付ける
-            // 表示のON/OFF自体はCSSの body.admin-mode .delete-btn が担当する
             const deleteBtn = r.isLocal
                 ? `<button class="delete-btn" data-index="${r.localIndex}">削除</button>`
                 : "";
@@ -272,13 +295,15 @@ function initReviews(spotName, jsonReviews) {
                 <div class="comment-card">
                     <div class="comment-header">
                         <span class="comment-author">${escapeHTML(r.name)}</span>
-                        <span class="comment-score">${stars}${deleteBtn}</span>
+                        <span class="comment-score">${starsHTML}${deleteBtn}</span>
                     </div>
                     <p class="comment-text">${escapeHTML(r.comment)}</p>
                     ${r.date ? `<div class="comment-date">${escapeHTML(r.date)}</div>` : ""}
                 </div>
             `;
         });
+
+        if (window.lucide) lucide.createIcons();
     }
 
     if (form) {
