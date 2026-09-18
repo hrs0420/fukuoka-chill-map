@@ -31,11 +31,10 @@ header {
 }
 
 .header-container {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    max-width: 1100px;
-    margin: 0 auto;
+    width: 100%;
     gap: 20px;
 }
 
@@ -43,10 +42,10 @@ header {
     flex-shrink: 0;
     display: flex;
     align-items: center;
+    justify-self: start;
 }
 
 .header-title-group {
-    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -92,7 +91,7 @@ header h1 {
     cursor: pointer;
     padding: 0;
     z-index: 100;
-    flex-shrink: 0;
+    justify-self: end;
 }
 
 .hamburger span {
@@ -148,9 +147,18 @@ header h1 {
     text-decoration: none !important;
     font-size: 1rem;
     font-weight: bold;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 8px 0;
     transition: opacity 0.2s;
+}
+
+.nav-menu .nav-link svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    flex-shrink: 0;
 }
 
 .nav-menu .nav-link:hover {
@@ -167,13 +175,24 @@ header h1 {
     box-sizing: border-box;
 }
 
-.cards h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 24px;
-    font-family: var(--font-display);
-    font-weight: 600;
-    color: var(--color-ink);
+.cards h2,
+.top-ranking h2,
+.recent-reviews h2,
+h1#page-title-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cards h2 svg,
+.top-ranking h2 svg,
+.recent-reviews h2 svg,
+h1#page-title-icon-wrap svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.75;
+    color: var(--color-accent-dark);
 }
 
 /* 3つのカードを横並びにするレイアウト（PC・タブレット） */
@@ -204,8 +223,11 @@ header h1 {
 }
 
 .category-icon {
-    font-size: 32px;
-    line-height: 1;
+    width: 32px;
+    height: 32px;
+    stroke-width: 1.75;
+    color: var(--color-accent-dark);
+    flex-shrink: 0;
 }
 
 .category-info h3 {
@@ -475,9 +497,11 @@ header h1 {
 
 .review-mini-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
     justify-content: center;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 .review-mini-header {
@@ -820,6 +844,16 @@ body.admin-mode .nav-menu .nav-link.admin-only {
     display: block;
 }
 
+.admin-image-preview {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
 a.modal-btn {
     display: inline-block;
     text-decoration: none;
@@ -839,42 +873,96 @@ a.modal-btn {
     margin-bottom: 10px;
 }
 
-/* 画像アップロード欄をドロップゾーン風に */
+/* 画像アップロード欄をドロップゾーンに */
 .file-drop-wrapper {
     position: relative;
     border: 2px dashed var(--color-accent);
     border-radius: 10px;
-    padding: 20px;
-    text-align: center;
     background: var(--color-surface);
-    opacity: 0.9;
-    transition: border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.file-drop-wrapper:hover {
-    opacity: 1;
+.file-drop-wrapper.drag-over {
+    border-color: var(--color-primary);
+    background: var(--color-bg);
 }
 
-.file-drop-wrapper:hover {
-    border-color: var(--color-accent);
+.drop-instructions {
+    position: relative;
+    width: 100%;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
 }
 
-.file-drop-wrapper input[type="file"] {
-    border: none;
-    background: transparent;
-    padding: 0;
+.drop-instructions svg {
+    width: 32px;
+    height: 32px;
+    color: var(--color-accent-dark);
+    margin-bottom: 8px;
+}
+
+.drop-instructions p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: var(--color-ink);
 }
 
 .file-drop-hint {
     font-size: 12px;
     color: #999;
-    margin-top: 6px;
+    margin-top: 6px !important;
+}
+
+/* input自体は透明化して、枠全体をクリック可能にする */
+.drop-instructions input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.preview-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
 }
 
 #image-preview {
-    border: 1px solid var(--color-border);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
+.remove-image-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(38, 51, 44, 0.75);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.remove-image-btn svg {
+    width: 16px;
+    height: 16px;
+    color: white;
+}
 /* --- 管理画面：ステータスバッジ --- */
 .status-badge {
     display: inline-block;

@@ -115,9 +115,10 @@ function displayRecentReviews() {
 
     const headingEl = document.getElementById("recent-reviews-heading");
     if (headingEl) {
-        headingEl.textContent = isAdmin
-            ? `💬 口コミ管理（全${allReviews.length}件）`
-            : "💬 新着の口コミ";
+        headingEl.innerHTML = isAdmin
+            ? `<i data-lucide="message-circle"></i> 口コミ管理（全${allReviews.length}件）`
+            : `<i data-lucide="message-circle"></i> 新着の口コミ`;
+        if (window.lucide) lucide.createIcons();
     }
 
     recentContainer.innerHTML = "";

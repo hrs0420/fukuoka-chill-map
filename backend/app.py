@@ -209,9 +209,23 @@ def admin_update_submission(submission_id):
     if not require_admin():
         return jsonify({"error": "unauthorized"}), 401
 
-    new_data = request.get_json(force=True).get("data")
-    if new_data is None:
+    # 画像の再アップロードに対応するため multipart/form-data で受け取る
+    try:
+        new_data = json.loads(request.form.get("data_json", "{}"))
+    except json.JSONDecodeError:
+        return jsonify({"error": "invalid data_json"}), 400
+
+    if not new_data:
         return jsonify({"error": "data is required"}), 400
+
+    # 新しい画像ファイルが送られてきた場合だけ差し替える。無ければ既存のURLをそのまま維持する。
+    image_file = request.files.get("image")
+    if image_file and image_file.filename and allowed_file(image_file.filename):
+        ext = image_file.filename.rsplit(".", 1)[1].lower()
+        unique_name = f"{uuid.uuid4().hex}.{ext}"
+        safe_name = secure_filename(unique_name)
+        image_file.save(os.path.join(UPLOAD_FOLDER, safe_name))
+        new_data["image"] = f"{request.host_url}uploads/{safe_name}"
 
     db = get_db()
     db.execute(

@@ -30,6 +30,13 @@ async function init() {
 
     document.title = `${config.pageTitle} | Fukuoka Chill Map`;
     document.getElementById("page-title").textContent = config.pageTitle;
+
+    const iconByCategory = { cafe: "coffee", sauna: "flame", running: "footprints" };
+    const titleIcon = document.getElementById("page-title-icon");
+    if (titleIcon) {
+        titleIcon.setAttribute("data-lucide", iconByCategory[category] || "map-pin");
+        if (window.lucide) lucide.createIcons();
+    }
     // --- SEO: カテゴリごとのtitle / description / canonical / OGP ---
     function setMeta(nameOrProp, content, isProperty = false) {
         const attr = isProperty ? "property" : "name";

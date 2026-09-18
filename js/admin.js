@@ -1,7 +1,6 @@
 // utils.jsの管理者パスワードと必ず同じ値にすること
 const ADMIN_PASSWORD_FOR_GATE = "20000420";
 
-/* 変更後 */
 document.addEventListener("DOMContentLoaded", () => {
     const gate = document.getElementById("admin-gate");
     const dashboard = document.getElementById("admin-dashboard");
@@ -43,6 +42,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+document.addEventListener("change", (e) => {
+    if (!e.target.matches("[data-image-file]")) return;
+
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const id = e.target.dataset.imageFile;
+    const preview = document.querySelector(`[data-preview-for="${id}"]`);
+    if (preview) {
+        preview.src = URL.createObjectURL(file);
+    }
+});
+
+
 async function loadSubmissions() {
     const adminToken = sessionStorage.getItem("adminToken");
     const status = document.querySelector('input[name="status"]:checked').value;
@@ -82,25 +95,76 @@ function renderSubmissions(submissions) {
     submissions.forEach(sub => {
         const card = document.createElement("div");
         card.className = "submission-card";
+        card.dataset.id = sub.id;
 
-        const fieldEntries = Object.entries(sub.data)
-            .map(([key, val]) => `
+        const data = sub.data || {};
+        const fields = FIELD_CONFIG[sub.category] || [];
+
+        // 基本項目(申請フォームと同じ並び)
+        const basicFieldsHTML = `
+            <div class="form-group">
+                <label>スポット名</label>
+                <input type="text" data-key="name" value="${String(data.name ?? "").replace(/"/g, "&quot;")}">
+            </div>
+            <div class="form-group">
+                <label>エリア</label>
+                <input type="text" data-key="area" value="${String(data.area ?? "").replace(/"/g, "&quot;")}">
+            </div>
+            <div class="form-group">
+                <label>評価</label>
+                <input type="number" step="0.1" min="1" max="5" data-key="rating" value="${String(data.rating ?? "")}">
+            </div>
+            <div class="form-group">
+                <label>紹介文</label>
+                <textarea rows="3" data-key="description">${String(data.description ?? "")}</textarea>
+            </div>
+            <div class="form-group">
+                <label>画像</label>
+                ${data.image ? `<img src="${data.image}" alt="" class="admin-image-preview" data-preview-for="${sub.id}">` : ""}
+                <input type="hidden" data-key="image" value="${String(data.image ?? "").replace(/"/g, "&quot;")}">
+                <input type="file" accept="image/png, image/jpeg, image/webp" data-image-file="${sub.id}">
+                <p class="file-drop-hint">選択すると既存の画像を置き換えます（未選択なら現在の画像のまま保存されます）</p>
+            </div>
+            <div class="form-group">
+                <label>住所</label>
+                <input type="text" data-key="address" value="${String(data.address ?? "").replace(/"/g, "&quot;")}">
+            </div>
+            <div class="form-group">
+                <label>Googleマップリンク</label>
+                <input type="text" data-key="map" value="${String(data.map ?? "").replace(/"/g, "&quot;")}">
+            </div>
+        `;
+
+        // カテゴリ固有項目(チェックボックス/テキスト)
+        const categoryFieldsHTML = fields.map(field => {
+            const value = data[field.key];
+            if (field.type === "bool") {
+                return `
+                    <div class="checkbox-field">
+                        <input type="checkbox" id="admin-${sub.id}-${field.key}" data-key="${field.key}" data-type="bool" ${value ? "checked" : ""}>
+                        <label for="admin-${sub.id}-${field.key}">${field.icon} ${field.label}</label>
+                    </div>
+                `;
+            }
+            return `
                 <div class="form-group">
-                    <label>${key}</label>
-                    <input type="text" data-key="${key}" value="${String(val ?? "").replace(/"/g, "&quot;")}">
+                    <label>${field.icon} ${field.label}</label>
+                    <input type="text" data-key="${field.key}" data-type="text" value="${String(value ?? "").replace(/"/g, "&quot;")}">
                 </div>
-            `).join("");
+            `;
+        }).join("");
 
         card.innerHTML = `
             <div class="submission-card-header">
-                <h4>${sub.data.name || "(名称未設定)"}</h4>
+                <h4>${data.name || "(名称未設定)"}</h4>
                 <span class="status-badge ${sub.status}">${statusLabel[sub.status] || sub.status}</span>
             </div>
             <p class="submission-meta">
                 ${categoryLabel[sub.category] || sub.category} ｜ 依頼者: ${sub.submitter_name || "匿名"} ｜ ${sub.created_at}
                 ${sub.submitter_note ? `｜ メモ: ${sub.submitter_note}` : ""}
             </p>
-            <div class="submission-field-grid">${fieldEntries}</div>
+            ${basicFieldsHTML}
+            ${categoryFieldsHTML}
             <div class="submission-actions">
                 <button class="submit-btn save-btn" data-id="${sub.id}">保存</button>
                 <button class="submit-btn approve-btn" data-id="${sub.id}" style="background:var(--color-primary);">承認</button>
@@ -119,16 +183,31 @@ document.addEventListener("click", async (e) => {
     const adminToken = sessionStorage.getItem("adminToken");
 
     if (e.target.classList.contains("save-btn")) {
-        const card = e.target.closest(".comment-card");
+        const card = e.target.closest(".submission-card");
         const data = {};
         card.querySelectorAll("[data-key]").forEach(input => {
-            data[input.dataset.key] = input.value;
+            if (input.dataset.type === "bool") {
+                data[input.dataset.key] = input.checked;
+            } else if (input.dataset.key === "rating") {
+                data[input.dataset.key] = parseFloat(input.value);
+            } else {
+                data[input.dataset.key] = input.value;
+            }
         });
+
+        const formData = new FormData();
+        formData.append("data_json", JSON.stringify(data));
+
+        const imageFileInput = card.querySelector("[data-image-file]");
+        const newImageFile = imageFileInput?.files[0];
+        if (newImageFile) {
+            formData.append("image", newImageFile);
+        }
 
         await fetch(`${API_BASE_URL}/api/admin/submissions/${id}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json", "X-Admin-Token": adminToken },
-            body: JSON.stringify({ data }),
+            headers: { "X-Admin-Token": adminToken },
+            body: formData,
         });
         alert("保存しました");
         loadSubmissions();

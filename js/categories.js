@@ -16,7 +16,7 @@ const CATEGORY_CONFIG = {
         type: "cafe",                 // detail.html への type パラメータ
         dataFile: "cafes.json",
         storageKey: "favorites",       // お気に入りのlocalStorageキー
-        pageTitle: "☕ カフェ一覧",
+        pageTitle: "カフェ一覧",
         searchPlaceholder: "カフェ名で検索...",
         searchFields: ["name", "description"], // 検索キーワードの対象にするプロパティ
 
@@ -41,7 +41,7 @@ const CATEGORY_CONFIG = {
         type: "sauna",
         dataFile: "saunas.json",
         storageKey: "saunaFavorites",
-        pageTitle: "♨ サウナ一覧",
+        pageTitle: "サウナ一覧",
         searchPlaceholder: "サウナ名で検索...",
         searchFields: ["name", "description"],
 
@@ -65,7 +65,7 @@ const CATEGORY_CONFIG = {
         type: "running",
         dataFile: "running.json",
         storageKey: "runningFavorites",
-        pageTitle: "🏃 ランニングスポット一覧",
+        pageTitle: "ランニングスポット一覧",
         searchPlaceholder: "スポット名で検索...",
         searchFields: ["name", "description", "surface"],
 

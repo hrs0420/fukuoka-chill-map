@@ -34,17 +34,63 @@ document.addEventListener("DOMContentLoaded", () => {
     categorySelect.addEventListener("change", renderCategoryFields);
     renderCategoryFields();
 
+    // 画像プレビュー・ドラッグ&ドロップの制御
+    const dropWrapper = document.getElementById("file-drop-wrapper");
+    const dropInstructions = document.getElementById("drop-instructions");
+    const previewWrapper = document.getElementById("preview-wrapper");
     const imageInput = document.getElementById("image");
     const imagePreview = document.getElementById("image-preview");
+    const removeImageBtn = document.getElementById("remove-image-btn");
+
+    function showPreview(file) {
+        imagePreview.src = URL.createObjectURL(file);
+        dropInstructions.style.display = "none";
+        previewWrapper.style.display = "block";
+    }
+
+    function clearPreview() {
+        imageInput.value = "";
+        imagePreview.src = "";
+        dropInstructions.style.display = "block";
+        previewWrapper.style.display = "none";
+    }
 
     imageInput.addEventListener("change", () => {
         const file = imageInput.files[0];
-        if (!file) {
-            imagePreview.style.display = "none";
-            return;
-        }
-        imagePreview.src = URL.createObjectURL(file);
-        imagePreview.style.display = "block";
+        if (file) showPreview(file);
+    });
+
+    removeImageBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        clearPreview();
+    });
+
+    ["dragenter", "dragover"].forEach(eventName => {
+        dropWrapper.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropWrapper.classList.add("drag-over");
+        });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+        dropWrapper.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropWrapper.classList.remove("drag-over");
+        });
+    });
+
+    dropWrapper.addEventListener("drop", (e) => {
+        const file = e.dataTransfer.files[0];
+        if (!file || !file.type.startsWith("image/")) return;
+
+        // ドロップされたファイルを input[type=file] に反映させる
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        imageInput.files = dataTransfer.files;
+
+        showPreview(file);
     });
 
     const openConfirmBtn = document.getElementById("open-confirm-btn");
@@ -74,8 +120,18 @@ document.addEventListener("DOMContentLoaded", () => {
             description: document.getElementById("description").value.trim(),
             address: document.getElementById("address").value.trim(),
             map: document.getElementById("map").value.trim(),
-            rating: null,
+            rating: parseFloat(document.getElementById("rating").value),
         };
+
+        // 口コミが入力されていれば、既存のJSONデータと同じ形式(reviews配列)で含める
+        const reviewText = document.getElementById("initial-review").value.trim();
+        if (reviewText) {
+            data.reviews = [{
+                author: document.getElementById("submitter-name").value.trim() || "匿名",
+                score: data.rating,
+                comment: reviewText,
+            }];
+        }
 
         fieldsContainer.querySelectorAll("[data-field]").forEach(input => {
             if (input.dataset.type === "bool") {

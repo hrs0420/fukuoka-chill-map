@@ -25,12 +25,13 @@
         </button>
     </div>
     <nav class="nav-menu" id="nav-menu">
-        <a href="index.html" class="nav-link">トップに戻る</a>
-        <a href="list.html?category=cafe" class="nav-link">☕ カフェ</a>
-        <a href="list.html?category=sauna" class="nav-link">🧖 サウナ</a>
-        <a href="list.html?category=running" class="nav-link">🏃 ランニング</a>
-        <a href="favorites.html" class="nav-link">❤️ お気に入り</a>
-        <a href="admin.html" class="nav-link admin-only">🛠 管理者ページ</a>
+        <a href="index.html" class="nav-link"><i data-lucide="home"></i> トップに戻る</a>
+        <a href="list.html?category=cafe" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
+        <a href="list.html?category=sauna" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
+        <a href="list.html?category=running" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="favorites.html" class="nav-link"><i data-lucide="heart"></i> お気に入り</a>
+        <a href="request.html" class="nav-link"><i data-lucide="clipboard-list"></i> スポット追加依頼</a>
+        <a href="admin.html" class="nav-link admin-only"><i data-lucide="shield"></i> 管理者ページ</a>
     </nav>
 </header>
 
@@ -61,17 +62,31 @@
         </div>
 
         <div class="form-group">
+            <label for="rating">評価 (1.0〜5.0) *</label>
+            <input type="number" id="rating" required min="1" max="5" step="0.1" placeholder="例: 4.5">
+        </div>
+
+        <div class="form-group">
             <label for="description">紹介文 *</label>
             <textarea id="description" rows="3" required></textarea>
         </div>
 
         <div class="form-group">
             <label for="image">スポットの画像</label>
-            <div class="file-drop-wrapper">
-                <input type="file" id="image" accept="image/png, image/jpeg, image/webp">
-                <p class="file-drop-hint">JPG / PNG / WEBP（5MBまで）</p>
+            <div class="file-drop-wrapper" id="file-drop-wrapper">
+                <div id="drop-instructions" class="drop-instructions">
+                    <i data-lucide="image-plus"></i>
+                    <p>クリックして選択、またはドラッグ&ドロップ</p>
+                    <p class="file-drop-hint">JPG / PNG / WEBP（5MBまで）</p>
+                    <input type="file" id="image" accept="image/png, image/jpeg, image/webp">
+                </div>
+                <div id="preview-wrapper" class="preview-wrapper" style="display:none;">
+                    <img id="image-preview">
+                    <button type="button" id="remove-image-btn" class="remove-image-btn" aria-label="画像を削除">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
             </div>
-            <img id="image-preview" style="display:none; margin-top:10px; width:100%; max-width:100%; height:180px; object-fit:cover; border-radius:8px;">
         </div>
 
         <div class="form-group">
@@ -93,6 +108,11 @@
             <input type="text" id="submitter-name" placeholder="匿名">
         </div>
 
+        <div class="form-group">
+            <label for="initial-review">追加依頼するスポットへの口コミ（任意）</label>
+            <textarea id="initial-review" rows="3" placeholder="実際に行ってみた感想があれば書いてください"></textarea>
+        </div>
+        
         <div class="form-group">
             <label for="submitter-note">管理者へのメモ（任意）</label>
             <textarea id="submitter-note" rows="2" placeholder="補足情報があれば"></textarea>
@@ -132,6 +152,7 @@
     <p>© 2026 Fukuoka Chill Map</p>
 </footer>
 
+<script src="https://unpkg.com/lucide@latest"></script>
 <script src="js/utils.js"></script>
 <script src="js/categories.js"></script>
 <script src="js/request.js"></script>

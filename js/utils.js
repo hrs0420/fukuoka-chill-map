@@ -53,6 +53,8 @@ function isFavorite(category, id) {
 
 // ---ハンバーガーメニューの開閉処理---
 document.addEventListener("DOMContentLoaded", () => {
+    if (window.lucide) lucide.createIcons();
+    
     const hamburger = document.getElementById("hamburger-btn");
     const navMenu = document.getElementById("nav-menu");
 
