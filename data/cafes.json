@@ -1,5 +1,6 @@
 [
     {
+        "id": "cafe_1",
         "name": "REC COFFEE博多",
         "area": "博多駅",
         "rating": 4.8,
@@ -15,6 +16,7 @@
         "map": "https://maps.app.goo.gl/yCq8bxfSrZXZBV1h7"
     },
     {
+        "id": "cafe_2",
         "name": "FUK COFFEE",
         "area": "博多駅",
         "rating": 4.6,
@@ -30,6 +32,7 @@
         "map": "https://maps.app.goo.gl/P5Ld7QgxaHAVtGyp6"
     },
     {
+        "id": "cafe_3",
         "name": "manu coffee大名店",
         "area": "大名",
         "rating": 4.7,
@@ -45,6 +48,7 @@
         "map": "https://maps.app.goo.gl/B2KMx61YhTZ1u38r9"
     },
     {
+        "id": "cafe_4",
         "name": "unplugged COFFEE STAND fukuoka",
         "area": "六本松",
         "rating": 4.8,
@@ -60,6 +64,7 @@
         "map": "https://maps.app.goo.gl/J9Ywmn3Bk9FKHZBz7"
     },
     {
+        "id": "cafe_5",
         "name": "Basking Coffee ropponmatsu",
         "area": "六本松",
         "rating": 4.9,
@@ -75,6 +80,7 @@
         "map": "https://maps.app.goo.gl/f8xCtEL7wePuYW7H6"
     },
     {
+        "id": "cafe_6",
         "name": "珈琲 美美",
         "area": "赤坂",
         "rating": 4.8,
@@ -90,6 +96,7 @@
         "map": "https://maps.app.goo.gl/2TtRKcbxgG4gTn567"
     },
     {
+        "id": "cafe_7",
         "name": "フグレン",
         "area": "赤坂",
         "rating": 4.5,
@@ -105,6 +112,7 @@
         "map": "https://maps.app.goo.gl/m9MLWtbugUdaE7b36"
     },
     {
+        "id": "cafe_8",
         "name": "そふ珈琲",
         "area": "別府",
         "rating": 4.4,
@@ -120,6 +128,7 @@
         "map": "https://maps.app.goo.gl/bUbTAFgtJ6a5eGt19"
     },
     {
+        "id": "cafe_9",
         "name": "SCHOOL BUS COFFEE STOP FUKUOKA",
         "area": "大濠",
         "rating": 4.3,
@@ -135,6 +144,7 @@
         "map": "https://maps.app.goo.gl/CWodevtB33572frP8"
     },
     {
+        "id": "cafe_10",
         "name": "Cafe+82",
         "area": "平尾",
         "rating": 4.1,
