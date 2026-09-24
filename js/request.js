@@ -4,6 +4,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("request-form");
     const statusEl = document.getElementById("form-status");
 
+    // バックエンド未公開のあいだは受付停止の案内だけ出す
+    if (!API_BASE_URL) {
+        form.innerHTML = `
+            <p class="form-intro">
+                スポット追加依頼の受付は現在準備中です。<br>
+                再開までもうしばらくお待ちください。
+            </p>
+            <p style="text-align:center;"><a href="index.html">← トップへ戻る</a></p>
+        `;
+        return;
+    }
+
     
     function renderCategoryFields() {
         const category = categorySelect.value;
@@ -164,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             statusEl.textContent = "";
             form.reset();
-            imagePreview.style.display = "none";
+            clearPreview();
             renderCategoryFields();
             document.getElementById("submit-success-modal").classList.add("active");
         } catch (err) {

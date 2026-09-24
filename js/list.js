@@ -127,7 +127,7 @@ function renderSuggestions(keyword) {
     }
 
     ul.innerHTML = matches
-        .map(item => `<li data-name="${item.name.replace(/"/g, "&quot;")}">${item.name}</li>`)
+        .map(item => `<li data-name="${escapeHTML(item.name)}">${escapeHTML(item.name)}</li>`)
         .join("");
     ul.classList.remove("hidden");
 
@@ -178,7 +178,7 @@ function buildFilterBar() {
         エリア
         <select id="area">
             <option value="">すべてのエリア</option>
-            ${areas.map(a => `<option value="${a}">${a}</option>`).join("")}
+            ${areas.map(a => `<option value="${escapeHTML(a)}">${escapeHTML(a)}</option>`).join("")}
         </select>
     `;
     container.appendChild(areaLabel);
@@ -279,24 +279,24 @@ function displayList(items) {
 
     items.forEach(item => {
         const tagsHTML = config.cardTags
-            ? `<div class="card-tag-row">${config.cardTags(item).map(t => `<span class="card-tag">${t}</span>`).join("")}</div>`
+            ? `<div class="card-tag-row">${config.cardTags(item).map(t => `<span class="card-tag">${escapeHTML(t)}</span>`).join("")}</div>`
             : "";
 
         grid.innerHTML += `
         <a href="detail.html?name=${encodeURIComponent(item.name)}&type=${config.type}" class="card-link">
             <div class="card">
                 <div class="card-media">
-                    <img src="${item.image}" alt="${item.name}" class="cafe-image">
-                    <span class="rating-badge">⭐ ${item.rating}</span>
-                    <span class="favorite" data-name="${item.name}">
+                    <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" class="cafe-image" loading="lazy">
+                    <span class="rating-badge">⭐ ${escapeHTML(item.rating)}</span>
+                    <span class="favorite" data-name="${escapeHTML(item.name)}">
                         ${favorites.includes(item.name) ? "❤️" : "🩶"}
                     </span>
                 </div>
                 <div class="card-body">
-                    <h2>${item.name}</h2>
-                    <p class="card-area">📍 ${item.area}</p>
+                    <h2>${escapeHTML(item.name)}</h2>
+                    <p class="card-area">📍 ${escapeHTML(item.area)}</p>
                     ${tagsHTML}
-                    <p class="card-desc">${item.description}</p>
+                    <p class="card-desc">${escapeHTML(item.description)}</p>
                 </div>
             </div>
         </a>

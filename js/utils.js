@@ -1,28 +1,22 @@
 // --- バックエンドAPIの設定 ---
-// ローカル開発中はこのまま。本番デプロイ後に実際のURLへ差し替える。
-const API_BASE_URL = "http://127.0.0.1:5000";
+// 空文字のあいだはバックエンドを一切呼ばない（GitHub Pagesでの公開中はこの状態にしておく）。
+// 将来バックエンドを本番公開したら、そのURL（https://...）を入れる。
+const API_BASE_URL = "";
 
-// 承認済みの投稿スポットを取得する（バックエンド未接続時は空配列を返す）
+// 承認済みの投稿スポットを取得する（バックエンド未設定・未接続時は空配列を返す）
 async function fetchApprovedSpots(category) {
+    if (!API_BASE_URL) return [];
     try {
-        // バックエンドが起動していない場合に長時間待たされないよう、1.5秒でタイムアウトさせる
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 1500);
-
         const res = await fetch(`${API_BASE_URL}/api/spots?category=${category}`, {
             signal: controller.signal,
         });
         clearTimeout(timeoutId);
-
         if (!res.ok) return [];
         return await res.json();
     } catch (err) {
-        // AbortErrorはタイムアウトによる意図的な中断なので、警告レベルを下げて静かにログする
-        if (err.name === "AbortError") {
-            console.info("承認済みスポットの取得がタイムアウトしました(バックエンド未起動の可能性)");
-        } else {
-            console.warn("承認済みスポットの取得に失敗しました:", err);
-        }
+        console.warn("承認済みスポットの取得に失敗しました:", err);
         return [];
     }
 }
@@ -36,38 +30,26 @@ async function getCombinedSpots(categoryConfig) {
     return [...staticData, ...approvedData];
 }
 
-
 async function loadData(fileName) {
     const response = await fetch(`data/${fileName}`);
     return await response.json();
 }
 
-// お気に入りリストを取得
-function getFavorites(category) {
-    return JSON.parse(localStorage.getItem(`fav_${category}`)) || [];
+// HTMLエスケープ（全ページ共通）。innerHTML に外部データを入れるときは必ず通す。
+function escapeHTML(value) {
+    if (value === undefined || value === null) return "";
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-// お気に入りを追加 /　削除する
-function toggleFavorite(category, id) {
-    let favs = getFavorites(category);
-    if (favs.includes(id)) {
-        favs = favs.filter(favId => favId !== id);
-    } else {
-        favs.push(id);
-    }
-    localStorage.setItem(`fav_${category}`, JSON.stringify(favs));
-    return favs;
-}
-// お気に入りに入っているか判定する
-function isFavorite(category, id) {
-    const favs = getFavorites(category);
-    return favs.includes(id);
-}
-
-// ---ハンバーガーメニューの開閉処理---
+// --- ハンバーガーメニューの開閉処理 ---
 document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) lucide.createIcons();
-    
+
     const hamburger = document.getElementById("hamburger-btn");
     const navMenu = document.getElementById("nav-menu");
 
@@ -78,52 +60,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-// --- 管理者モード（©マークを5回クリック→パスワードで切り替え） ---
-(function () {
-    const ADMIN_PASSWORD = "20000420"; // ★好きなパスワードに変更してください
-
-    let clickCount = 0;
-    let clickTimer = null;
-
-    document.addEventListener("DOMContentLoaded", () => {
-        // ページを開いた時点で既に管理者モードが有効なら復元する
-        if (sessionStorage.getItem("adminMode") === "true") {
-            document.body.classList.add("admin-mode");
-        }
-
-        const copyright = document.getElementById("copyright");
-        if (!copyright) return;
-
-        copyright.addEventListener("click", () => {
-            clickCount++;
-
-            // 2秒以内に5回クリックしないとカウントをリセット
-            clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
-
-            if (clickCount >= 5) {
-                clickCount = 0;
-                
-                if (document.body.classList.contains("admin-mode")) {
-                    // 既にONならパスワード無しでOFFに戻す
-                    document.body.classList.remove("admin-mode");
-                    sessionStorage.removeItem("adminMode");
-                    sessionStorage.removeItem("adminToken");
-                    document.dispatchEvent(new CustomEvent("adminModeChanged"));
-                    alert("管理者モードを解除しました。");
-                    return;
-                }
-                
-                const input = prompt("管理者パスワードを入力してください：");
-                if (input === ADMIN_PASSWORD) {
-                    document.body.classList.add("admin-mode");
-                    sessionStorage.setItem("adminMode", "true");
-                    sessionStorage.setItem("adminToken", input);
-                    document.dispatchEvent(new CustomEvent("adminModeChanged"));
-                    alert("管理者モードに変更しました。");
-                } else if (input !== null) {
-                }
-            }
-        });
-    });
-})();

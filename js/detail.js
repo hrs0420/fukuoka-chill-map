@@ -86,13 +86,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const areaEl = document.getElementById("area");
     if (areaEl) {
         areaEl.className = "detail-meta";
-        areaEl.innerHTML = `<i data-lucide="map-pin"></i> <span>エリア: ${spot.area || "情報なし"}</span>`;
+        areaEl.innerHTML = `<i data-lucide="map-pin"></i> <span>エリア: ${escapeHTML(spot.area || "情報なし")}</span>`;
     }
 
     const ratingEl = document.getElementById("rating");
     if (ratingEl) {
         ratingEl.className = "detail-meta";
-        ratingEl.innerHTML = `<i data-lucide="star"></i> <span>評価: ${spot.rating || "0.0"}</span>`;
+        ratingEl.innerHTML = `<i data-lucide="star"></i> <span>評価: ${escapeHTML(spot.rating || "0.0")}</span>`;
     }
 
     // カテゴリ固有項目をFIELD_CONFIGに沿って動的に生成
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const p = document.createElement("p");
         p.className = "detail-field";
-        p.innerHTML = `<i data-lucide="${field.icon}"></i> <span>${field.label}: ${valueText}</span>`;
+        p.innerHTML = `<i data-lucide="${field.icon}"></i> <span>${field.label}: ${escapeHTML(valueText)}</span>`;
         fieldsContainer.appendChild(p);
     });
 
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const addressEl = document.getElementById("address");
     if (spot.address) {
         addressEl.className = "detail-meta";
-        addressEl.innerHTML = `<i data-lucide="home"></i> <span>住所: ${spot.address}</span>`;
+        addressEl.innerHTML = `<i data-lucide="home"></i> <span>住所: ${escapeHTML(spot.address)}</span>`;
         addressEl.style.display = "flex";
     } else {
         addressEl.style.display = "none";
@@ -147,10 +147,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const shortDesc = (spot.description || "").slice(0, 110);
     const pageUrl = `${location.origin}${location.pathname}?name=${encodeURIComponent(spot.name)}&type=${spotType}`;
-    const imageUrl = new URL(spot.image, location.origin).href;
+    const imageUrl = new URL(spot.image, location.href).href;
 
     setMeta("description", shortDesc);
-    setMeta("og:type", "place", true);
+    setMeta("og:type", "article", true);
     setMeta("og:title", spot.name, true);
     setMeta("og:description", shortDesc, true);
     setMeta("og:image", imageUrl, true);
@@ -181,11 +181,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         jsonLd.address = { "@type": "PostalAddress", "streetAddress": spot.address };
     }
 
+    // 評価はサイト編集部によるレビューとして出す。
+    // （以前の aggregateRating は口コミ0件でも reviewCount:1 を申告しており、
+    //   Googleのガイドライン違反になるおそれがあったため置き換えた）
     if (spot.rating) {
-        jsonLd.aggregateRating = {
-            "@type": "AggregateRating",
-            "ratingValue": spot.rating,
-            "reviewCount": Math.max(1, (spot.reviews || []).length),
+        jsonLd.review = {
+            "@type": "Review",
+            "author": { "@type": "Organization", "name": "Fukuoka Chill Map" },
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": Number(spot.rating),
+                "bestRating": 5,
+                "worstRating": 1,
+            },
         };
     }
 
@@ -221,7 +229,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 口コミ機能の初期化
-    initReviews(spot.name, spot.reviews || []);
     initReviews(spot.name, spot.reviews || []);
     if (window.lucide) lucide.createIcons();
 });
@@ -355,14 +362,4 @@ function initReviews(spotName, jsonReviews) {
     }
 
     renderReviews();
-}
-
-function escapeHTML(str) {
-    if (!str) return "";
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
 }

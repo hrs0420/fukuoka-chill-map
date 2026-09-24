@@ -38,19 +38,19 @@ function renderFavorites(container, allData, favoriteNames, categoryConfig) {
         <a href="detail.html?name=${encodeURIComponent(item.name)}&type=${categoryConfig.type}" class="card-link">
             <div class="card">
                 <div class="card-media">
-                    <img src="${item.image}" alt="${item.name}" class="cafe-image">
-                    <span class="rating-badge">⭐ ${item.rating}</span>
+                    <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" class="cafe-image" loading="lazy">
+                    <span class="rating-badge">⭐ ${escapeHTML(item.rating)}</span>
                     <span
                         class="favorite"
-                        data-name="${item.name}"
+                        data-name="${escapeHTML(item.name)}"
                         data-key="${categoryConfig.storageKey}">
                         ❤️
                     </span>
                 </div>
                 <div class="card-body">
-                    <h2>${item.name}</h2>
-                    <p class="card-area">📍 ${item.area}</p>
-                    <p class="card-desc">${item.description}</p>
+                    <h2>${escapeHTML(item.name)}</h2>
+                    <p class="card-area">📍 ${escapeHTML(item.area)}</p>
+                    <p class="card-desc">${escapeHTML(item.description)}</p>
                 </div>
             </div>
         </a>

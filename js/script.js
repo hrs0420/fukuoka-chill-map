@@ -1,197 +1,139 @@
 /*
  * トップページ（index.html）専用のスクリプト。
- * カフェ・サウナ・ランニングの一覧絞り込みロジックは list.js に統合したため、
- * ここには「高評価TOP3」と「新着口コミ」の表示だけが残っている。
+ * 「高評価TOP3（全カテゴリ横断）」と「新着口コミ」を表示する。
  */
 
-let cafes = [];
-
+// 全カテゴリのスポット（各要素に _category を付けて保持）
+let allSpots = [];
 
 async function init() {
-    try {
-        cafes = await getCombinedSpots(CATEGORY_CONFIG.cafe);
-    } catch (error) {
-        console.error("カフェデータの読み込みエラー:", error);
+    for (const [key, cfg] of Object.entries(CATEGORY_CONFIG)) {
+        try {
+            const spots = await getCombinedSpots(cfg);
+            spots.forEach(s => allSpots.push({ ...s, _category: key }));
+        } catch (error) {
+            console.error(`${key} の読み込みエラー:`, error);
+        }
     }
 
     displayTopRanking();
     displayRecentReviews();
+    if (window.lucide) lucide.createIcons();
 }
 
 document.addEventListener("DOMContentLoaded", init);
 
-
-// --- トップページ：高評価 TOP3 の描画 ---
+// --- 高評価 TOP3（全カテゴリから評価順） ---
 function displayTopRanking() {
-    const topListContainer = document.getElementById("top-rated-list");
-    if (!topListContainer) return;
+    const container = document.getElementById("top-rated-list");
+    if (!container) return;
 
-    if (cafes.length === 0) {
-        topListContainer.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888;'>データを読み込み中...</p>";
+    if (allSpots.length === 0) {
+        container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888;'>データを読み込めませんでした。</p>";
         return;
     }
 
-    const top3 = [...cafes]
+    const top3 = [...allSpots]
         .sort((a, b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0))
         .slice(0, 3);
 
-    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    container.innerHTML = top3.map(spot => {
+        const cfg = CATEGORY_CONFIG[spot._category];
+        const favorites = JSON.parse(localStorage.getItem(cfg.storageKey)) || [];
+        const heart = favorites.includes(spot.name) ? "❤️" : "🤍";
 
-    topListContainer.innerHTML = "";
-    top3.forEach(cafe => {
-        const isFav = favorites.includes(cafe.name);
-        const heartIcon = isFav ? "❤️" : "🤍";
-
-        topListContainer.innerHTML += `
+        return `
             <div class="card">
-                <a href="detail.html?name=${encodeURIComponent(cafe.name)}&type=cafe" class="card-link">
+                <a href="detail.html?name=${encodeURIComponent(spot.name)}&type=${cfg.type}" class="card-link">
                     <div class="card-media">
-                        <img src="${cafe.image || 'images/default.jpg'}" alt="${escapeHTML(cafe.name)}" class="cafe-image">
-                        <span class="rating-badge">⭐ ${cafe.rating || '0.0'}</span>
+                        <img src="${escapeHTML(spot.image || "images/default.jpg")}" alt="${escapeHTML(spot.name)}" class="cafe-image" loading="lazy">
+                        <span class="rating-badge">⭐ ${escapeHTML(spot.rating || "0.0")}</span>
                     </div>
                     <div class="card-body">
-                        <h3>${escapeHTML(cafe.name)}</h3>
-                        <p class="card-area">📍 ${escapeHTML(cafe.area || '福岡')}</p>
-                        <p class="card-desc">${escapeHTML(cafe.description || '')}</p>
+                        <h3>${escapeHTML(spot.name)}</h3>
+                        <p class="card-area">📍 ${escapeHTML(spot.area || "福岡")}</p>
+                        <p class="card-desc">${escapeHTML(spot.description || "")}</p>
                     </div>
                 </a>
-                <span class="favorite" data-name="${escapeHTML(cafe.name)}">${heartIcon}</span>
+                <span class="favorite" data-name="${escapeHTML(spot.name)}" data-key="${cfg.storageKey}">${heart}</span>
             </div>
         `;
-    });
+    }).join("");
 }
 
-
-// --- トップページ：口コミの収集（JSON由来＋localStorage由来をまとめる） ---
+// --- 口コミの収集（JSON由来 + この端末のlocalStorage由来） ---
 function collectAllReviews() {
-    const jsonReviews = [];
-    cafes.forEach(cafe => {
-        if (cafe.reviews && Array.isArray(cafe.reviews)) {
-            cafe.reviews.forEach(r => {
-                jsonReviews.push({
-                    spotName: cafe.name,
-                    author: r.author || r.name || '匿名',
-                    score: parseInt(r.score || r.rating) || 5,
-                    comment: r.comment || r.text || '',
-                    isLocal: false,
-                });
+    const reviews = [];
+
+    allSpots.forEach(spot => {
+        (Array.isArray(spot.reviews) ? spot.reviews : []).forEach(r => {
+            reviews.push({
+                spotName: spot.name,
+                author: r.author || r.name || "匿名",
+                score: parseInt(r.score || r.rating) || 5,
+                comment: r.comment || r.text || "",
             });
-        }
+        });
     });
 
-    const localReviews = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (!key || !key.startsWith("comments_")) continue;
+        let saved = [];
+        try { saved = JSON.parse(localStorage.getItem(key)) || []; } catch (e) { continue; }
+        if (!Array.isArray(saved)) continue;
 
-        const spotName = key.replace(/^comments_/, "");
-        const saved = JSON.parse(localStorage.getItem(key)) || [];
-
-        if (Array.isArray(saved)) {
-            saved.forEach((r, idx) => {
-                localReviews.push({
-                    spotName,
-                    author: r.name || r.author || '匿名',
-                    score: parseInt(r.score || r.rating) || 5,
-                    comment: r.comment || r.text || '',
-                    isLocal: true,
-                    storageKey: key,
-                    localIndex: idx,
-                });
+        saved.forEach(r => {
+            reviews.push({
+                spotName: key.replace(/^comments_/, ""),
+                author: r.name || r.author || "匿名",
+                score: parseInt(r.score || r.rating) || 5,
+                comment: r.comment || r.text || "",
             });
-        }
+        });
     }
-
-    return [...jsonReviews, ...localReviews];
+    return reviews;
 }
 
-// --- トップページ：新着口コミの描画（通常時は4件のみ／管理者モードは全件＋削除可） ---
+// --- 新着口コミ（4件） ---
 function displayRecentReviews() {
-    const recentContainer = document.getElementById("recent-reviews-list");
-    if (!recentContainer) return;
+    const container = document.getElementById("recent-reviews-list");
+    if (!container) return;
 
-    const isAdmin = document.body.classList.contains("admin-mode");
-    const allReviews = collectAllReviews();
+    const list = collectAllReviews().reverse().slice(0, 4);
 
-    const headingEl = document.getElementById("recent-reviews-heading");
-    if (headingEl) {
-        headingEl.innerHTML = isAdmin
-            ? `<i data-lucide="message-circle"></i> 口コミ管理（全${allReviews.length}件）`
-            : `<i data-lucide="message-circle"></i> 新着の口コミ`;
-        if (window.lucide) lucide.createIcons();
-    }
-
-    recentContainer.innerHTML = "";
-
-    if (allReviews.length === 0) {
-        recentContainer.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888;'>まだ口コミが投稿されていません。</p>";
+    if (list.length === 0) {
+        container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #888;'>まだ口コミが投稿されていません。</p>";
         return;
     }
 
-    const reversed = [...allReviews].reverse();
-    const listToShow = isAdmin ? reversed : reversed.slice(0, 4);
-
-    listToShow.forEach(review => {
-        const stars = "★".repeat(review.score) + "☆".repeat(Math.max(0, 5 - review.score));
-
-        const deleteBtn = review.isLocal
-            ? `<button class="delete-btn" data-storage-key="${review.storageKey}" data-index="${review.localIndex}">削除</button>`
-            : "";
-
-        recentContainer.innerHTML += `
+    container.innerHTML = list.map(r => {
+        const score = Math.min(5, Math.max(0, r.score));
+        const stars = "★".repeat(score) + "☆".repeat(5 - score);
+        return `
             <div class="review-mini-card">
                 <div class="review-mini-header">
-                    <h4>${escapeHTML(review.spotName)}</h4>
-                    ${deleteBtn}
+                    <h4>${escapeHTML(r.spotName)}</h4>
                 </div>
                 <div class="stars">${stars}</div>
-                <p style="font-size: 14px; margin: 8px 0; color: #444;">"${escapeHTML(review.comment)}"</p>
-                <span style="font-size: 12px; color: #888;">by ${escapeHTML(review.author)}</span>
+                <p style="font-size: 14px; margin: 8px 0; color: #444;">"${escapeHTML(r.comment)}"</p>
+                <span style="font-size: 12px; color: #888;">by ${escapeHTML(r.author)}</span>
             </div>
         `;
-    });
+    }).join("");
 }
 
-// --- 管理者モードでの口コミ削除（トップページ） ---
-document.addEventListener("click", (e) => {
-    if (!e.target.classList.contains("delete-btn")) return;
-    if (!e.target.closest("#recent-reviews-list")) return;
-
-    e.preventDefault();
-
-    const storageKey = e.target.dataset.storageKey;
-    const index = parseInt(e.target.dataset.index);
-    if (!storageKey || isNaN(index)) return;
-
-    if (!confirm("この口コミを削除しますか？")) return;
-
-    const reviews = JSON.parse(localStorage.getItem(storageKey)) || [];
-    reviews.splice(index, 1);
-
-    if (reviews.length > 0) {
-        localStorage.setItem(storageKey, JSON.stringify(reviews));
-    } else {
-        localStorage.removeItem(storageKey);
-    }
-
-    displayRecentReviews();
-});
-
-// --- 管理者モードのON/OFF切り替えを検知して再描画 ---
-document.addEventListener("adminModeChanged", () => {
-    displayRecentReviews();
-});
-
-// --- いいね（お気に入り）クリックイベント：トップページの高評価TOP3用 ---
+// --- お気に入り切り替え（カテゴリごとのキーに保存） ---
 document.addEventListener("click", (e) => {
     if (!e.target.classList.contains("favorite")) return;
-
     e.preventDefault();
     e.stopPropagation();
 
     const name = e.target.dataset.name;
-    let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    const storageKey = e.target.dataset.key;
+    if (!storageKey) return;
 
+    let favorites = JSON.parse(localStorage.getItem(storageKey)) || [];
     if (favorites.includes(name)) {
         favorites = favorites.filter(f => f !== name);
         e.target.textContent = "🤍";
@@ -199,19 +141,5 @@ document.addEventListener("click", (e) => {
         favorites.push(name);
         e.target.textContent = "❤️";
     }
-
-    localStorage.setItem("favorites", JSON.stringify(favorites));
+    localStorage.setItem(storageKey, JSON.stringify(favorites));
 });
-
-
-// --- HTMLエスケープ処理 ---
-function escapeHTML(str) {
-    if (!str) return "";
-    return str.replace(/[&<>'"]/g, tag => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        "'": '&#39;',
-        '"': '&quot;'
-    }[tag] || tag));
-}
