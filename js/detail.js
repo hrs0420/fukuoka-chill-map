@@ -20,9 +20,13 @@ const DATA_FILES = Object.fromEntries(
 );
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // 静的生成ページの <body> に data-spot-name と data-spot-type がある場合
+    const bodySpotName = document.body.dataset.spotName;
+    const bodySpotType = document.body.dataset.spotType;
+
     const params = new URLSearchParams(window.location.search);
-    const rawName = params.get("name") || params.get("id");
-    const typeParam = params.get("type"); // "cafe" | "sauna" | "running"（一覧ページのリンクから渡ってくる）
+    const rawName = bodySpotName || params.get("name") || params.get("id");
+    const typeParam = bodySpotType || params.get("type"); // "cafe" | "sauna" | "running"
 
     if (!rawName) {
         alert("スポット情報が見つかりません。");
@@ -62,8 +66,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (!spot) {
-        alert("スポットが見つかりませんでした。");
-        window.location.href = "index.html";
+        if (!bodySpotName) {
+            alert("スポットが見つかりませんでした。");
+            window.location.href = "index.html";
+        }
         return;
     }
 
@@ -71,7 +77,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!s) return false;
         const sName = (s.name || "").trim();
         const sId = String(s.id || "").trim();
-        return sName === name || sId === name;
+        const sSlug = (s.slug || "").trim();
+        return sName === name || sId === name || sSlug === name;
+    }
+
+    // 旧URL(detail.html?name=...&type=...)でアクセスされた場合、該当する新URLへリダイレクト
+    if (!bodySpotName && spot.slug) {
+        const canonicalUrl = `https://hrs0420.github.io/fukuoka-chill-map/spots/${spotType}/${spot.slug}.html`;
+        let canonicalTag = document.querySelector('link[rel="canonical"]');
+        if (!canonicalTag) {
+            canonicalTag = document.createElement("link");
+            canonicalTag.setAttribute("rel", "canonical");
+            document.head.appendChild(canonicalTag);
+        }
+        canonicalTag.setAttribute("href", canonicalUrl);
+
+        const redirectUrl = `spots/${spotType}/${spot.slug}.html`;
+        window.location.replace(redirectUrl);
+        return;
     }
 
     const setText = (id, text) => {
@@ -97,118 +120,50 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // カテゴリ固有項目をFIELD_CONFIGに沿って動的に生成
     const fieldsContainer = document.getElementById("detail-fields");
-    fieldsContainer.innerHTML = "";
+    if (fieldsContainer) {
+        fieldsContainer.innerHTML = "";
 
-    (FIELD_CONFIG[spotType] || []).forEach(field => {
-        if (spot[field.key] === undefined || spot[field.key] === null || spot[field.key] === "") return;
+        (FIELD_CONFIG[spotType] || []).forEach(field => {
+            if (spot[field.key] === undefined || spot[field.key] === null || spot[field.key] === "") return;
 
-        let valueText;
-        if (field.type === "bool") {
-            valueText = spot[field.key]
-                ? (field.trueText || "あり")
-                : (field.falseText || "なし");
-        } else {
-            valueText = spot[field.key];
-        }
+            let valueText;
+            if (field.type === "bool") {
+                valueText = spot[field.key]
+                    ? (field.trueText || "あり")
+                    : (field.falseText || "なし");
+            } else {
+                valueText = spot[field.key];
+            }
 
-        const p = document.createElement("p");
-        p.className = "detail-field";
-        p.innerHTML = `<i data-lucide="${field.icon}"></i> <span>${field.label}: ${escapeHTML(valueText)}</span>`;
-        fieldsContainer.appendChild(p);
-    });
+            const p = document.createElement("p");
+            p.className = "detail-field";
+            p.innerHTML = `<i data-lucide="${field.icon}"></i> <span>${field.label}: ${escapeHTML(valueText)}</span>`;
+            fieldsContainer.appendChild(p);
+        });
+    }
 
     if (window.lucide) lucide.createIcons();
 
     const addressEl = document.getElementById("address");
-    if (spot.address) {
-        addressEl.className = "detail-meta";
-        addressEl.innerHTML = `<i data-lucide="home"></i> <span>住所: ${escapeHTML(spot.address)}</span>`;
-        addressEl.style.display = "flex";
-    } else {
-        addressEl.style.display = "none";
+    if (addressEl) {
+        if (spot.address) {
+            addressEl.className = "detail-meta";
+            addressEl.innerHTML = `<i data-lucide="home"></i> <span>住所: ${escapeHTML(spot.address)}</span>`;
+            addressEl.style.display = "flex";
+        } else {
+            addressEl.style.display = "none";
+        }
     }
 
     setText("description", spot.description || "");
 
 
-    // --- SEO: スポットごとのtitle / description / canonical / OGP / JSON-LD ---
-    document.title = `${spot.name}（${spot.area}） | Fukuoka Chill Map`;
-
-    function setMeta(nameOrProp, content, isProperty = false) {
-        const attr = isProperty ? "property" : "name";
-        let el = document.querySelector(`meta[${attr}="${nameOrProp}"]`);
-        if (!el) {
-            el = document.createElement("meta");
-            el.setAttribute(attr, nameOrProp);
-            document.head.appendChild(el);
-        }
-        el.setAttribute("content", content);
-    }
-
-    const shortDesc = (spot.description || "").slice(0, 110);
-    const pageUrl = `${location.origin}${location.pathname}?name=${encodeURIComponent(spot.name)}&type=${spotType}`;
-    const imageUrl = new URL(spot.image, location.href).href;
-
-    setMeta("description", shortDesc);
-    setMeta("og:type", "article", true);
-    setMeta("og:title", spot.name, true);
-    setMeta("og:description", shortDesc, true);
-    setMeta("og:image", imageUrl, true);
-    setMeta("og:url", pageUrl, true);
-    setMeta("twitter:card", "summary_large_image");
-
-    let canonicalTag = document.querySelector('link[rel="canonical"]');
-    if (!canonicalTag) {
-        canonicalTag = document.createElement("link");
-        canonicalTag.setAttribute("rel", "canonical");
-        document.head.appendChild(canonicalTag);
-    }
-    canonicalTag.setAttribute("href", pageUrl);
-
-    // 構造化データ（JSON-LD）：Googleにレビュー星などを認識させる
-    const schemaType = { cafe: "CafeOrCoffeeShop", sauna: "HealthClub", running: "TouristAttraction" }[spotType];
-
-    const jsonLd = {
-        "@context": "https://schema.org",
-        "@type": schemaType,
-        "name": spot.name,
-        "description": spot.description || "",
-        "image": imageUrl,
-        "url": pageUrl,
-    };
-
-    if (spot.address) {
-        jsonLd.address = { "@type": "PostalAddress", "streetAddress": spot.address };
-    }
-
-    // 評価はサイト編集部によるレビューとして出す。
-    // （以前の aggregateRating は口コミ0件でも reviewCount:1 を申告しており、
-    //   Googleのガイドライン違反になるおそれがあったため置き換えた）
-    if (spot.rating) {
-        jsonLd.review = {
-            "@type": "Review",
-            "author": { "@type": "Organization", "name": "Fukuoka Chill Map" },
-            "reviewRating": {
-                "@type": "Rating",
-                "ratingValue": Number(spot.rating),
-                "bestRating": 5,
-                "worstRating": 1,
-            },
-        };
-    }
-
-    const ldScript = document.createElement("script");
-    ldScript.type = "application/ld+json";
-    ldScript.textContent = JSON.stringify(jsonLd);
-    document.head.appendChild(ldScript);
-
-    
     // Googleマップ
     const searchTarget = spot.address || spot.name;
     const encodedQuery = encodeURIComponent(searchTarget);
 
     const mapIframe = document.getElementById("google-map");
-    if (mapIframe) {
+    if (mapIframe && !mapIframe.src) {
         mapIframe.src = `https://maps.google.co.jp/maps?q=${encodedQuery}&output=embed&z=15`;
     }
 

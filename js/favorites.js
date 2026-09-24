@@ -34,8 +34,12 @@ function renderFavorites(container, allData, favoriteNames, categoryConfig) {
     }
 
     filteredData.forEach(item => {
+        const detailUrl = item.slug
+            ? `spots/${categoryConfig.type}/${item.slug}.html`
+            : `detail.html?name=${encodeURIComponent(item.name)}&type=${categoryConfig.type}`;
+
         container.innerHTML += `
-        <a href="detail.html?name=${encodeURIComponent(item.name)}&type=${categoryConfig.type}" class="card-link">
+        <a href="${detailUrl}" class="card-link">
             <div class="card">
                 <div class="card-media">
                     <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" class="cafe-image" loading="lazy">

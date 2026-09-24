@@ -42,9 +42,13 @@ function displayTopRanking() {
         const favorites = JSON.parse(localStorage.getItem(cfg.storageKey)) || [];
         const heart = favorites.includes(spot.name) ? "❤️" : "🤍";
 
+        const detailUrl = spot.slug
+            ? `spots/${cfg.type}/${spot.slug}.html`
+            : `detail.html?name=${encodeURIComponent(spot.name)}&type=${cfg.type}`;
+
         return `
             <div class="card">
-                <a href="detail.html?name=${encodeURIComponent(spot.name)}&type=${cfg.type}" class="card-link">
+                <a href="${detailUrl}" class="card-link">
                     <div class="card-media">
                         <img src="${escapeHTML(spot.image || "images/default.jpg")}" alt="${escapeHTML(spot.name)}" class="cafe-image" loading="lazy">
                         <span class="rating-badge">⭐ ${escapeHTML(spot.rating || "0.0")}</span>
