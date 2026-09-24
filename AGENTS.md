@@ -21,10 +21,14 @@
 ## コードのルール
 
 - カテゴリごとの違いは `js/categories.js` の `CATEGORY_CONFIG` / `FIELD_CONFIG` で表現する
+
   - `list.js` などに `if (category === "cafe")` のような分岐を書かない
 - `innerHTML` に外部データ（JSON、口コミ、URLパラメータなど）を入れるときは、必ず `escapeHTML()`（`js/utils.js`）を通す
 - 共通の処理は `js/utils.js` にまとめ、同じ関数を複数のファイルに定義しない
 - コメントは日本語で書く
+- 新しいページを作るときは、index.html の （Google Fonts・favicon を含む）、ヘッダー、ナビメニュー（lucide アイコンを含む）、フッターをそのままコピーして使う
+- 新しいページには必ず title、meta description、canonical を設定する
+- HTML は既存ページと同じようにインデントして整形する（1行に詰め込まない）
 
 ## 変更してはいけないもの
 
