@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     --color-bg: #F4EFE4;
     --color-surface: #FFFDF8;
     --color-ink: #26332C;
@@ -881,7 +881,7 @@ footer p {
 }
 
 .delete-btn {
-    display: none;
+    display: inline-block;
     background: none;
     border: none;
     color: var(--color-rose);
