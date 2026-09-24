@@ -31,7 +31,9 @@ async function getCombinedSpots(categoryConfig) {
 }
 
 async function loadData(fileName) {
-    const response = await fetch(`data/${fileName}`);
+    const isDeepPage = document.body && (document.body.dataset.spotName || location.pathname.includes('/spots/'));
+    const pathPrefix = isDeepPage ? "../../" : "";
+    const response = await fetch(`${pathPrefix}data/${fileName}`);
     return await response.json();
 }
 

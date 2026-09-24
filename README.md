@@ -40,9 +40,12 @@ fukuoka-chill-map/
 │   ├── detail.js       # 詳細ページ・口コミ
 │   ├── favorites.js    # お気に入りページ
 │   └── request.js      # スポット追加依頼ページ（現在は受付停止中）
+├── scripts/
+│   └── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
+├── spots/              # 自動生成された各スポットの静的HTML
 ├── index.html          # トップ
 ├── list.html           # 一覧（?category=cafe / sauna / running）
-├── detail.html         # 詳細（?name=スポット名&type=カテゴリ）
+├── detail.html         # 詳細（?name=スポット名&type=カテゴリ、旧URL用）
 ├── favorites.html      # お気に入り
 ├── request.html        # スポット追加依頼
 ├── robots.txt
@@ -66,6 +69,7 @@ fukuoka-chill-map/
 | 項目            | 型     | 内容                                   |
 | --------------- | ------ | -------------------------------------- |
 | `id`          | 文字列 | スポットの識別子（例:`sauna_1`）     |
+| `slug`        | 文字列 | URL用の識別子（例:`wellbe-fukuoka`） |
 | `name`        | 文字列 | スポット名                             |
 | `area`        | 文字列 | エリア名（一覧のエリア選択に使われる） |
 | `rating`      | 数値   | 評価（1.0〜5.0）                       |
@@ -83,15 +87,8 @@ fukuoka-chill-map/
 ## スポットを追加する手順
 
 1. `images/` に写真を追加する
-2. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる）
-3. `sitemap.xml` に詳細ページのURLを1行追加する
-
-```xml
-<url><loc>https://hrs0420.github.io/fukuoka-chill-map/detail.html?name=スポット名&type=カテゴリ</loc><priority>0.6</priority></url>
-```
-
-- `name=` の部分はURLエンコードが必要（ブラウザで詳細ページを開き、アドレスバーのURLをコピーするのが確実）
-- XMLの中では `&` を `&amp;` と書く
+2. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる。`slug` も含む）
+3. `node scripts/build.js` を実行し、静的HTMLおよび `sitemap.xml` を更新する
 
 ## ローカルでの確認方法
 
@@ -107,7 +104,8 @@ JSONを `fetch` で読み込んでいるため、HTMLファイルをダブルク
 ## SEO対策
 
 - `robots.txt` と `sitemap.xml` を設置し、Google Search Console に登録済み
-- ページごとの `title` / `meta description` / canonical / OGP を設定（一覧・詳細はJSで動的に設定）
+- ページごとの `title` / `meta description` / canonical / OGP を設定
+- 各スポットごとに静的HTML（`spots/{category}/{slug}.html`）を自動生成し、検索エンジンでのインデックスを最適化
 - 詳細ページに構造化データ（JSON-LD）を出力（評価はサイト編集部のレビューとして記載）
 - `favorites.html` は `noindex`
 
@@ -119,7 +117,6 @@ JSONを `fetch` で読み込んでいるため、HTMLファイルをダブルク
 
 ## 今後の予定
 
-- 詳細ページの静的HTML化と `sitemap.xml` の自動生成（SEO強化）
 - プライバシーポリシー・運営者情報・お問い合わせページの追加
 - スポット数の拡充と紹介文の充実
 - アフィリエイト導線と記事コンテンツの追加
