@@ -133,6 +133,13 @@ function generateSpotHTML(spot, category) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MQNEWCRC3V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MQNEWCRC3V');
+    </script>
     <title>${spotNameEsc}（${spotAreaEsc}） | Fukuoka Chill Map</title>
     <meta name="description" content="${shortDescEsc}">
     <link rel="canonical" href="${pageUrl}">

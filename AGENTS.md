@@ -29,6 +29,7 @@
 - 新しいページを作るときは、index.html の （Google Fonts・favicon を含む）、ヘッダー、ナビメニュー（lucide アイコンを含む）、フッターをそのままコピーして使う
 - 新しいページには必ず title、meta description、canonical を設定する
 - HTML は既存ページと同じようにインデントして整形する（1行に詰め込まない）
+- 新しいページには GA4 タグ（`index.html` の `<head>` にあるもの）を必ず入れる
 
 ## 変更してはいけないもの
 
