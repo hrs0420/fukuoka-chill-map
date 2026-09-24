@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/index.html</loc><priority>1.0</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/about.html</loc><priority>0.5</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/privacy.html</loc><priority>0.5</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/contact.html</loc><priority>0.5</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=cafe</loc><priority>0.8</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=sauna</loc><priority>0.8</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=running</loc><priority>0.8</priority></url>

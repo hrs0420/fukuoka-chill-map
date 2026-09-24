@@ -272,6 +272,7 @@ ${fieldsHTML}    </div>
 
 <footer>
     <p id="copyright">© 2026 Fukuoka Chill Map</p>
+    <p class="footer-links"><a href="../../about.html">運営者情報</a> / <a href="../../privacy.html">プライバシーポリシー</a> / <a href="../../contact.html">お問い合わせ</a></p>
     <img src="../../images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
 </footer>
 
@@ -292,6 +293,9 @@ function build() {
 
     const sitemapUrls = [
         { loc: `${BASE_URL}index.html`, priority: '1.0' },
+        { loc: `${BASE_URL}about.html`, priority: '0.5' },
+        { loc: `${BASE_URL}privacy.html`, priority: '0.5' },
+        { loc: `${BASE_URL}contact.html`, priority: '0.5' },
         { loc: `${BASE_URL}list.html?category=cafe`, priority: '0.8' },
         { loc: `${BASE_URL}list.html?category=sauna`, priority: '0.8' },
         { loc: `${BASE_URL}list.html?category=running`, priority: '0.8' },
