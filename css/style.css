@@ -479,6 +479,16 @@ h1#page-title-icon-wrap svg {
     font-size: 18px;
 }
 
+.detail .visited-date {
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #666;
+}
+
+.detail-description p {
+    margin: 12px 0;
+}
+
 .detail hr {
     margin: 20px 0;
     border: none;

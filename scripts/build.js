@@ -61,6 +61,12 @@ function generateSpotHTML(spot, category) {
     const spotRatingEsc = escapeHTML(spot.rating !== undefined ? spot.rating : '0.0');
     const spotDescriptionEsc = escapeHTML(spot.description || '');
     const spotAddressEsc = escapeHTML(spot.address || '');
+    const bodyParagraphsHTML = spot.body
+        ? String(spot.body).split('\n\n').map(paragraph => `<p>${escapeHTML(paragraph)}</p>`).join('\n        ')
+        : `<p>${spotDescriptionEsc}</p>`;
+    const visitedHTML = spot.visited
+        ? `    <p class="visited-date">訪問時期: ${escapeHTML(spot.visited)}</p>\n`
+        : '';
 
     const shortDesc = (spot.description || '').slice(0, 110);
     const shortDescEsc = escapeHTML(shortDesc);
@@ -224,7 +230,9 @@ ${fieldsHTML}    </div>
 
     <hr>
 
-    <p id="description">${spotDescriptionEsc}</p>
+    ${visitedHTML}    <div id="description" class="detail-description">
+        ${bodyParagraphsHTML}
+    </div>
 </div>
 
 <div class="detail-section">

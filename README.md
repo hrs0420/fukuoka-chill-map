@@ -74,6 +74,8 @@ fukuoka-chill-map/
 | `area`        | 文字列 | エリア名（一覧のエリア選択に使われる） |
 | `rating`      | 数値   | 評価（1.0〜5.0）                       |
 | `description` | 文字列 | 紹介文                                 |
+| `body`        | 文字列 | 詳細ページに表示する長い紹介文（段落は空行で区切る。省略時は `description` を表示） |
+| `visited`     | 文字列 | 訪問時期（例: `2026年4月`。詳細ページの紹介文の上に表示） |
 | `image`       | 文字列 | 画像パス（例:`images/xxx.jpg`）      |
 | `address`     | 文字列 | 住所                                   |
 | `map`         | 文字列 | GoogleマップのURL                      |

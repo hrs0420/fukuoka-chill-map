@@ -155,7 +155,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    setText("description", spot.description || "");
+    // 旧URLでは長文紹介があれば段落ごとに表示し、静的ページのHTMLは上書きしない
+    if (!bodySpotName) {
+        const descriptionEl = document.getElementById("description");
+        if (descriptionEl) {
+            const paragraphs = spot.body
+                ? String(spot.body).split("\n\n")
+                : [spot.description || ""];
+            descriptionEl.innerHTML = paragraphs
+                .map(paragraph => `<p>${escapeHTML(paragraph)}</p>`)
+                .join("");
+
+            let visitedEl = document.getElementById("visited-date");
+            if (spot.visited) {
+                if (!visitedEl) {
+                    visitedEl = document.createElement("p");
+                    visitedEl.id = "visited-date";
+                    visitedEl.className = "visited-date";
+                    descriptionEl.parentNode.insertBefore(visitedEl, descriptionEl);
+                }
+                visitedEl.textContent = `訪問時期: ${spot.visited}`;
+            } else if (visitedEl) {
+                visitedEl.remove();
+            }
+        }
+    }
 
 
     // Googleマップ
