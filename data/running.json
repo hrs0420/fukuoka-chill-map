@@ -11,7 +11,7 @@
         "locker": true,
         "bathroom": true,
         "description": "1周2kmで距離を測りやすい福岡定番のコース。ゴムチップ路面と池の景色、多くのランナーに囲まれてモチベーションが続きます。",
-        "image": "images/ohori-running.jpg",
+        "image": "images/placeholders/running.jpg",
         "address": "",
         "map": "",
         "visited": "2026年春・夏",
@@ -29,7 +29,7 @@
         "locker": false,
         "bathroom": true,
         "description": "海風を感じながら走れるロケーション抜群のコース。明け方や夕暮れ時が特におすすめ",
-        "image": "images/momochi-running.jpg",
+        "image": "images/placeholders/running.jpg",
         "address": "",
         "map": ""
     },
@@ -45,7 +45,7 @@
         "locker": false,
         "bathroom": true,
         "description": "クセになるアップダウン。正面の坂はトレーニングにもってこいの距離と勾配",
-        "image": "images/west-park.jpg",
+        "image": "images/placeholders/running.jpg",
         "address": "",
         "map": ""
     },
@@ -61,7 +61,7 @@
         "locker": false,
         "bathroom": true,
         "description": "川沿いの整備された直線コース。水と緑が調和しており自然を感じながら気持ちよく走れる",
-        "image": "images/muromi-river.jpg",
+        "image": "images/placeholders/running.jpg",
         "address": "",
         "map": ""
     },
@@ -77,7 +77,7 @@
         "locker": false,
         "bathroom": false,
         "description": "アスファルトの道でも信号や橋がなく長距離を走るのに快適。博多駅から地下鉄で5分の好立地",
-        "image": "images/fukuoka-airport.jpg",
+        "image": "images/placeholders/running.jpg",
         "address": "",
         "map": ""
     },
@@ -93,7 +93,7 @@
         "locker": false,
         "bathroom": true,
         "description": "陸続きの島を一周しながら自然を満喫。",
-        "image": "images/shika-no-shima.jpg",
+        "image": "images/placeholders/running.jpg",
         "address": "",
         "map": ""
     }
