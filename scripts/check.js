@@ -11,6 +11,7 @@ const CATEGORY_FILES = {
 };
 const REQUIRED_SPOT_FIELDS = ['id', 'slug', 'name', 'area', 'rating', 'description', 'image'];
 const errors = [];
+const warnings = [];
 
 function report(message) {
     errors.push(message);
@@ -259,10 +260,30 @@ function checkSitemap() {
     });
 }
 
+function checkSpotImageWarnings() {
+    const knownSlugs = new Set();
+    Object.values(CATEGORY_FILES).forEach(file => {
+        const spots = readJsonFile(path.join(DATA_DIR, file));
+        if (Array.isArray(spots)) spots.forEach(spot => knownSlugs.add(spot.slug));
+    });
+    const imageDir = path.join(ROOT_DIR, 'images', 'spots');
+    if (!fs.existsSync(imageDir)) return;
+    fs.readdirSync(imageDir, { withFileTypes: true }).filter(entry => entry.isFile() && /\.(jpe?g|png|webp)$/i.test(entry.name)).forEach(entry => {
+        const filePath = path.join(imageDir, entry.name);
+        if (!knownSlugs.has(path.basename(entry.name, path.extname(entry.name)))) warnings.push(`images/spots/${entry.name}: slug が一致するスポットがありません`);
+        if (fs.statSync(filePath).size > 500 * 1024) warnings.push(`images/spots/${entry.name}: 500KB を超えています`);
+    });
+}
+
 const { parsedData } = checkDataFiles();
 checkAreas(parsedData);
 checkHtmlLinks();
 checkSitemap();
+checkSpotImageWarnings();
+if (warnings.length > 0) {
+    console.warn(`Warnings (${warnings.length}):`);
+    warnings.forEach(warning => console.warn(`- ${warning}`));
+}
 
 if (errors.length > 0) {
     console.error(`品質チェックで${errors.length}件の問題が見つかりました:`);

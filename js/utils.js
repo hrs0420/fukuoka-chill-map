@@ -27,7 +27,26 @@ async function getCombinedSpots(categoryConfig) {
         loadData(categoryConfig.dataFile),
         fetchApprovedSpots(categoryConfig.type),
     ]);
-    return [...staticData, ...approvedData];
+    const spots = [...staticData, ...approvedData];
+    try {
+        const imageMap = await loadGeneratedImageMap();
+        return spots.map(spot => ({
+            ...spot,
+            image: imageMap[spot.slug] ? `${document.body?.dataset.category || document.body?.dataset.spotName ? '../../' : ''}${imageMap[spot.slug]}` : spot.image,
+        }));
+    } catch {
+        return spots;
+    }
+}
+
+let generatedImageMapPromise;
+function loadGeneratedImageMap() {
+    if (!generatedImageMapPromise) {
+        const isDeepPage = document.body && (document.body.dataset.spotName || location.pathname.includes('/spots/'));
+        const prefix = isDeepPage ? '../../' : '';
+        generatedImageMapPromise = fetch(`${prefix}data/generated/images.json`).then(response => response.json());
+    }
+    return generatedImageMapPromise;
 }
 
 async function loadData(fileName) {

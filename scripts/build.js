@@ -73,6 +73,14 @@ function escapeAttribute(value) {
     return escapeHTML(value);
 }
 
+function resolveSpotImage(rootDir, spot) {
+    for (const extension of ['.jpg', '.jpeg', '.png', '.webp']) {
+        const candidate = path.join(rootDir, 'images', 'spots', `${spot.slug}${extension}`);
+        if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) return `images/spots/${spot.slug}${extension}`;
+    }
+    return spot.image || '';
+}
+
 function generateAffiliateHTML(spot, category, affiliates) {
     const products = affiliates.filter(product =>
         (Array.isArray(product.categories) && product.categories.includes(category)) ||
@@ -1048,6 +1056,11 @@ function build() {
         const spots = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', fileName), 'utf8'));
         return spots.map(spot => ({ spot, category }));
     });
+    const imageMap = Object.fromEntries(allSpots.map(({ spot }) => [spot.slug, resolveSpotImage(rootDir, spot)]));
+    allSpots.forEach(({ spot }) => { spot.image = imageMap[spot.slug]; });
+    const generatedDir = path.join(rootDir, 'data', 'generated');
+    fs.mkdirSync(generatedDir, { recursive: true });
+    fs.writeFileSync(path.join(generatedDir, 'images.json'), `${JSON.stringify(imageMap, null, 2)}\n`, 'utf8');
     const spotsById = new Map(allSpots.map(entry => [entry.spot.id, entry]));
     const spotsByArea = new Map();
     allSpots.forEach(entry => {
@@ -1072,6 +1085,7 @@ function build() {
     Object.entries(CATEGORY_FILES).forEach(([category, fileName]) => {
         const jsonPath = path.join(rootDir, 'data', fileName);
         const spots = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+        spots.forEach(spot => { spot.image = imageMap[spot.slug] || spot.image; });
 
         const categoryDir = path.join(spotsDir, category);
         fs.mkdirSync(categoryDir, { recursive: true });
