@@ -589,6 +589,44 @@ h1#page-title-icon-wrap svg {
     color: var(--color-primary);
 }
 
+.areas-list ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.area-list-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+}
+
+.area-list-item a {
+    color: var(--color-primary-dark);
+    font-weight: 700;
+}
+
+.area-list-item span,
+.area-card-category {
+    color: var(--color-primary);
+    font-size: 12px;
+}
+
+.area-card-category {
+    margin-bottom: 4px;
+}
+
+.detail-meta a {
+    color: var(--color-primary-dark);
+}
+
 .detail p {
     margin: 12px 0;
     font-size: 18px;

@@ -31,7 +31,8 @@ fukuoka-chill-map/
 │   ├── cafes.json      # カフェのデータ
 │   ├── saunas.json     # サウナのデータ
 │   ├── running.json    # ランニングスポットのデータ
-│   └── articles.json   # まとめ記事のデータ
+│   ├── articles.json   # まとめ記事のデータ
+│   └── areas.json      # エリア名とURL用slug
 ├── images/             # スポット写真・ロゴ
 ├── js/
 │   ├── categories.js   # カテゴリごとの設定（最重要）
@@ -46,6 +47,7 @@ fukuoka-chill-map/
 │   └── check.js        # データ・リンク・sitemapの品質チェック
 ├── spots/              # 自動生成された静的詳細・カテゴリ一覧HTML
 ├── articles/           # 自動生成された記事一覧・記事ページ
+├── areas/              # 自動生成されたエリア一覧・エリアページ
 ├── index.html          # トップ
 ├── list.html           # 旧一覧URLから静的カテゴリ一覧への転送
 ├── detail.html         # 詳細（?name=スポット名&type=カテゴリ、旧URL用）
@@ -105,6 +107,10 @@ fukuoka-chill-map/
 2. 各 `sections` に `heading` と `body` を設定する。スポットカードを表示する場合は、該当スポットの `id` を `spot_id` に指定する
 3. 下書きは `draft: true` にする。下書き記事は個別HTMLとsitemapに出力されない
 4. `node scripts/build.js` を実行し、記事一覧・公開記事ページ・`sitemap.xml` を更新する
+
+## エリアページ
+
+`data/areas.json` に全エリアの `name` とURL用 `slug` を登録し、`node scripts/build.js` を実行すると `areas/index.html` と各エリアページを生成する。ビルド後の `node scripts/check.js` で、スポットの全エリアが登録されていることも確認する。
 
 ## 品質チェック
 

@@ -174,6 +174,48 @@ function checkHtmlLinks() {
     });
 }
 
+function checkAreas(parsedData) {
+    const areas = parsedData.get('areas.json');
+    if (!Array.isArray(areas)) {
+        report('data/areas.json: エリア一覧はJSON配列にしてください');
+        return;
+    }
+
+    const names = new Set();
+    const slugs = new Set();
+    areas.forEach((area, index) => {
+        const location = `data/areas.json[${index}]`;
+        if (!area || typeof area !== 'object' || Array.isArray(area)) {
+            report(`${location}: エリアはオブジェクトにしてください`);
+            return;
+        }
+        if (typeof area.name !== 'string' || !area.name) {
+            report(`${location}: name は空でない文字列にしてください`);
+        } else if (names.has(area.name)) {
+            report(`${location}: name「${area.name}」が重複しています`);
+        } else {
+            names.add(area.name);
+        }
+        if (typeof area.slug !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(area.slug)) {
+            report(`${location}: slug は小文字英数字とハイフンで指定してください`);
+        } else if (slugs.has(area.slug)) {
+            report(`${location}: slug「${area.slug}」が重複しています`);
+        } else {
+            slugs.add(area.slug);
+        }
+    });
+
+    Object.entries(CATEGORY_FILES).forEach(([category, fileName]) => {
+        const spots = parsedData.get(fileName);
+        if (!Array.isArray(spots)) return;
+        spots.forEach((spot, index) => {
+            if (spot && typeof spot.area === 'string' && !names.has(spot.area)) {
+                report(`data/${fileName}[${index}]: エリア「${spot.area}」がdata/areas.jsonにありません (${category})`);
+            }
+        });
+    });
+}
+
 function checkSitemap() {
     const sitemapPath = path.join(ROOT_DIR, 'sitemap.xml');
     if (!fs.existsSync(sitemapPath)) {
@@ -217,7 +259,8 @@ function checkSitemap() {
     });
 }
 
-checkDataFiles();
+const { parsedData } = checkDataFiles();
+checkAreas(parsedData);
 checkHtmlLinks();
 checkSitemap();
 

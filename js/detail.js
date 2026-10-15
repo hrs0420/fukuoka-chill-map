@@ -109,7 +109,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const areaEl = document.getElementById("area");
     if (areaEl) {
         areaEl.className = "detail-meta";
-        areaEl.innerHTML = `<i data-lucide="map-pin"></i> <span>エリア: ${escapeHTML(spot.area || "情報なし")}</span>`;
+        const areaName = escapeHTML(spot.area || "情報なし");
+        const areaSlug = document.body?.dataset.areaSlug;
+        const areaDisplay = areaSlug
+            ? `<a href="../../areas/${escapeHTML(areaSlug)}.html">${areaName}</a>`
+            : areaName;
+        areaEl.innerHTML = `<i data-lucide="map-pin"></i> <span>エリア: ${areaDisplay}</span>`;
     }
 
     const ratingEl = document.getElementById("rating");

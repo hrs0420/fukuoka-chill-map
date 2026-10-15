@@ -1,0 +1,21 @@
+[
+    { "name": "久留米", "slug": "kurume" },
+    { "name": "志賀島", "slug": "shikanoshima" },
+    { "name": "糸島", "slug": "itoshima" },
+    { "name": "室見", "slug": "muromi" },
+    { "name": "小戸", "slug": "odo" },
+    { "name": "照葉", "slug": "teriha" },
+    { "name": "赤坂", "slug": "akasaka" },
+    { "name": "糟屋郡", "slug": "kasuya-gun" },
+    { "name": "大濠", "slug": "ohori" },
+    { "name": "大名", "slug": "daimyo" },
+    { "name": "筑紫野", "slug": "chikushino" },
+    { "name": "中州", "slug": "nakasu" },
+    { "name": "天神", "slug": "tenjin" },
+    { "name": "博多駅", "slug": "hakata-station" },
+    { "name": "百道", "slug": "momochi" },
+    { "name": "福岡空港", "slug": "fukuoka-airport" },
+    { "name": "平尾", "slug": "hirao" },
+    { "name": "別府", "slug": "beppu" },
+    { "name": "六本松", "slug": "ropponmatsu" }
+]
