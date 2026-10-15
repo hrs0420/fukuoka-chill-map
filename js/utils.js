@@ -29,14 +29,25 @@ async function getCombinedSpots(categoryConfig) {
     ]);
     const spots = [...staticData, ...approvedData];
     try {
-        const imageMap = await loadGeneratedImageMap();
+        const [imageMap, imageSizes] = await Promise.all([loadGeneratedImageMap(), loadGeneratedImageSizes()]);
         return spots.map(spot => ({
             ...spot,
-            image: imageMap[spot.slug] ? `${document.body?.dataset.category || document.body?.dataset.spotName ? '../../' : ''}${imageMap[spot.slug]}` : spot.image,
+            image: imageMap[spot.slug] || spot.image,
+            imageWidth: imageSizes[spot.slug]?.width || 400,
+            imageHeight: imageSizes[spot.slug]?.height || 300,
         }));
     } catch {
         return spots;
     }
+}
+
+let generatedImageSizesPromise;
+function loadGeneratedImageSizes() {
+    if (!generatedImageSizesPromise) {
+        const isDeepPage = document.body && (document.body.dataset.category || document.body.dataset.spotName || location.pathname.includes('/spots/'));
+        generatedImageSizesPromise = fetch(`${isDeepPage ? '../../' : ''}data/generated/image-sizes.json`).then(response => response.json());
+    }
+    return generatedImageSizesPromise;
 }
 
 let generatedImageMapPromise;

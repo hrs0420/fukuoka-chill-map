@@ -282,7 +282,7 @@ function displayList(items) {
     const favorites = JSON.parse(localStorage.getItem(config.storageKey)) || [];
     const assetPrefix = document.body?.dataset.category ? "../../" : "";
 
-    items.forEach(item => {
+    items.forEach((item, index) => {
         const tagsHTML = config.cardTags
             ? `<div class="card-tag-row">${config.cardTags(item).map(t => `<span class="card-tag">${escapeHTML(t)}</span>`).join("")}</div>`
             : "";
@@ -295,7 +295,7 @@ function displayList(items) {
         <a href="${detailUrl}" class="card-link">
             <div class="card">
                 <div class="card-media">
-                    <img src="${assetPrefix}${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" class="cafe-image" loading="lazy">
+                    <img src="${assetPrefix}${escapeHTML(item.image)}" width="${escapeHTML(item.imageWidth || 400)}" height="${escapeHTML(item.imageHeight || 300)}" alt="${escapeHTML(item.name)}" class="cafe-image" ${index < 3 ? '' : 'loading="lazy"'}>
                     <span class="rating-badge">⭐ ${escapeHTML(item.rating)}</span>
                     <span class="favorite" data-name="${escapeHTML(item.name)}">
                         ${favorites.includes(item.name) ? "❤️" : "🩶"}

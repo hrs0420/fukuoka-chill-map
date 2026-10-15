@@ -19,6 +19,7 @@ async function initSiteSearch() {
         results.textContent = '検索データを読み込めませんでした。';
         return;
     }
+    const initialQuery = new URLSearchParams(location.search).get('q');
     input.addEventListener('input', () => {
         const query = normalizeSearchText(input.value.trim());
         if (!query) { results.replaceChildren(); return; }
@@ -34,4 +35,8 @@ async function initSiteSearch() {
             ).join('')}</ul></section>`;
         }).join('') || '<p>一致する結果がありません。</p>';
     });
+    if (initialQuery) {
+        input.value = initialQuery;
+        input.dispatchEvent(new Event('input'));
+    }
 }

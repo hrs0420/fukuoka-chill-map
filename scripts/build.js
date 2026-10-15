@@ -81,6 +81,91 @@ function resolveSpotImage(rootDir, spot) {
     return spot.image || '';
 }
 
+function readImageDimensions(filePath) {
+    if (!filePath || !fs.existsSync(filePath)) return null;
+    const buffer = fs.readFileSync(filePath);
+    if (buffer.length > 24 && buffer.toString('ascii', 1, 4) === 'PNG') return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+    if (buffer.length > 30 && buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP') {
+        const kind = buffer.toString('ascii', 12, 16);
+        if (kind === 'VP8X') return { width: 1 + buffer.readUIntLE(24, 3), height: 1 + buffer.readUIntLE(27, 3) };
+        if (kind === 'VP8L' && buffer[20] === 0x2f) return { width: 1 + (((buffer[22] & 0x3f) << 8) | buffer[21]), height: 1 + (((buffer[24] & 0x0f) << 10) | (buffer[23] << 2) | ((buffer[22] & 0xc0) >> 6)) };
+        if (kind === 'VP8 ' && buffer[23] === 0x9d && buffer[24] === 0x01 && buffer[25] === 0x2a) return { width: buffer.readUInt16LE(26) & 0x3fff, height: buffer.readUInt16LE(28) & 0x3fff };
+    }
+    if (buffer[0] === 0xff && buffer[1] === 0xd8) {
+        let offset = 2;
+        while (offset + 9 < buffer.length) {
+            if (buffer[offset] !== 0xff) { offset++; continue; }
+            const marker = buffer[offset + 1];
+            const length = buffer.readUInt16BE(offset + 2);
+            if ([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].includes(marker)) return { width: buffer.readUInt16BE(offset + 7), height: buffer.readUInt16BE(offset + 5) };
+            offset += 2 + length;
+        }
+    }
+    return null;
+}
+
+function addItemListSchema(filePath, entries) {
+    const schema = { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: entries.map((entry, index) => ({ '@type': 'ListItem', position: index + 1, name: entry.name, item: entry.url })) };
+    let html = fs.readFileSync(filePath, 'utf8');
+    html = html.replace(/\s*<script type="application\/ld\+json" data-generated-itemlist>[\s\S]*?<\/script>/, '');
+    fs.writeFileSync(filePath, html.replace('</head>', `    <script type="application/ld+json" data-generated-itemlist>\n${JSON.stringify(schema, null, 2)}\n    </script>\n</head>`), 'utf8');
+}
+
+function addSearchAction(rootDir) {
+    const filePath = path.join(rootDir, 'index.html');
+    let html = fs.readFileSync(filePath, 'utf8');
+    html = html.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/, (whole, content) => {
+        try {
+            const data = JSON.parse(content);
+            if (data['@type'] === 'WebSite') data.potentialAction = { '@type': 'SearchAction', target: `${BASE_URL}search.html?q={search_term_string}`, 'query-input': 'required name=search_term_string' };
+            return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2)}\n    </script>`;
+        } catch { return whole; }
+    });
+    fs.writeFileSync(filePath, html, 'utf8');
+}
+
+function enhanceHTMLImages(rootDir) {
+    const visit = directory => fs.readdirSync(directory, { withFileTypes: true }).forEach(entry => {
+        const filePath = path.join(directory, entry.name);
+        if (entry.isDirectory() && !['.git', 'node_modules'].includes(entry.name)) return visit(filePath);
+        if (!entry.isFile() || !entry.name.endsWith('.html')) return;
+        const html = fs.readFileSync(filePath, 'utf8');
+        let cardImageCount = 0;
+        const relativePage = path.relative(rootDir, filePath).replace(/\\/g, '/');
+        const eagerCardPage = /^spots\/(cafe|sauna|running)\/index\.html$/.test(relativePage) || /^areas\/(?!index\.html)[^/]+\.html$/.test(relativePage);
+        const enhanced = html.replace(/<img\b[^>]*>/gi, tag => {
+            const getAttr = name => tag.match(new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`, 'i'))?.[2] || '';
+            let src = getAttr('src');
+            let width = getAttr('width');
+            let height = getAttr('height');
+            if ((!width || !height) && src) {
+                let localPath = src;
+                try {
+                    if (/^https?:/i.test(src)) {
+                        const url = new URL(src);
+                        if (url.origin === new URL(BASE_URL).origin && url.pathname.startsWith(new URL(BASE_URL).pathname)) localPath = url.pathname.slice(new URL(BASE_URL).pathname.length);
+                        else localPath = '';
+                    }
+                } catch { localPath = ''; }
+                const imagePath = localPath ? path.resolve(path.dirname(filePath), decodeURIComponent(localPath)) : '';
+                const dimensions = imagePath && readImageDimensions(imagePath);
+                width = width || String(dimensions?.width || (src.includes('impression') ? 1 : 400));
+                height = height || String(dimensions?.height || (src.includes('impression') ? 1 : 300));
+            }
+            if (!/\balt\s*=/.test(tag)) tag = tag.replace(/<img\b/i, '<img alt=""');
+            if (!/\bwidth\s*=/.test(tag)) tag = tag.replace(/<img\b/i, `<img width="${width || 400}"`);
+            if (!/\bheight\s*=/.test(tag)) tag = tag.replace(/<img\b/i, `<img height="${height || 300}"`);
+            const isCard = /class=["'][^"']*cafe-image/.test(tag);
+            const eager = eagerCardPage && isCard && cardImageCount++ < 3;
+            if (eager) tag = tag.replace(/\sloading=["']lazy["']/i, '');
+            else if (!/\bloading\s*=/.test(tag) && !/header-monument-img|footer-monument-img/.test(tag)) tag = tag.replace(/<img\b/i, '<img loading="lazy"');
+            return tag;
+        });
+        fs.writeFileSync(filePath, enhanced, 'utf8');
+    });
+    visit(rootDir);
+}
+
 function writeStatusReport(rootDir, allSpots, articles) {
     const checks = [
         ['body', '紹介文', spot => Boolean(spot.body && String(spot.body).trim())],
@@ -153,9 +238,9 @@ function generateSearchPageHTML() {
 </head>
 <body>
 <header><div class="header-container"><a href="index.html" class="header-logo-link"><img src="images/Fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img"></a><div class="header-title-group"><h1>サイト内検索</h1></div><button class="hamburger" id="hamburger-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button></div>
-<nav class="nav-menu" id="nav-menu"><a href="index.html" class="nav-link"><i data-lucide="home"></i> トップ</a><a href="spots/cafe/index.html" class="nav-link">カフェ</a><a href="spots/sauna/index.html" class="nav-link">サウナ</a><a href="spots/running/index.html" class="nav-link">ランニング</a><a href="articles/index.html" class="nav-link">記事</a><a href="areas/index.html" class="nav-link">エリア</a><a href="search.html" class="nav-link">検索</a><a href="favorites.html" class="nav-link">お気に入り</a></nav></header>
+<nav class="nav-menu" id="nav-menu"><a href="index.html" class="nav-link"><i data-lucide="home"></i> トップに戻る</a><a href="spots/cafe/index.html" class="nav-link"><i data-lucide="coffee"></i> カフェ</a><a href="spots/sauna/index.html" class="nav-link"><i data-lucide="flame"></i> サウナ</a><a href="spots/running/index.html" class="nav-link"><i data-lucide="footprints"></i> ランニング</a><a href="articles/index.html" class="nav-link"><i data-lucide="book-open"></i> 記事</a><a href="areas/index.html" class="nav-link"><i data-lucide="map-pin"></i> エリア</a><a href="search.html" class="nav-link"><i data-lucide="search"></i> 検索</a><a href="favorites.html" class="nav-link"><i data-lucide="heart"></i> お気に入り</a><a href="request.html" class="nav-link"><i data-lucide="clipboard-list"></i> スポット追加依頼</a></nav></header>
 <main class="container"><section class="section"><h2>サイト内検索</h2><label for="site-search">キーワード</label><input id="site-search" type="search" autocomplete="off"><div id="search-results" aria-live="polite"></div></section></main>
-<footer><p>© 2026 Fukuoka Chill Map</p><img src="images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img"></footer>
+<footer><p id="copyright">© 2026 Fukuoka Chill Map</p><p class="footer-links"><a href="about.html">運営者情報</a> / <a href="privacy.html">プライバシーポリシー</a> / <a href="contact.html">お問い合わせ</a></p><img src="images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img"></footer>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script><script src="js/utils.js"></script><script src="js/search.js"></script>
 </body></html>`;
 }
@@ -163,7 +248,7 @@ function generateSearchPageHTML() {
 function generate404HTML() {
     const absolute = value => `${BASE_URL}${value}`;
     return `<!DOCTYPE html>
-<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex"><title>ページが見つかりません | Fukuoka Chill Map</title><meta name="description" content="お探しのページは見つかりませんでした。"><link rel="stylesheet" href="${absolute('css/style.css')}"><link rel="icon" href="${absolute('images/Fukuoka-monuments.jpg')}" type="image/jpeg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-MQNEWCRC3V"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-MQNEWCRC3V');</script></head>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex"><title>ページが見つかりません | Fukuoka Chill Map</title><meta name="description" content="お探しのページは見つかりませんでした。"><link rel="canonical" href="${absolute('404.html')}"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="${absolute('css/style.css')}"><link rel="icon" href="${absolute('images/Fukuoka-monuments.jpg')}" type="image/jpeg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-MQNEWCRC3V"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-MQNEWCRC3V');</script></head>
 <body><header><div class="header-container"><a href="${absolute('index.html')}" class="header-logo-link"><img src="${absolute('images/Fukuoka-monuments.jpg')}" alt="福岡ランドマーク" class="header-monument-img"></a><div class="header-title-group"><h1>ページが見つかりません</h1></div></div><nav class="nav-menu"><a href="${absolute('index.html')}" class="nav-link">トップ</a><a href="${absolute('spots/cafe/index.html')}" class="nav-link">カフェ一覧</a><a href="${absolute('spots/sauna/index.html')}" class="nav-link">サウナ一覧</a><a href="${absolute('spots/running/index.html')}" class="nav-link">ランニング一覧</a><a href="${absolute('search.html')}" class="nav-link">検索</a></nav></header><main class="container"><section class="section"><h2>ページが見つかりません</h2><p>URLをご確認いただくか、トップページからお探しください。</p><a href="${absolute('index.html')}">トップへ戻る</a></section></main><footer><p>© 2026 Fukuoka Chill Map</p><img src="${absolute('images/fukuoka-monuments-black.jpg')}" alt="福岡ランドマーク" class="footer-monument-img"></footer><script defer src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script></body></html>`;
 }
 
@@ -1174,6 +1259,11 @@ function build() {
     createSearchIndex(rootDir, allSpots, areas, articles);
     const imageMap = Object.fromEntries(allSpots.map(({ spot }) => [spot.slug, resolveSpotImage(rootDir, spot)]));
     allSpots.forEach(({ spot }) => { spot.image = imageMap[spot.slug]; });
+    const imageSizes = Object.fromEntries(Object.entries(imageMap).map(([slug, image]) => {
+        const dimensions = readImageDimensions(path.join(rootDir, image));
+        return [slug, dimensions || { width: 400, height: 300 }];
+    }));
+    fs.writeFileSync(path.join(rootDir, 'data', 'generated', 'image-sizes.json'), `${JSON.stringify(imageSizes, null, 2)}\n`, 'utf8');
     writeStatusReport(rootDir, allSpots, articles);
     const generatedDir = path.join(rootDir, 'data', 'generated');
     fs.mkdirSync(generatedDir, { recursive: true });
@@ -1210,6 +1300,7 @@ function build() {
 
         const categoryIndexPath = path.join(categoryDir, 'index.html');
         fs.writeFileSync(categoryIndexPath, generateCategoryPageHTML(category, spots), 'utf8');
+        addItemListSchema(categoryIndexPath, [...spots].sort((a, b) => Number(b.rating) - Number(a.rating)).map(spot => ({ name: spot.name, url: `${BASE_URL}spots/${category}/${encodeURIComponent(spot.slug)}.html` })));
         sitemapUrls.push({
             loc: `${BASE_URL}spots/${category}/index.html`,
             priority: '0.8',
@@ -1233,7 +1324,9 @@ function build() {
 
     const articlesDir = path.join(rootDir, 'articles');
     fs.mkdirSync(articlesDir, { recursive: true });
-    fs.writeFileSync(path.join(articlesDir, 'index.html'), generateArticlesIndexHTML(articles), 'utf8');
+    const articlesIndexPath = path.join(articlesDir, 'index.html');
+    fs.writeFileSync(articlesIndexPath, generateArticlesIndexHTML(articles), 'utf8');
+    addItemListSchema(articlesIndexPath, [...articles].filter(article => !article.draft).sort((a, b) => b.published.localeCompare(a.published)).map(article => ({ name: article.title, url: `${BASE_URL}articles/${encodeURIComponent(article.slug)}.html` })));
 
     let articleCount = 0;
     const articleSlugs = new Set();
@@ -1261,11 +1354,14 @@ function build() {
     const areasDir = path.join(rootDir, 'areas');
     fs.mkdirSync(areasDir, { recursive: true });
     const sortedAreas = [...areas].sort((a, b) => a.name.localeCompare(b.name, 'ja'));
-    fs.writeFileSync(path.join(areasDir, 'index.html'), generateAreasIndexHTML(sortedAreas, spotsByArea), 'utf8');
+    const areasIndexPath = path.join(areasDir, 'index.html');
+    fs.writeFileSync(areasIndexPath, generateAreasIndexHTML(sortedAreas, spotsByArea), 'utf8');
+    addItemListSchema(areasIndexPath, sortedAreas.map(area => ({ name: area.name, url: `${BASE_URL}areas/${encodeURIComponent(area.slug)}.html` })));
     sortedAreas.forEach(area => {
         const areaPath = path.join(areasDir, `${area.slug}.html`);
         const areaSpots = [...(spotsByArea.get(area.name) || [])];
         fs.writeFileSync(areaPath, generateAreaPageHTML(area, areaSpots), 'utf8');
+        addItemListSchema(areaPath, areaSpots.map(({ spot, category }) => ({ name: spot.name, url: `${BASE_URL}spots/${category}/${encodeURIComponent(spot.slug)}.html` })));
         sitemapUrls.push({
             loc: `${BASE_URL}areas/${area.slug}.html`,
             priority: '0.6',
@@ -1274,7 +1370,9 @@ function build() {
 
     fs.writeFileSync(path.join(rootDir, 'search.html'), generateSearchPageHTML(), 'utf8');
     fs.writeFileSync(path.join(rootDir, '404.html'), generate404HTML(), 'utf8');
+    addSearchAction(rootDir);
     addSearchNavigationAndDefer(rootDir);
+    enhanceHTMLImages(rootDir);
 
     // Generate sitemap.xml
     const sitemapXML = `<?xml version="1.0" encoding="UTF-8"?>

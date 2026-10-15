@@ -172,6 +172,11 @@ function checkHtmlLinks() {
                 report(`${path.relative(ROOT_DIR, pagePath)}: ${match[1]} のリンク先ファイルがありません (${match[2] ?? match[3]})`);
             }
         }
+        for (const imageMatch of html.matchAll(/<img\b([^>]*)>/gi)) {
+            if (!/\balt\s*=\s*(?:"[^"]*"|'[^']*')/i.test(imageMatch[1])) {
+                report(`${path.relative(ROOT_DIR, pagePath)}: img に alt 属性がありません`);
+            }
+        }
     });
 }
 
