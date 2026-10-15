@@ -41,6 +41,12 @@ const SCHEMA_TYPE = {
     running: 'TouristAttraction',
 };
 
+const AFFILIATE_STATUS_LABELS = {
+    using: '愛用中',
+    used: '使ったことがある',
+    interested: '気になっている',
+};
+
 function escapeHTML(value) {
     if (value === undefined || value === null) return '';
     return String(value)
@@ -55,7 +61,37 @@ function escapeAttribute(value) {
     return escapeHTML(value);
 }
 
-function generateSpotHTML(spot, category) {
+function generateAffiliateHTML(spot, category, affiliates) {
+    const products = affiliates.filter(product =>
+        (Array.isArray(product.categories) && product.categories.includes(category)) ||
+        (Array.isArray(product.spots) && product.spots.includes(spot.id))
+    );
+    if (products.length === 0) return '';
+
+    const cardsHTML = products.map(product => {
+        const statusLabel = AFFILIATE_STATUS_LABELS[product.status] || '';
+        const impressionHTML = product.impression
+            ? `<img src="${escapeAttribute(product.impression)}" width="1" height="1" alt="">`
+            : '';
+
+        return `        <article class="affiliate-card">
+            <p class="affiliate-status">${escapeHTML(statusLabel)}</p>
+            <h4>${escapeHTML(product.name)}</h4>
+            <p>${escapeHTML(product.comment)}</p>
+            <a class="affiliate-link" href="${escapeAttribute(product.url)}" rel="sponsored nofollow noopener" target="_blank" referrerpolicy="no-referrer-when-downgrade">${escapeHTML(product.shop)}で見る</a>
+            ${impressionHTML}
+        </article>`;
+    }).join('\n');
+
+    return `<section class="affiliate-section">
+    <h3>おすすめアイテム <span class="affiliate-pr">PR</span></h3>
+    <div class="affiliate-cards">
+${cardsHTML}
+    </div>
+</section>`;
+}
+
+function generateSpotHTML(spot, category, affiliates) {
     const spotNameEsc = escapeHTML(spot.name);
     const spotAreaEsc = escapeHTML(spot.area || '情報なし');
     const spotRatingEsc = escapeHTML(spot.rating !== undefined ? spot.rating : '0.0');
@@ -74,6 +110,7 @@ function generateSpotHTML(spot, category) {
     const pageUrl = `${BASE_URL}spots/${category}/${spot.slug}.html`;
     const imageUrl = spot.image ? `${BASE_URL}${spot.image}` : '';
     const encodedImageUrl = spot.image ? encodeURI(imageUrl) : '';
+    const affiliateHTML = generateAffiliateHTML(spot, category, affiliates);
 
     // Field items HTML
     const fields = FIELD_CONFIG[category] || [];
@@ -235,7 +272,7 @@ ${fieldsHTML}    </div>
     </div>
 </div>
 
-<div class="detail-section">
+${affiliateHTML ? `${affiliateHTML}\n\n` : ''}<div class="detail-section">
     <h3><i data-lucide="message-circle"></i> 口コミ・評価</h3>
 
     <div class="rating-summary">
@@ -305,6 +342,7 @@ ${fieldsHTML}    </div>
 function build() {
     const rootDir = path.resolve(__dirname, '..');
     const spotsDir = path.join(rootDir, 'spots');
+    const affiliates = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'affiliates.json'), 'utf8'));
 
     const sitemapUrls = [
         { loc: `${BASE_URL}index.html`, priority: '1.0' },
@@ -329,7 +367,7 @@ function build() {
             if (!spot.slug) {
                 throw new Error(`Spot missing slug: ${spot.id} - ${spot.name}`);
             }
-            const htmlContent = generateSpotHTML(spot, category);
+            const htmlContent = generateSpotHTML(spot, category, affiliates);
             const htmlPath = path.join(categoryDir, `${spot.slug}.html`);
             fs.writeFileSync(htmlPath, htmlContent, 'utf8');
 

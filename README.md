@@ -80,6 +80,10 @@ fukuoka-chill-map/
 | `address`     | 文字列 | 住所                                   |
 | `map`         | 文字列 | GoogleマップのURL                      |
 
+### アフィリエイト商品（`data/affiliates.json`）
+
+商品ごとに `id`（識別子）、`name`（商品名）、`shop`（販売サイト名）、`url`（アフィリエイトリンク）、任意の `impression`（表示計測画像URL）、`status`（`using` / `used` / `interested`）、`comment`（紹介文）、`categories`（表示対象カテゴリ）、`spots`（表示対象スポットID）を設定する。カテゴリまたはスポットIDが一致した詳細ページに表示される。
+
 ### カテゴリ固有の項目
 
 - **カフェ**: `wifi` / `outlet` / `parking`（true / false）、`hours`、`closed`、`payment`
