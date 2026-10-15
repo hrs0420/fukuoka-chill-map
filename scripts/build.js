@@ -81,6 +81,37 @@ function resolveSpotImage(rootDir, spot) {
     return spot.image || '';
 }
 
+function writeStatusReport(rootDir, allSpots, articles) {
+    const checks = [
+        ['body', '紹介文', spot => Boolean(spot.body && String(spot.body).trim())],
+        ['visited', '訪問時期', spot => Boolean(spot.visited)],
+        ['photo', '写真', spot => Boolean(spot.slug && ['.jpg', '.jpeg', '.png', '.webp'].some(ext => fs.existsSync(path.join(rootDir, 'images', 'spots', `${spot.slug}${ext}`))))],
+        ['address', '住所', spot => Boolean(spot.address)],
+        ['map', '地図', spot => Boolean(spot.map)],
+    ];
+    const totals = Object.fromEntries(checks.map(([key]) => [key, allSpots.filter(({ spot }) => checks.find(item => item[0] === key)[2](spot)).length]));
+    const publicCount = articles.filter(article => !article.draft).length;
+    const draftCount = articles.filter(article => article.draft).length;
+    const lines = [
+        '# 運営状況レポート',
+        '',
+        `- 紹介文 ${totals.body}/${allSpots.length} / 訪問時期 ${totals.visited}/${allSpots.length} / 写真 ${totals.photo}/${allSpots.length} / 住所 ${totals.address}/${allSpots.length} / Googleマップ ${totals.map}/${allSpots.length}`,
+        `- 記事: 公開 ${publicCount} 件 / 下書き ${draftCount} 件`,
+        '',
+    ];
+    for (const [category, fileName] of Object.entries(CATEGORY_FILES)) {
+        lines.push(`## ${CATEGORY_PAGE_TITLES[category]}`, '');
+        const entries = allSpots.filter(entry => entry.category === category);
+        entries.forEach(({ spot }) => {
+            const complete = checks.every(([, , predicate]) => predicate(spot));
+            const result = checks.map(([, label, predicate]) => `${label} ${predicate(spot) ? '✓' : '✗'}`).join(' / ');
+            lines.push(`- [${complete ? 'x' : ' '}] ${spot.name}（${spot.area}） ${result}`);
+        });
+        lines.push('');
+    }
+    fs.writeFileSync(path.join(rootDir, 'docs', 'status.md'), `${lines.join('\n')}\n`, 'utf8');
+}
+
 function generateAffiliateHTML(spot, category, affiliates) {
     const products = affiliates.filter(product =>
         (Array.isArray(product.categories) && product.categories.includes(category)) ||
@@ -1058,6 +1089,7 @@ function build() {
     });
     const imageMap = Object.fromEntries(allSpots.map(({ spot }) => [spot.slug, resolveSpotImage(rootDir, spot)]));
     allSpots.forEach(({ spot }) => { spot.image = imageMap[spot.slug]; });
+    writeStatusReport(rootDir, allSpots, articles);
     const generatedDir = path.join(rootDir, 'data', 'generated');
     fs.mkdirSync(generatedDir, { recursive: true });
     fs.writeFileSync(path.join(generatedDir, 'images.json'), `${JSON.stringify(imageMap, null, 2)}\n`, 'utf8');
