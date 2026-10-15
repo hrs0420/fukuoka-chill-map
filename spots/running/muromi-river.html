@@ -48,6 +48,32 @@
   }
 }
     </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "トップ",
+      "item": "https://hrs0420.github.io/fukuoka-chill-map/index.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "ランニングスポット一覧",
+      "item": "https://hrs0420.github.io/fukuoka-chill-map/list.html?category=running"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "室見川コース",
+      "item": "https://hrs0420.github.io/fukuoka-chill-map/spots/running/muromi-river.html"
+    }
+  ]
+}
+    </script>
 </head>
 
 <body data-spot-name="室見川コース" data-spot-type="running">
@@ -79,6 +105,13 @@
 </header>
 
 <div class="detail">
+    <nav class="breadcrumb-list" aria-label="パンくずリスト">
+        <a href="../../index.html">トップ</a>
+        <span aria-hidden="true">&gt;</span>
+        <a href="../../list.html?category=running">ランニングスポット一覧</a>
+        <span aria-hidden="true">&gt;</span>
+        <span aria-current="page">室見川コース</span>
+    </nav>
     <h2 id="spot-name">室見川コース</h2>
 
     <p id="area" class="detail-meta"><i data-lucide="map-pin"></i> <span>エリア: 室見</span></p>
@@ -124,6 +157,48 @@
         <p>川沿いの整備された直線コース。水と緑が調和しており自然を感じながら気持ちよく走れる</p>
     </div>
 </div>
+
+<section class="related-spots-section" aria-labelledby="related-spots-title">
+    <h3 id="related-spots-title">近くのスポット</h3>
+    <div class="related-spots-list">
+        <a href="../../spots/running/ohori-park.html" class="card-link related-spot-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="../../images/placeholders/running.jpg" alt="大濠公園周回コース" loading="lazy">
+                    <span class="rating-badge">⭐ 4.9</span>
+                </div>
+                <div class="card-body">
+                    <h4>大濠公園周回コース</h4>
+                    <p class="card-area">📍 大濠</p>
+                </div>
+            </article>
+        </a>
+        <a href="../../spots/running/nishi-park.html" class="card-link related-spot-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="../../images/placeholders/running.jpg" alt="西公園コース" loading="lazy">
+                    <span class="rating-badge">⭐ 4.6</span>
+                </div>
+                <div class="card-body">
+                    <h4>西公園コース</h4>
+                    <p class="card-area">📍 大濠</p>
+                </div>
+            </article>
+        </a>
+        <a href="../../spots/running/shikanoshima.html" class="card-link related-spot-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="../../images/placeholders/running.jpg" alt="志賀島コース" loading="lazy">
+                    <span class="rating-badge">⭐ 4.5</span>
+                </div>
+                <div class="card-body">
+                    <h4>志賀島コース</h4>
+                    <p class="card-area">📍 志賀島</p>
+                </div>
+            </article>
+        </a>
+    </div>
+</section>
 
 <div class="detail-section">
     <h3><i data-lucide="message-circle"></i> 口コミ・評価</h3>

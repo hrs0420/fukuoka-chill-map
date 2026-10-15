@@ -35,6 +35,12 @@ const CATEGORY_FILES = {
     running: 'running.json',
 };
 
+const CATEGORY_PAGE_TITLES = {
+    cafe: 'カフェ一覧',
+    sauna: 'サウナ一覧',
+    running: 'ランニングスポット一覧',
+};
+
 const SCHEMA_TYPE = {
     cafe: 'CafeOrCoffeeShop',
     sauna: 'HealthClub',
@@ -91,7 +97,55 @@ ${cardsHTML}
 </section>`;
 }
 
-function generateSpotHTML(spot, category, affiliates) {
+function getRelatedSpots(spot, category, allSpots) {
+    const candidates = allSpots.filter(item => item.spot.id !== spot.id);
+    const sameArea = candidates
+        .filter(item => item.spot.area === spot.area)
+        .sort((a, b) => Number(b.spot.rating) - Number(a.spot.rating));
+    const selected = sameArea.slice(0, 3);
+
+    if (selected.length < 3) {
+        const sameCategory = candidates
+            .filter(item => item.category === category && !selected.some(selectedItem => selectedItem.spot.id === item.spot.id))
+            .sort((a, b) => Number(b.spot.rating) - Number(a.spot.rating));
+        selected.push(...sameCategory.slice(0, 3 - selected.length));
+    }
+
+    return selected;
+}
+
+function generateRelatedSpotsHTML(spot, category, allSpots) {
+    const relatedSpots = getRelatedSpots(spot, category, allSpots);
+    const cardsHTML = relatedSpots.map(({ spot: relatedSpot, category: relatedCategory }) => {
+        const detailUrl = `../../spots/${relatedCategory}/${encodeURIComponent(relatedSpot.slug)}.html`;
+        const imagePath = relatedSpot.image ? `../../${relatedSpot.image}` : '';
+        const categoryLabel = relatedCategory !== category
+            ? `<small class="related-spot-category">${escapeHTML(CATEGORY_PAGE_TITLES[relatedCategory].replace(/一覧$/, ''))}</small>\n                    `
+            : '';
+
+        return `        <a href="${escapeAttribute(detailUrl)}" class="card-link related-spot-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="${escapeAttribute(imagePath)}" alt="${escapeAttribute(relatedSpot.name)}" loading="lazy">
+                    <span class="rating-badge">⭐ ${escapeHTML(relatedSpot.rating !== undefined ? relatedSpot.rating : '0.0')}</span>
+                </div>
+                <div class="card-body">
+                    ${categoryLabel}<h4>${escapeHTML(relatedSpot.name)}</h4>
+                    <p class="card-area">📍 ${escapeHTML(relatedSpot.area || '情報なし')}</p>
+                </div>
+            </article>
+        </a>`;
+    }).join('\n');
+
+    return `<section class="related-spots-section" aria-labelledby="related-spots-title">
+    <h3 id="related-spots-title">近くのスポット</h3>
+    <div class="related-spots-list">
+${cardsHTML}
+    </div>
+</section>`;
+}
+
+function generateSpotHTML(spot, category, affiliates, allSpots) {
     const spotNameEsc = escapeHTML(spot.name);
     const spotAreaEsc = escapeHTML(spot.area || '情報なし');
     const spotRatingEsc = escapeHTML(spot.rating !== undefined ? spot.rating : '0.0');
@@ -111,6 +165,9 @@ function generateSpotHTML(spot, category, affiliates) {
     const imageUrl = spot.image ? `${BASE_URL}${spot.image}` : '';
     const encodedImageUrl = spot.image ? encodeURI(imageUrl) : '';
     const affiliateHTML = generateAffiliateHTML(spot, category, affiliates);
+    const relatedSpotsHTML = generateRelatedSpotsHTML(spot, category, allSpots);
+    const categoryTitle = CATEGORY_PAGE_TITLES[category];
+    const categoryUrl = `${BASE_URL}list.html?category=${category}`;
 
     // Field items HTML
     const fields = FIELD_CONFIG[category] || [];
@@ -169,6 +226,30 @@ function generateSpotHTML(spot, category, affiliates) {
         };
     }
     const jsonLdString = JSON.stringify(jsonLdObj, null, 2);
+    const breadcrumbJsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'トップ',
+                item: `${BASE_URL}index.html`,
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: categoryTitle,
+                item: categoryUrl,
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: spot.name,
+                item: pageUrl,
+            },
+        ],
+    }, null, 2);
 
     return `<!DOCTYPE html>
 <html lang="ja">
@@ -199,6 +280,9 @@ function generateSpotHTML(spot, category, affiliates) {
     <link rel="icon" href="../../images/Fukuoka-monuments.jpg" type="image/jpeg">
     <script type="application/ld+json">
 ${jsonLdString}
+    </script>
+    <script type="application/ld+json">
+${breadcrumbJsonLd}
     </script>
 </head>
 
@@ -231,6 +315,13 @@ ${jsonLdString}
 </header>
 
 <div class="detail">
+    <nav class="breadcrumb-list" aria-label="パンくずリスト">
+        <a href="../../index.html">トップ</a>
+        <span aria-hidden="true">&gt;</span>
+        <a href="../../list.html?category=${category}">${escapeHTML(categoryTitle)}</a>
+        <span aria-hidden="true">&gt;</span>
+        <span aria-current="page">${spotNameEsc}</span>
+    </nav>
     <h2 id="spot-name">${spotNameEsc}</h2>
 
     <p id="area" class="detail-meta"><i data-lucide="map-pin"></i> <span>エリア: ${spotAreaEsc}</span></p>
@@ -272,7 +363,9 @@ ${fieldsHTML}    </div>
     </div>
 </div>
 
-${affiliateHTML ? `${affiliateHTML}\n\n` : ''}<div class="detail-section">
+${affiliateHTML ? `${affiliateHTML}\n\n` : ''}${relatedSpotsHTML}
+
+<div class="detail-section">
     <h3><i data-lucide="message-circle"></i> 口コミ・評価</h3>
 
     <div class="rating-summary">
@@ -343,6 +436,10 @@ function build() {
     const rootDir = path.resolve(__dirname, '..');
     const spotsDir = path.join(rootDir, 'spots');
     const affiliates = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'affiliates.json'), 'utf8'));
+    const allSpots = Object.entries(CATEGORY_FILES).flatMap(([category, fileName]) => {
+        const spots = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', fileName), 'utf8'));
+        return spots.map(spot => ({ spot, category }));
+    });
 
     const sitemapUrls = [
         { loc: `${BASE_URL}index.html`, priority: '1.0' },
@@ -367,7 +464,7 @@ function build() {
             if (!spot.slug) {
                 throw new Error(`Spot missing slug: ${spot.id} - ${spot.name}`);
             }
-            const htmlContent = generateSpotHTML(spot, category, affiliates);
+            const htmlContent = generateSpotHTML(spot, category, affiliates, allSpots);
             const htmlPath = path.join(categoryDir, `${spot.slug}.html`);
             fs.writeFileSync(htmlPath, htmlContent, 'utf8');
 

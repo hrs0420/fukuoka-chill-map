@@ -52,6 +52,32 @@
   }
 }
     </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "トップ",
+      "item": "https://hrs0420.github.io/fukuoka-chill-map/index.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "カフェ一覧",
+      "item": "https://hrs0420.github.io/fukuoka-chill-map/list.html?category=cafe"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "REC COFFEE博多",
+      "item": "https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/rec-coffee-hakata.html"
+    }
+  ]
+}
+    </script>
 </head>
 
 <body data-spot-name="REC COFFEE博多" data-spot-type="cafe">
@@ -83,6 +109,13 @@
 </header>
 
 <div class="detail">
+    <nav class="breadcrumb-list" aria-label="パンくずリスト">
+        <a href="../../index.html">トップ</a>
+        <span aria-hidden="true">&gt;</span>
+        <a href="../../list.html?category=cafe">カフェ一覧</a>
+        <span aria-hidden="true">&gt;</span>
+        <span aria-current="page">REC COFFEE博多</span>
+    </nav>
     <h2 id="spot-name">REC COFFEE博多</h2>
 
     <p id="area" class="detail-meta"><i data-lucide="map-pin"></i> <span>エリア: 博多駅</span></p>
@@ -129,6 +162,48 @@
         <p>スペシャルティコーヒー</p>
     </div>
 </div>
+
+<section class="related-spots-section" aria-labelledby="related-spots-title">
+    <h3 id="related-spots-title">近くのスポット</h3>
+    <div class="related-spots-list">
+        <a href="../../spots/cafe/fuk-coffee.html" class="card-link related-spot-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="../../images/placeholders/cafe.jpg" alt="FUK COFFEE" loading="lazy">
+                    <span class="rating-badge">⭐ 4.6</span>
+                </div>
+                <div class="card-body">
+                    <h4>FUK COFFEE</h4>
+                    <p class="card-area">📍 博多駅</p>
+                </div>
+            </article>
+        </a>
+        <a href="../../spots/cafe/basking-coffee-ropponmatsu.html" class="card-link related-spot-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="../../images/placeholders/cafe.jpg" alt="Basking Coffee ropponmatsu" loading="lazy">
+                    <span class="rating-badge">⭐ 4.9</span>
+                </div>
+                <div class="card-body">
+                    <h4>Basking Coffee ropponmatsu</h4>
+                    <p class="card-area">📍 六本松</p>
+                </div>
+            </article>
+        </a>
+        <a href="../../spots/cafe/unplugged-coffee-stand.html" class="card-link related-spot-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="../../images/placeholders/cafe.jpg" alt="unplugged COFFEE STAND fukuoka" loading="lazy">
+                    <span class="rating-badge">⭐ 4.8</span>
+                </div>
+                <div class="card-body">
+                    <h4>unplugged COFFEE STAND fukuoka</h4>
+                    <p class="card-area">📍 六本松</p>
+                </div>
+            </article>
+        </a>
+    </div>
+</section>
 
 <div class="detail-section">
     <h3><i data-lucide="message-circle"></i> 口コミ・評価</h3>
