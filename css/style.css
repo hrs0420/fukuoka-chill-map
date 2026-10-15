@@ -527,6 +527,68 @@ h1#page-title-icon-wrap svg {
     font-size: 17px;
 }
 
+.article-content,
+.articles-list {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 30px;
+    box-sizing: border-box;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+}
+
+.article-content h1,
+.articles-list > h2 {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+}
+
+.article-content p,
+.article-list-card p {
+    line-height: 1.8;
+}
+
+.article-meta {
+    color: var(--color-primary);
+    font-size: 13px;
+}
+
+.article-section {
+    margin-top: 30px;
+}
+
+.article-section h2 {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+}
+
+.article-spot-card {
+    max-width: 360px;
+    margin-top: 18px;
+}
+
+.article-list-card {
+    padding: 18px 0;
+    border-top: 1px solid var(--color-border);
+}
+
+.article-list-card h2 {
+    margin: 6px 0;
+    font-size: 20px;
+}
+
+.article-list-card h2 a {
+    color: var(--color-primary-dark);
+}
+
+.articles-empty {
+    padding: 24px 0;
+    color: var(--color-primary);
+}
+
 .detail p {
     margin: 12px 0;
     font-size: 18px;
@@ -1264,6 +1326,12 @@ a.modal-btn {
     .related-spots-list {
         grid-template-columns: 1fr;
         padding: 15px;
+    }
+
+    .article-content,
+    .articles-list {
+        margin: 20px 15px;
+        padding: 20px;
     }
 
     .search-container,

@@ -30,7 +30,8 @@ fukuoka-chill-map/
 ├── data/
 │   ├── cafes.json      # カフェのデータ
 │   ├── saunas.json     # サウナのデータ
-│   └── running.json    # ランニングスポットのデータ
+│   ├── running.json    # ランニングスポットのデータ
+│   └── articles.json   # まとめ記事のデータ
 ├── images/             # スポット写真・ロゴ
 ├── js/
 │   ├── categories.js   # カテゴリごとの設定（最重要）
@@ -43,10 +44,10 @@ fukuoka-chill-map/
 ├── scripts/
 │   ├── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
 │   └── check.js        # データ・リンク・sitemapの品質チェック
-├── spots/              # 自動生成された各スポットの静的HTML
-│   ├── cafe/index.html # カテゴリ別一覧（sauna / running も同様）
+├── spots/              # 自動生成された静的詳細・カテゴリ一覧HTML
+├── articles/           # 自動生成された記事一覧・記事ページ
 ├── index.html          # トップ
-├── list.html           # 一覧（?category=cafe / sauna / running）
+├── list.html           # 旧一覧URLから静的カテゴリ一覧への転送
 ├── detail.html         # 詳細（?name=スポット名&type=カテゴリ、旧URL用）
 ├── favorites.html      # お気に入り
 ├── request.html        # スポット追加依頼
@@ -97,6 +98,13 @@ fukuoka-chill-map/
 1. `images/` に写真を追加する
 2. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる。`slug` も含む）
 3. `node scripts/build.js` を実行し、スポット詳細ページ・カテゴリ一覧ページ・`sitemap.xml` を更新する
+
+## 記事を追加する手順
+
+1. `data/articles.json` に記事オブジェクトを追加する。`slug`、`title`、`description`、`published`、`intro`、`sections` を設定し、必要なら `updated` と `outro` を追加する
+2. 各 `sections` に `heading` と `body` を設定する。スポットカードを表示する場合は、該当スポットの `id` を `spot_id` に指定する
+3. 下書きは `draft: true` にする。下書き記事は個別HTMLとsitemapに出力されない
+4. `node scripts/build.js` を実行し、記事一覧・公開記事ページ・`sitemap.xml` を更新する
 
 ## 品質チェック
 

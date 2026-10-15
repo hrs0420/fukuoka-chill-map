@@ -1,0 +1,17 @@
+[
+    {
+        "slug": "sample-article",
+        "title": "サンプル記事（下書き）",
+        "description": "記事ページ生成の確認用サンプルです。",
+        "published": "2026-10-15",
+        "draft": true,
+        "intro": "サンプル本文です。公開記事の本文ではありません。",
+        "sections": [
+            {
+                "heading": "サンプル見出し",
+                "body": "サンプル本文です。"
+            }
+        ],
+        "outro": "サンプルのまとめ文です。"
+    }
+]
