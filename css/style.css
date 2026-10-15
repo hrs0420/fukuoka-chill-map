@@ -638,6 +638,13 @@ h1#page-title-icon-wrap svg {
     color: #666;
 }
 
+.detail .checked-date,
+.detail .information-caution {
+    margin: 8px 0;
+    color: var(--color-primary);
+    font-size: 0.85rem;
+}
+
 .detail-description p {
     margin: 12px 0;
 }

@@ -92,6 +92,14 @@ function writeStatusReport(rootDir, allSpots, articles) {
     const totals = Object.fromEntries(checks.map(([key]) => [key, allSpots.filter(({ spot }) => checks.find(item => item[0] === key)[2](spot)).length]));
     const publicCount = articles.filter(article => !article.draft).length;
     const draftCount = articles.filter(article => article.draft).length;
+    const today = new Date();
+    const currentMonth = today.getUTCFullYear() * 12 + today.getUTCMonth();
+    const confirmationDate = spot => {
+        const checked = typeof spot.checked === 'string' && /^\d{4}-\d{2}$/.test(spot.checked) ? spot.checked : '';
+        if (!checked) return { text: spot.visited || '—', stale: false };
+        const [year, month] = checked.split('-').map(Number);
+        return { text: checked, stale: currentMonth - (year * 12 + month - 1) >= 6 };
+    };
     const lines = [
         '# 運営状況レポート',
         '',
@@ -105,7 +113,8 @@ function writeStatusReport(rootDir, allSpots, articles) {
         entries.forEach(({ spot }) => {
             const complete = checks.every(([, , predicate]) => predicate(spot));
             const result = checks.map(([, label, predicate]) => `${label} ${predicate(spot) ? '✓' : '✗'}`).join(' / ');
-            lines.push(`- [${complete ? 'x' : ' '}] ${spot.name}（${spot.area}） ${result}`);
+            const date = confirmationDate(spot);
+            lines.push(`- [${complete ? 'x' : ' '}] ${spot.name}（${spot.area}） 確認日 ${date.text}${date.stale ? ' ⚠' : ''} / ${result}`);
         });
         lines.push('');
     }
@@ -787,6 +796,12 @@ function generateSpotHTML(spot, category, affiliates, allSpots, areasByName) {
     const visitedHTML = spot.visited
         ? `    <p class="visited-date">訪問時期: ${escapeHTML(spot.visited)}</p>\n`
         : '';
+    const checkedLabel = typeof spot.checked === 'string' && /^\d{4}-\d{2}$/.test(spot.checked)
+        ? `${spot.checked.slice(0, 4)}年${Number(spot.checked.slice(5, 7))}月`
+        : (spot.visited || '');
+    const checkedHTML = checkedLabel
+        ? `<p class="checked-date">情報確認日: ${escapeHTML(checkedLabel)}</p>`
+        : '';
 
     const shortDesc = (spot.description || '').slice(0, 110);
     const shortDescEsc = escapeHTML(shortDesc);
@@ -961,6 +976,8 @@ ${breadcrumbJsonLd}
 
     <div id="detail-fields">
 ${fieldsHTML}    </div>
+    ${checkedHTML}
+    <p class="information-caution">最新の情報は公式サイト等でご確認ください</p>
 
     <p id="address" class="detail-meta" style="${addressDisplayStyle}"><i data-lucide="home"></i> <span>住所: ${spotAddressEsc}</span></p>
 
