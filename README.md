@@ -41,7 +41,8 @@ fukuoka-chill-map/
 │   ├── favorites.js    # お気に入りページ
 │   └── request.js      # スポット追加依頼ページ（現在は受付停止中）
 ├── scripts/
-│   └── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
+│   ├── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
+│   └── check.js        # データ・リンク・sitemapの品質チェック
 ├── spots/              # 自動生成された各スポットの静的HTML
 ├── index.html          # トップ
 ├── list.html           # 一覧（?category=cafe / sauna / running）
@@ -95,6 +96,14 @@ fukuoka-chill-map/
 1. `images/` に写真を追加する
 2. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる。`slug` も含む）
 3. `node scripts/build.js` を実行し、静的HTMLおよび `sitemap.xml` を更新する
+
+## 品質チェック
+
+```bash
+node scripts/check.js
+```
+
+`data/*.json` の形式とスポット情報、画像ファイル、アフィリエイトの参照先、HTML内の相対リンク、`sitemap.xml` の掲載URLを検査する。問題がある場合は内容を表示し、終了コード1で終了する。GitHub Actionsでもpushとpull requestのたびにビルドと品質チェックを実行する。
 
 ## ローカルでの確認方法
 
