@@ -1,0 +1,354 @@
+[
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "REC COFFEE博多",
+    "area": "博多駅",
+    "description": "スペシャルティコーヒー",
+    "url": "spots/cafe/rec-coffee-hakata.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "FUK COFFEE",
+    "area": "博多駅",
+    "description": "旅行気分を味わえるカフェ",
+    "url": "spots/cafe/fuk-coffee.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "manu coffee大名店",
+    "area": "大名",
+    "description": "深夜まで営業している大名のにぎやかなカフェ。ソファ席が充実し、アメリカーノとチーズケーキで友人との時間を楽しめます。",
+    "url": "spots/cafe/manu-coffee-daimyo.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "unplugged COFFEE STAND fukuoka",
+    "area": "六本松",
+    "description": "薄暗くウッド調の落ち着いた店内で、数十種類の豆から選べる六本松のコーヒースタンド。アパレルショップも併設しています。",
+    "url": "spots/cafe/unplugged-coffee-stand.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "Basking Coffee ropponmatsu",
+    "area": "六本松",
+    "description": "カラフルな外観とレトロな店内のギャップが魅力。2階のソファ席は居心地抜群で、読書や会話をゆっくり楽しめる六本松のカフェ。",
+    "url": "spots/cafe/basking-coffee-ropponmatsu.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "珈琲 美美",
+    "area": "赤坂",
+    "description": "入口の大きな焙煎機が迎えるレトロな名店。好みの珈琲とこだわりのフルーツケーキで、2階の木漏れ日の中ゆったり過ごせます。",
+    "url": "spots/cafe/coffee-bibi.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "フグレン",
+    "area": "赤坂",
+    "description": "けやき通りから1本入った住宅街にある、朝活にぴったりのカフェ。コーヒーからティー、アルコールまで揃い、朝の光の中で過ごせます。",
+    "url": "spots/cafe/fuglen-fukuoka.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "そふ珈琲",
+    "area": "別府",
+    "description": "渦巻き模様のカフェモカが名物",
+    "url": "spots/cafe/sofu-coffee.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "SCHOOL BUS COFFEE STOP FUKUOKA",
+    "area": "大濠",
+    "description": "朝活にもおすすめ、ワッフルカフェ",
+    "url": "spots/cafe/school-bus-coffee-stop.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "Cafe+82",
+    "area": "平尾",
+    "description": "薬院駅チカの韓国系カフェ",
+    "url": "spots/cafe/cafe-plus-82.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "ウェルビー福岡",
+    "area": "中州",
+    "description": "95度のサウナとシングルの水風呂が揃う中洲の人気施設。カプセルホテルに泊まれるので、宿泊費を抑えてリフレッシュできます。",
+    "url": "spots/sauna/wellbe-fukuoka.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "天拝の郷",
+    "area": "筑紫野",
+    "description": "自然を眺めながら外気浴",
+    "url": "spots/sauna/tenpai-no-sato.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "SHIAGARU SAUNA福岡天神",
+    "area": "天神",
+    "description": "末端と深部、2つのサウナ室で段階的に温まる天神のサウナ。10度前後の水風呂と充実の休憩席で「ととのう」を追求できます。",
+    "url": "spots/sauna/shiagaru-sauna-tenjin.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "サウナヨーガン福岡天神",
+    "area": "天神",
+    "description": "屋上外気浴で最高の体験を",
+    "url": "spots/sauna/sauna-yogan-tenjin.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "ヒナタの杜",
+    "area": "小戸",
+    "description": "岩盤浴付き2,000円前後で1日中くつろげる小戸の温浴施設。広い水風呂と星の見える外気浴、漫画や書籍の揃う休憩スペースが魅力。",
+    "url": "spots/sauna/hinata-no-mori.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "伊都の湯どころ",
+    "area": "糸島",
+    "description": "コスパ抜群の温浴施設",
+    "url": "spots/sauna/ito-no-yudokoro.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "游心の湯",
+    "area": "久留米",
+    "description": "イベント満載の源泉かけ流し温泉",
+    "url": "spots/sauna/yushin-no-yu.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "照葉スパリゾート 本店",
+    "area": "照葉",
+    "description": "福岡最大級の温浴施設",
+    "url": "spots/sauna/teriha-spa-resort.html"
+  },
+  {
+    "type": "spot",
+    "category": "サウナ",
+    "name": "FURO & SAUNA THE VANISH",
+    "area": "糟屋郡",
+    "description": "薪が燃える香りと音を五感で味わえる薪サウナ。休日でも1,500円ほどで時間制限なし、軟水の水風呂も心地よい久山町の施設。",
+    "url": "spots/sauna/the-vanish.html"
+  },
+  {
+    "type": "spot",
+    "category": "ランニング",
+    "name": "大濠公園周回コース",
+    "area": "大濠",
+    "description": "1周2kmで距離を測りやすい福岡定番のコース。ゴムチップ路面と池の景色、多くのランナーに囲まれてモチベーションが続きます。",
+    "url": "spots/running/ohori-park.html"
+  },
+  {
+    "type": "spot",
+    "category": "ランニング",
+    "name": "シーサイドももちコース",
+    "area": "百道",
+    "description": "海風を感じながら走れるロケーション抜群のコース。明け方や夕暮れ時が特におすすめ",
+    "url": "spots/running/seaside-momochi.html"
+  },
+  {
+    "type": "spot",
+    "category": "ランニング",
+    "name": "西公園コース",
+    "area": "大濠",
+    "description": "クセになるアップダウン。正面の坂はトレーニングにもってこいの距離と勾配",
+    "url": "spots/running/nishi-park.html"
+  },
+  {
+    "type": "spot",
+    "category": "ランニング",
+    "name": "室見川コース",
+    "area": "室見",
+    "description": "川沿いの整備された直線コース。水と緑が調和しており自然を感じながら気持ちよく走れる",
+    "url": "spots/running/muromi-river.html"
+  },
+  {
+    "type": "spot",
+    "category": "ランニング",
+    "name": "福岡空港コース",
+    "area": "福岡空港",
+    "description": "アスファルトの道でも信号や橋がなく長距離を走るのに快適。博多駅から地下鉄で5分の好立地",
+    "url": "spots/running/fukuoka-airport.html"
+  },
+  {
+    "type": "spot",
+    "category": "ランニング",
+    "name": "志賀島コース",
+    "area": "志賀島",
+    "description": "陸続きの島を一周しながら自然を満喫。",
+    "url": "spots/running/shikanoshima.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "久留米",
+    "area": "久留米",
+    "description": "久留米のスポット",
+    "url": "areas/kurume.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "志賀島",
+    "area": "志賀島",
+    "description": "志賀島のスポット",
+    "url": "areas/shikanoshima.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "糸島",
+    "area": "糸島",
+    "description": "糸島のスポット",
+    "url": "areas/itoshima.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "室見",
+    "area": "室見",
+    "description": "室見のスポット",
+    "url": "areas/muromi.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "小戸",
+    "area": "小戸",
+    "description": "小戸のスポット",
+    "url": "areas/odo.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "照葉",
+    "area": "照葉",
+    "description": "照葉のスポット",
+    "url": "areas/teriha.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "赤坂",
+    "area": "赤坂",
+    "description": "赤坂のスポット",
+    "url": "areas/akasaka.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "糟屋郡",
+    "area": "糟屋郡",
+    "description": "糟屋郡のスポット",
+    "url": "areas/kasuya-gun.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "大濠",
+    "area": "大濠",
+    "description": "大濠のスポット",
+    "url": "areas/ohori.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "大名",
+    "area": "大名",
+    "description": "大名のスポット",
+    "url": "areas/daimyo.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "筑紫野",
+    "area": "筑紫野",
+    "description": "筑紫野のスポット",
+    "url": "areas/chikushino.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "中州",
+    "area": "中州",
+    "description": "中州のスポット",
+    "url": "areas/nakasu.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "天神",
+    "area": "天神",
+    "description": "天神のスポット",
+    "url": "areas/tenjin.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "博多駅",
+    "area": "博多駅",
+    "description": "博多駅のスポット",
+    "url": "areas/hakata-station.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "百道",
+    "area": "百道",
+    "description": "百道のスポット",
+    "url": "areas/momochi.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "福岡空港",
+    "area": "福岡空港",
+    "description": "福岡空港のスポット",
+    "url": "areas/fukuoka-airport.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "平尾",
+    "area": "平尾",
+    "description": "平尾のスポット",
+    "url": "areas/hirao.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "別府",
+    "area": "別府",
+    "description": "別府のスポット",
+    "url": "areas/beppu.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "六本松",
+    "area": "六本松",
+    "description": "六本松のスポット",
+    "url": "areas/ropponmatsu.html"
+  }
+]

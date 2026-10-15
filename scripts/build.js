@@ -121,6 +121,73 @@ function writeStatusReport(rootDir, allSpots, articles) {
     fs.writeFileSync(path.join(rootDir, 'docs', 'status.md'), `${lines.join('\n')}\n`, 'utf8');
 }
 
+function createSearchIndex(rootDir, allSpots, areas, articles) {
+    const categoryLabels = { cafe: 'カフェ', sauna: 'サウナ', running: 'ランニング' };
+    const entries = allSpots.map(({ spot, category }) => ({
+        type: 'spot', category: categoryLabels[category], name: spot.name, area: spot.area,
+        description: spot.description || '', url: `spots/${category}/${encodeURIComponent(spot.slug)}.html`,
+    }));
+    entries.push(...areas.map(area => ({ type: 'area', category: 'エリア', name: area.name, area: area.name, description: `${area.name}のスポット`, url: `areas/${encodeURIComponent(area.slug)}.html` })));
+    entries.push(...articles.filter(article => !article.draft).map(article => ({
+        type: 'article', category: '記事', name: article.title, area: '', description: article.description || '', url: `articles/${encodeURIComponent(article.slug)}.html`,
+    })));
+    fs.writeFileSync(path.join(rootDir, 'data', 'generated', 'search-index.json'), `${JSON.stringify(entries, null, 2)}\n`, 'utf8');
+}
+
+function generateSearchPageHTML() {
+    return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MQNEWCRC3V"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-MQNEWCRC3V');</script>
+    <title>サイト内検索 | Fukuoka Chill Map</title>
+    <meta name="description" content="スポット、エリア、記事を検索できます。">
+    <link rel="canonical" href="${BASE_URL}search.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="images/Fukuoka-monuments.jpg" type="image/jpeg">
+</head>
+<body>
+<header><div class="header-container"><a href="index.html" class="header-logo-link"><img src="images/Fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img"></a><div class="header-title-group"><h1>サイト内検索</h1></div><button class="hamburger" id="hamburger-btn" aria-label="メニューを開く"><span></span><span></span><span></span></button></div>
+<nav class="nav-menu" id="nav-menu"><a href="index.html" class="nav-link"><i data-lucide="home"></i> トップ</a><a href="spots/cafe/index.html" class="nav-link">カフェ</a><a href="spots/sauna/index.html" class="nav-link">サウナ</a><a href="spots/running/index.html" class="nav-link">ランニング</a><a href="articles/index.html" class="nav-link">記事</a><a href="areas/index.html" class="nav-link">エリア</a><a href="search.html" class="nav-link">検索</a><a href="favorites.html" class="nav-link">お気に入り</a></nav></header>
+<main class="container"><section class="section"><h2>サイト内検索</h2><label for="site-search">キーワード</label><input id="site-search" type="search" autocomplete="off"><div id="search-results" aria-live="polite"></div></section></main>
+<footer><p>© 2026 Fukuoka Chill Map</p><img src="images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img"></footer>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script><script src="js/utils.js"></script><script src="js/search.js"></script>
+</body></html>`;
+}
+
+function generate404HTML() {
+    const absolute = value => `${BASE_URL}${value}`;
+    return `<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex"><title>ページが見つかりません | Fukuoka Chill Map</title><meta name="description" content="お探しのページは見つかりませんでした。"><link rel="stylesheet" href="${absolute('css/style.css')}"><link rel="icon" href="${absolute('images/Fukuoka-monuments.jpg')}" type="image/jpeg"><script async src="https://www.googletagmanager.com/gtag/js?id=G-MQNEWCRC3V"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-MQNEWCRC3V');</script></head>
+<body><header><div class="header-container"><a href="${absolute('index.html')}" class="header-logo-link"><img src="${absolute('images/Fukuoka-monuments.jpg')}" alt="福岡ランドマーク" class="header-monument-img"></a><div class="header-title-group"><h1>ページが見つかりません</h1></div></div><nav class="nav-menu"><a href="${absolute('index.html')}" class="nav-link">トップ</a><a href="${absolute('spots/cafe/index.html')}" class="nav-link">カフェ一覧</a><a href="${absolute('spots/sauna/index.html')}" class="nav-link">サウナ一覧</a><a href="${absolute('spots/running/index.html')}" class="nav-link">ランニング一覧</a><a href="${absolute('search.html')}" class="nav-link">検索</a></nav></header><main class="container"><section class="section"><h2>ページが見つかりません</h2><p>URLをご確認いただくか、トップページからお探しください。</p><a href="${absolute('index.html')}">トップへ戻る</a></section></main><footer><p>© 2026 Fukuoka Chill Map</p><img src="${absolute('images/fukuoka-monuments-black.jpg')}" alt="福岡ランドマーク" class="footer-monument-img"></footer><script defer src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script></body></html>`;
+}
+
+function addSearchNavigationAndDefer(rootDir) {
+    const htmlFiles = [];
+    const visit = directory => fs.readdirSync(directory, { withFileTypes: true }).forEach(entry => {
+        const filePath = path.join(directory, entry.name);
+        if (entry.isDirectory() && !['.git', 'node_modules'].includes(entry.name)) visit(filePath);
+        else if (entry.isFile() && entry.name.endsWith('.html')) htmlFiles.push(filePath);
+    });
+    visit(rootDir);
+    htmlFiles.forEach(filePath => {
+        let html = fs.readFileSync(filePath, 'utf8');
+        html = html.replace(/<script src="https:\/\/unpkg\.com\/lucide@0\.460\.0\/dist\/umd\/lucide\.min\.js"(?![^>]*\bdefer)[^>]*><\/script>/g, tag => tag.replace('<script ', '<script defer '));
+        const navMatch = html.match(/<nav class="nav-menu"[^>]*>[\s\S]*?<\/nav>/);
+        if (navMatch && !navMatch[0].includes('search.html')) {
+            const relative = path.relative(path.dirname(filePath), path.join(rootDir, 'search.html')).replace(/\\/g, '/');
+            const link = `<a href="${relative}" class="nav-link"><i data-lucide="search"></i> 検索</a>\n        `;
+            html = html.replace(navMatch[0], navMatch[0].replace('</nav>', `${link}</nav>`));
+        }
+        fs.writeFileSync(filePath, html, 'utf8');
+    });
+}
+
 function generateAffiliateHTML(spot, category, affiliates) {
     const products = affiliates.filter(product =>
         (Array.isArray(product.categories) && product.categories.includes(category)) ||
@@ -1104,6 +1171,7 @@ function build() {
         const spots = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', fileName), 'utf8'));
         return spots.map(spot => ({ spot, category }));
     });
+    createSearchIndex(rootDir, allSpots, areas, articles);
     const imageMap = Object.fromEntries(allSpots.map(({ spot }) => [spot.slug, resolveSpotImage(rootDir, spot)]));
     allSpots.forEach(({ spot }) => { spot.image = imageMap[spot.slug]; });
     writeStatusReport(rootDir, allSpots, articles);
@@ -1127,6 +1195,7 @@ function build() {
         { loc: `${BASE_URL}contact.html`, priority: '0.5' },
         { loc: `${BASE_URL}articles/index.html`, priority: '0.7' },
         { loc: `${BASE_URL}areas/index.html`, priority: '0.7' },
+        { loc: `${BASE_URL}search.html`, priority: '0.6' },
     ];
 
     let spotCount = 0;
@@ -1202,6 +1271,10 @@ function build() {
             priority: '0.6',
         });
     });
+
+    fs.writeFileSync(path.join(rootDir, 'search.html'), generateSearchPageHTML(), 'utf8');
+    fs.writeFileSync(path.join(rootDir, '404.html'), generate404HTML(), 'utf8');
+    addSearchNavigationAndDefer(rootDir);
 
     // Generate sitemap.xml
     const sitemapXML = `<?xml version="1.0" encoding="UTF-8"?>
