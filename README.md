@@ -13,7 +13,7 @@
 
 ## 主な機能
 
-- カテゴリ共通の一覧ページ（キーワード検索・候補の自動表示・条件の絞り込み・エリア選択・並び替え）
+- カテゴリごとの静的一覧ページ（キーワード検索・候補の自動表示・条件の絞り込み・エリア選択・並び替え）
 - 検索条件をURLに反映（条件付きのページをそのまま共有できる）
 - カテゴリ共通の詳細ページ（カテゴリごとに表示項目を出し分け、Googleマップ埋め込み）
 - 口コミ・評価の投稿と削除
@@ -30,7 +30,9 @@ fukuoka-chill-map/
 ├── data/
 │   ├── cafes.json      # カフェのデータ
 │   ├── saunas.json     # サウナのデータ
-│   └── running.json    # ランニングスポットのデータ
+│   ├── running.json    # ランニングスポットのデータ
+│   ├── articles.json   # まとめ記事のデータ
+│   └── areas.json      # エリア名とURL用slug
 ├── images/             # スポット写真・ロゴ
 ├── js/
 │   ├── categories.js   # カテゴリごとの設定（最重要）
@@ -41,10 +43,13 @@ fukuoka-chill-map/
 │   ├── favorites.js    # お気に入りページ
 │   └── request.js      # スポット追加依頼ページ（現在は受付停止中）
 ├── scripts/
-│   └── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
-├── spots/              # 自動生成された各スポットの静的HTML
+│   ├── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
+│   └── check.js        # データ・リンク・sitemapの品質チェック
+├── spots/              # 自動生成された静的詳細・カテゴリ一覧HTML
+├── articles/           # 自動生成された記事一覧・記事ページ
+├── areas/              # 自動生成されたエリア一覧・エリアページ
 ├── index.html          # トップ
-├── list.html           # 一覧（?category=cafe / sauna / running）
+├── list.html           # 旧一覧URLから静的カテゴリ一覧への転送
 ├── detail.html         # 詳細（?name=スポット名&type=カテゴリ、旧URL用）
 ├── favorites.html      # お気に入り
 ├── request.html        # スポット追加依頼
@@ -63,6 +68,8 @@ fukuoka-chill-map/
 **項目を追加・変更するときは `categories.js` を編集すればよく、HTMLや他のJSを触る必要はない。**
 
 ## データの形式
+
+スポットには任意項目 `checked` を追加できます。形式は `YYYY-MM`（例: `2026-10`）です。詳細ページには「情報確認日: 2026年10月」と表示されます。`checked` がない場合は `visited` を表示用の確認日として使います。
 
 ### 共通項目
 
@@ -94,7 +101,26 @@ fukuoka-chill-map/
 
 1. `images/` に写真を追加する
 2. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる。`slug` も含む）
-3. `node scripts/build.js` を実行し、静的HTMLおよび `sitemap.xml` を更新する
+3. `node scripts/build.js` を実行し、スポット詳細ページ・カテゴリ一覧ページ・`sitemap.xml` を更新する
+
+## 記事を追加する手順
+
+1. `data/articles.json` に記事オブジェクトを追加する。`slug`、`title`、`description`、`published`、`intro`、`sections` を設定し、必要なら `updated` と `outro` を追加する
+2. 各 `sections` に `heading` と `body` を設定する。スポットカードを表示する場合は、該当スポットの `id` を `spot_id` に指定する
+3. 下書きは `draft: true` にする。下書き記事は個別HTMLとsitemapに出力されない
+4. `node scripts/build.js` を実行し、記事一覧・公開記事ページ・`sitemap.xml` を更新する
+
+## エリアページ
+
+`data/areas.json` に全エリアの `name` とURL用 `slug` を登録し、`node scripts/build.js` を実行すると `areas/index.html` と各エリアページを生成する。ビルド後の `node scripts/check.js` で、スポットの全エリアが登録されていることも確認する。
+
+## 品質チェック
+
+```bash
+node scripts/check.js
+```
+
+`data/*.json` の形式とスポット情報、画像ファイル、アフィリエイトの参照先、HTML内の相対リンク、`sitemap.xml` の掲載URLを検査する。問題がある場合は内容を表示し、終了コード1で終了する。GitHub Actionsでもpushとpull requestのたびにビルドと品質チェックを実行する。
 
 ## ローカルでの確認方法
 

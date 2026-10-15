@@ -67,7 +67,7 @@
       "@type": "ListItem",
       "position": 2,
       "name": "カフェ一覧",
-      "item": "https://hrs0420.github.io/fukuoka-chill-map/list.html?category=cafe"
+      "item": "https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/index.html"
     },
     {
       "@type": "ListItem",
@@ -80,12 +80,12 @@
     </script>
 </head>
 
-<body data-spot-name="珈琲 美美" data-spot-type="cafe">
+<body data-spot-name="珈琲 美美" data-spot-type="cafe" data-area-slug="akasaka">
 
 <header>
     <div class="header-container">
         <a href="../../index.html" class="header-logo-link">
-            <img src="../../images/Fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
+            <img height="896" width="1200" src="../../images/Fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
         </a>
 
         <div class="header-title-group">
@@ -100,25 +100,28 @@
 
     <nav class="nav-menu" id="nav-menu">
         <a href="../../index.html" class="nav-link"><i data-lucide="home"></i> トップに戻る</a>
-        <a href="../../list.html?category=cafe" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
-        <a href="../../list.html?category=sauna" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
-        <a href="../../list.html?category=running" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="../../spots/cafe/index.html" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
+        <a href="../../spots/sauna/index.html" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
+        <a href="../../spots/running/index.html" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="../../articles/index.html" class="nav-link"><i data-lucide="book-open"></i> 記事</a>
+        <a href="../../areas/index.html" class="nav-link"><i data-lucide="map-pin"></i> エリア</a>
         <a href="../../favorites.html" class="nav-link"><i data-lucide="heart"></i> お気に入り</a>
         <a href="../../request.html" class="nav-link"><i data-lucide="clipboard-list"></i> スポット追加依頼</a>
-    </nav>
+    <a href="../../search.html" class="nav-link"><i data-lucide="search"></i> 検索</a>
+        </nav>
 </header>
 
 <div class="detail">
     <nav class="breadcrumb-list" aria-label="パンくずリスト">
         <a href="../../index.html">トップ</a>
         <span aria-hidden="true">&gt;</span>
-        <a href="../../list.html?category=cafe">カフェ一覧</a>
+        <a href="../../spots/cafe/index.html">カフェ一覧</a>
         <span aria-hidden="true">&gt;</span>
         <span aria-current="page">珈琲 美美</span>
     </nav>
     <h2 id="spot-name">珈琲 美美</h2>
 
-    <p id="area" class="detail-meta"><i data-lucide="map-pin"></i> <span>エリア: 赤坂</span></p>
+    <p id="area" class="detail-meta"><i data-lucide="map-pin"></i> <span>エリア: <a href="../../areas/akasaka.html">赤坂</a></span></p>
     <p id="rating" class="detail-meta"><i data-lucide="star"></i> <span>評価: 4.8</span></p>
 
     <div id="detail-fields">
@@ -129,6 +132,8 @@
         <p class="detail-field"><i data-lucide="calendar-off"></i> <span>定休日: 月曜日、第一火曜日</span></p>
         <p class="detail-field"><i data-lucide="credit-card"></i> <span>決済方法: 記載なし</span></p>
     </div>
+    <p class="checked-date">情報確認日: 2025年8月</p>
+    <p class="information-caution">最新の情報は公式サイト等でご確認ください</p>
 
     <p id="address" class="detail-meta" style="display: flex;"><i data-lucide="home"></i> <span>住所: 〒810-0042 福岡県福岡市中央区赤坂2丁目6-27</span></p>
 
@@ -173,7 +178,7 @@
         <a href="../../spots/cafe/fuglen-fukuoka.html" class="card-link related-spot-link">
             <article class="card">
                 <div class="card-media">
-                    <img src="../../images/placeholders/cafe.jpg" alt="フグレン" loading="lazy">
+                    <img height="630" width="1200" src="../../images/placeholders/cafe.jpg" alt="フグレン" loading="lazy">
                     <span class="rating-badge">⭐ 4.5</span>
                 </div>
                 <div class="card-body">
@@ -185,7 +190,7 @@
         <a href="../../spots/cafe/basking-coffee-ropponmatsu.html" class="card-link related-spot-link">
             <article class="card">
                 <div class="card-media">
-                    <img src="../../images/placeholders/cafe.jpg" alt="Basking Coffee ropponmatsu" loading="lazy">
+                    <img height="630" width="1200" src="../../images/placeholders/cafe.jpg" alt="Basking Coffee ropponmatsu" loading="lazy">
                     <span class="rating-badge">⭐ 4.9</span>
                 </div>
                 <div class="card-body">
@@ -197,7 +202,7 @@
         <a href="../../spots/cafe/rec-coffee-hakata.html" class="card-link related-spot-link">
             <article class="card">
                 <div class="card-media">
-                    <img src="../../images/placeholders/cafe.jpg" alt="REC COFFEE博多" loading="lazy">
+                    <img height="630" width="1200" src="../../images/placeholders/cafe.jpg" alt="REC COFFEE博多" loading="lazy">
                     <span class="rating-badge">⭐ 4.8</span>
                 </div>
                 <div class="card-body">
@@ -262,10 +267,10 @@
 <footer>
     <p id="copyright">© 2026 Fukuoka Chill Map</p>
     <p class="footer-links"><a href="../../about.html">運営者情報</a> / <a href="../../privacy.html">プライバシーポリシー</a> / <a href="../../contact.html">お問い合わせ</a></p>
-    <img src="../../images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
+    <img height="896" width="1200" src="../../images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
 </footer>
 
-<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script defer src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <script src="../../js/utils.js"></script>
 <script src="../../js/categories.js"></script>
 <script src="../../js/detail.js"></script>

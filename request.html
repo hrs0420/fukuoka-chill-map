@@ -22,7 +22,7 @@
 <header>
     <div class="header-container">
         <a href="index.html" class="header-logo-link">
-            <img src="images/Fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
+            <img height="896" width="1200" src="images/Fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
         </a>
         <div class="header-title-group">
             <h1>📝 スポット追加依頼</h1>
@@ -33,12 +33,15 @@
     </div>
     <nav class="nav-menu" id="nav-menu">
         <a href="index.html" class="nav-link"><i data-lucide="home"></i> トップに戻る</a>
-        <a href="list.html?category=cafe" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
-        <a href="list.html?category=sauna" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
-        <a href="list.html?category=running" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="spots/cafe/index.html" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
+        <a href="spots/sauna/index.html" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
+        <a href="spots/running/index.html" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="articles/index.html" class="nav-link"><i data-lucide="book-open"></i> 記事</a>
+        <a href="areas/index.html" class="nav-link"><i data-lucide="map-pin"></i> エリア</a>
         <a href="favorites.html" class="nav-link"><i data-lucide="heart"></i> お気に入り</a>
         <a href="request.html" class="nav-link"><i data-lucide="clipboard-list"></i> スポット追加依頼</a>
-    </nav>
+    <a href="search.html" class="nav-link"><i data-lucide="search"></i> 検索</a>
+        </nav>
 </header>
 
 <div class="detail">
@@ -87,7 +90,7 @@
                     <input type="file" id="image" accept="image/png, image/jpeg, image/webp">
                 </div>
                 <div id="preview-wrapper" class="preview-wrapper" style="display:none;">
-                    <img id="image-preview">
+                    <img loading="lazy" height="300" width="400" alt="" id="image-preview">
                     <button type="button" id="remove-image-btn" class="remove-image-btn" aria-label="画像を削除">
                         <i data-lucide="x"></i>
                     </button>
@@ -159,7 +162,7 @@
     <p class="footer-links"><a href="about.html">運営者情報</a> / <a href="privacy.html">プライバシーポリシー</a> / <a href="contact.html">お問い合わせ</a></p>
 </footer>
 
-<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script defer src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/categories.js"></script>
 <script src="js/request.js"></script>

@@ -33,7 +33,7 @@ function renderFavorites(container, allData, favoriteNames, categoryConfig) {
         return;
     }
 
-    filteredData.forEach(item => {
+    filteredData.forEach((item, index) => {
         const detailUrl = item.slug
             ? `spots/${categoryConfig.type}/${item.slug}.html`
             : `detail.html?name=${encodeURIComponent(item.name)}&type=${categoryConfig.type}`;
@@ -42,7 +42,7 @@ function renderFavorites(container, allData, favoriteNames, categoryConfig) {
         <a href="${detailUrl}" class="card-link">
             <div class="card">
                 <div class="card-media">
-                    <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" class="cafe-image" loading="lazy">
+                    <img src="${escapeHTML(item.image)}" width="${escapeHTML(item.imageWidth || 400)}" height="${escapeHTML(item.imageHeight || 300)}" alt="${escapeHTML(item.name)}" class="cafe-image" ${index < 3 ? '' : 'loading="lazy"'}>
                     <span class="rating-badge">⭐ ${escapeHTML(item.rating)}</span>
                     <span
                         class="favorite"
