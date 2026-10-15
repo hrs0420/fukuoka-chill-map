@@ -4,9 +4,7 @@
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/about.html</loc><priority>0.5</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/privacy.html</loc><priority>0.5</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/contact.html</loc><priority>0.5</priority></url>
-  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=cafe</loc><priority>0.8</priority></url>
-  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=sauna</loc><priority>0.8</priority></url>
-  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/list.html?category=running</loc><priority>0.8</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/rec-coffee-hakata.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/fuk-coffee.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/manu-coffee-daimyo.html</loc><priority>0.6</priority></url>
@@ -17,6 +15,7 @@
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/sofu-coffee.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/school-bus-coffee-stop.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/cafe-plus-82.html</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/wellbe-fukuoka.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/tenpai-no-sato.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/shiagaru-sauna-tenjin.html</loc><priority>0.6</priority></url>
@@ -26,6 +25,7 @@
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/yushin-no-yu.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/teriha-spa-resort.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/the-vanish.html</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/running/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/running/ohori-park.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/running/seaside-momochi.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/running/nishi-park.html</loc><priority>0.6</priority></url>

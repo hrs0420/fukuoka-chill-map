@@ -13,7 +13,7 @@
 
 ## 主な機能
 
-- カテゴリ共通の一覧ページ（キーワード検索・候補の自動表示・条件の絞り込み・エリア選択・並び替え）
+- カテゴリごとの静的一覧ページ（キーワード検索・候補の自動表示・条件の絞り込み・エリア選択・並び替え）
 - 検索条件をURLに反映（条件付きのページをそのまま共有できる）
 - カテゴリ共通の詳細ページ（カテゴリごとに表示項目を出し分け、Googleマップ埋め込み）
 - 口コミ・評価の投稿と削除
@@ -44,6 +44,7 @@ fukuoka-chill-map/
 │   ├── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
 │   └── check.js        # データ・リンク・sitemapの品質チェック
 ├── spots/              # 自動生成された各スポットの静的HTML
+│   ├── cafe/index.html # カテゴリ別一覧（sauna / running も同様）
 ├── index.html          # トップ
 ├── list.html           # 一覧（?category=cafe / sauna / running）
 ├── detail.html         # 詳細（?name=スポット名&type=カテゴリ、旧URL用）
@@ -95,7 +96,7 @@ fukuoka-chill-map/
 
 1. `images/` に写真を追加する
 2. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる。`slug` も含む）
-3. `node scripts/build.js` を実行し、静的HTMLおよび `sitemap.xml` を更新する
+3. `node scripts/build.js` を実行し、スポット詳細ページ・カテゴリ一覧ページ・`sitemap.xml` を更新する
 
 ## 品質チェック
 

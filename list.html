@@ -10,6 +10,12 @@
         gtag('js', new Date());
         gtag('config', 'G-MQNEWCRC3V');
     </script>
+    <script>
+        const category = new URLSearchParams(location.search).get("category");
+        if (["cafe", "sauna", "running"].includes(category)) {
+            location.replace(`spots/${category}/index.html${location.search}`);
+        }
+    </script>
     <title id="page-title-tag">一覧 | Fukuoka Chill Map</title>
     <link rel="icon" href="images/Fukuoka-monuments.jpg" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,9 +48,9 @@
 
     <nav class="nav-menu" id="nav-menu">
         <a href="index.html" class="nav-link"><i data-lucide="home"></i> トップに戻る</a>
-        <a href="list.html?category=cafe" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
-        <a href="list.html?category=sauna" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
-        <a href="list.html?category=running" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="spots/cafe/index.html" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
+        <a href="spots/sauna/index.html" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
+        <a href="spots/running/index.html" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
         <a href="favorites.html" class="nav-link"><i data-lucide="heart"></i> お気に入り</a>
         <a href="request.html" class="nav-link"><i data-lucide="clipboard-list"></i> スポット追加依頼</a>
     </nav>

@@ -41,6 +41,12 @@ const CATEGORY_PAGE_TITLES = {
     running: 'ランニングスポット一覧',
 };
 
+const CATEGORY_ICONS = {
+    cafe: 'coffee',
+    sauna: 'flame',
+    running: 'footprints',
+};
+
 const SCHEMA_TYPE = {
     cafe: 'CafeOrCoffeeShop',
     sauna: 'HealthClub',
@@ -145,6 +151,139 @@ ${cardsHTML}
 </section>`;
 }
 
+function generateCategoryCardHTML(spot, category) {
+    const tags = category === 'running'
+        ? [
+            `🏃 1周: ${spot.distance || ''}`,
+            `🛣 ${spot.surface || ''}`,
+            spot.lighted ? '💡 ナイター' : '',
+            spot.locker ? '🎒 ロッカー' : '',
+            spot.bathroom ? '🚽 トイレ' : '',
+        ].filter(Boolean)
+        : [];
+    const tagsHTML = tags.length > 0
+        ? `<div class="card-tag-row">${tags.map(tag => `<span class="card-tag">${escapeHTML(tag)}</span>`).join('')}</div>\n                    `
+        : '';
+
+    return `        <a href="../${category}/${escapeAttribute(encodeURIComponent(spot.slug))}.html" class="card-link">
+            <article class="card">
+                <div class="card-media">
+                    <img src="../../${escapeAttribute(spot.image)}" alt="${escapeAttribute(spot.name)}" class="cafe-image" loading="lazy">
+                    <span class="rating-badge">⭐ ${escapeHTML(spot.rating)}</span>
+                    <span class="favorite" data-name="${escapeAttribute(spot.name)}">🩶</span>
+                </div>
+                <div class="card-body">
+                    <h2>${escapeHTML(spot.name)}</h2>
+                    <p class="card-area">📍 ${escapeHTML(spot.area)}</p>
+                    ${tagsHTML}<p class="card-desc">${escapeHTML(spot.description)}</p>
+                </div>
+            </article>
+        </a>`;
+}
+
+function generateCategoryPageHTML(category, spots) {
+    const title = CATEGORY_PAGE_TITLES[category];
+    const pageUrl = `${BASE_URL}spots/${category}/index.html`;
+    const description = `福岡の${title}。エリアや条件で絞り込んで検索できます。`;
+    const sortedSpots = [...spots].sort((a, b) => Number(b.rating) - Number(a.rating));
+    const cardsHTML = sortedSpots.map(spot => generateCategoryCardHTML(spot, category)).join('\n');
+    const breadcrumbJsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'トップ', item: `${BASE_URL}index.html` },
+            { '@type': 'ListItem', position: 2, name: title, item: pageUrl },
+        ],
+    }, null, 2);
+
+    return `<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MQNEWCRC3V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MQNEWCRC3V');
+    </script>
+    <title>${escapeHTML(title)} | Fukuoka Chill Map</title>
+    <meta name="description" content="${escapeAttribute(description)}">
+    <link rel="canonical" href="${pageUrl}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="${escapeAttribute(`${title} | Fukuoka Chill Map`)}">
+    <meta property="og:description" content="${escapeAttribute(description)}">
+    <meta property="og:url" content="${pageUrl}">
+    <meta property="og:site_name" content="Fukuoka Chill Map">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="${BASE_URL}images/Fukuoka-monuments.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="icon" href="../../images/Fukuoka-monuments.jpg" type="image/jpeg">
+    <script type="application/ld+json">
+${breadcrumbJsonLd}
+    </script>
+</head>
+
+<body data-category="${category}">
+
+<header>
+    <div class="header-container">
+        <a href="../../index.html" class="header-logo-link">
+            <img src="../../images/Fukuoka-monuments.jpg" alt="福岡ランドマーク" class="header-monument-img">
+        </a>
+        <div class="header-title-group">
+            <h1 id="page-title-icon-wrap"><i id="page-title-icon" data-lucide="${CATEGORY_ICONS[category]}"></i> <span id="page-title">${escapeHTML(title)}</span></h1>
+        </div>
+        <button class="hamburger" id="hamburger-btn" aria-label="メニューを開く">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+    <nav class="nav-menu" id="nav-menu">
+        <a href="../../index.html" class="nav-link"><i data-lucide="home"></i> トップに戻る</a>
+        <a href="../../spots/cafe/index.html" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
+        <a href="../../spots/sauna/index.html" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
+        <a href="../../spots/running/index.html" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="../../favorites.html" class="nav-link"><i data-lucide="heart"></i> お気に入り</a>
+        <a href="../../request.html" class="nav-link"><i data-lucide="clipboard-list"></i> スポット追加依頼</a>
+    </nav>
+</header>
+
+<nav class="breadcrumb-list" aria-label="パンくずリスト">
+    <a href="../../index.html">トップ</a>
+    <span aria-hidden="true">&gt;</span>
+    <span aria-current="page">${escapeHTML(title)}</span>
+</nav>
+
+<div class="search-container" id="search-container"></div>
+<div class="filter-container" id="filter-container"></div>
+<main class="card-grid" id="list-grid">
+${cardsHTML}
+</main>
+
+<footer>
+    <p>© 2026 Fukuoka Chill Map</p>
+    <p class="footer-links"><a href="../../about.html">運営者情報</a> / <a href="../../privacy.html">プライバシーポリシー</a> / <a href="../../contact.html">お問い合わせ</a></p>
+    <img src="../../images/fukuoka-monuments-black.jpg" alt="福岡ランドマーク" class="footer-monument-img">
+</footer>
+
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../js/utils.js"></script>
+<script src="../../js/categories.js"></script>
+<script src="../../js/list.js"></script>
+
+</body>
+
+</html>
+`;
+}
+
 function generateSpotHTML(spot, category, affiliates, allSpots) {
     const spotNameEsc = escapeHTML(spot.name);
     const spotAreaEsc = escapeHTML(spot.area || '情報なし');
@@ -167,7 +306,7 @@ function generateSpotHTML(spot, category, affiliates, allSpots) {
     const affiliateHTML = generateAffiliateHTML(spot, category, affiliates);
     const relatedSpotsHTML = generateRelatedSpotsHTML(spot, category, allSpots);
     const categoryTitle = CATEGORY_PAGE_TITLES[category];
-    const categoryUrl = `${BASE_URL}list.html?category=${category}`;
+    const categoryUrl = `${BASE_URL}spots/${category}/index.html`;
 
     // Field items HTML
     const fields = FIELD_CONFIG[category] || [];
@@ -306,9 +445,9 @@ ${breadcrumbJsonLd}
 
     <nav class="nav-menu" id="nav-menu">
         <a href="../../index.html" class="nav-link"><i data-lucide="home"></i> トップに戻る</a>
-        <a href="../../list.html?category=cafe" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
-        <a href="../../list.html?category=sauna" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
-        <a href="../../list.html?category=running" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
+        <a href="../../spots/cafe/index.html" class="nav-link"><i data-lucide="coffee"></i> カフェ</a>
+        <a href="../../spots/sauna/index.html" class="nav-link"><i data-lucide="flame"></i> サウナ</a>
+        <a href="../../spots/running/index.html" class="nav-link"><i data-lucide="footprints"></i> ランニング</a>
         <a href="../../favorites.html" class="nav-link"><i data-lucide="heart"></i> お気に入り</a>
         <a href="../../request.html" class="nav-link"><i data-lucide="clipboard-list"></i> スポット追加依頼</a>
     </nav>
@@ -318,7 +457,7 @@ ${breadcrumbJsonLd}
     <nav class="breadcrumb-list" aria-label="パンくずリスト">
         <a href="../../index.html">トップ</a>
         <span aria-hidden="true">&gt;</span>
-        <a href="../../list.html?category=${category}">${escapeHTML(categoryTitle)}</a>
+        <a href="../../spots/${category}/index.html">${escapeHTML(categoryTitle)}</a>
         <span aria-hidden="true">&gt;</span>
         <span aria-current="page">${spotNameEsc}</span>
     </nav>
@@ -446,9 +585,6 @@ function build() {
         { loc: `${BASE_URL}about.html`, priority: '0.5' },
         { loc: `${BASE_URL}privacy.html`, priority: '0.5' },
         { loc: `${BASE_URL}contact.html`, priority: '0.5' },
-        { loc: `${BASE_URL}list.html?category=cafe`, priority: '0.8' },
-        { loc: `${BASE_URL}list.html?category=sauna`, priority: '0.8' },
-        { loc: `${BASE_URL}list.html?category=running`, priority: '0.8' },
     ];
 
     let spotCount = 0;
@@ -459,6 +595,13 @@ function build() {
 
         const categoryDir = path.join(spotsDir, category);
         fs.mkdirSync(categoryDir, { recursive: true });
+
+        const categoryIndexPath = path.join(categoryDir, 'index.html');
+        fs.writeFileSync(categoryIndexPath, generateCategoryPageHTML(category, spots), 'utf8');
+        sitemapUrls.push({
+            loc: `${BASE_URL}spots/${category}/index.html`,
+            priority: '0.8',
+        });
 
         spots.forEach(spot => {
             if (!spot.slug) {

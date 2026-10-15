@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
     const params = new URLSearchParams(window.location.search);
-    const category = params.get("category");
+    const category = document.body?.dataset.category || params.get("category");
+    const isStaticCategoryPage = Boolean(document.body?.dataset.category);
 
     config = CATEGORY_CONFIG[category];
 
@@ -60,7 +61,9 @@ async function init() {
         document.head.appendChild(canonicalTag);
     }
     // 検索キーワードや並び替え条件はcanonicalに含めない（重複コンテンツ対策）
-    canonicalTag.setAttribute("href", `${location.origin}${location.pathname}?category=${category}`);
+    canonicalTag.setAttribute("href", isStaticCategoryPage
+        ? `${location.origin}${location.pathname}`
+        : `${location.origin}${location.pathname}?category=${category}`);
 
     allItems = await getCombinedSpots(config);
 
@@ -231,6 +234,7 @@ function render() {
 
 function updateURL() {
     const params = new URLSearchParams(window.location.search);
+    params.set("category", config.type);
 
     const keyword = document.getElementById("search")?.value || "";
     const areaValue = document.getElementById("area")?.value || "";
@@ -276,6 +280,7 @@ function displayList(items) {
     }
 
     const favorites = JSON.parse(localStorage.getItem(config.storageKey)) || [];
+    const assetPrefix = document.body?.dataset.category ? "../../" : "";
 
     items.forEach(item => {
         const tagsHTML = config.cardTags
@@ -283,14 +288,14 @@ function displayList(items) {
             : "";
 
         const detailUrl = item.slug
-            ? `spots/${config.type}/${item.slug}.html`
+            ? `${document.body?.dataset.category ? `../${config.type}` : `spots/${config.type}`}/${encodeURIComponent(item.slug)}.html`
             : `detail.html?name=${encodeURIComponent(item.name)}&type=${config.type}`;
 
         grid.innerHTML += `
         <a href="${detailUrl}" class="card-link">
             <div class="card">
                 <div class="card-media">
-                    <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" class="cafe-image" loading="lazy">
+                    <img src="${assetPrefix}${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}" class="cafe-image" loading="lazy">
                     <span class="rating-badge">⭐ ${escapeHTML(item.rating)}</span>
                     <span class="favorite" data-name="${escapeHTML(item.name)}">
                         ${favorites.includes(item.name) ? "❤️" : "🩶"}
