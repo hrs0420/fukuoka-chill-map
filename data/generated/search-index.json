@@ -350,5 +350,21 @@
     "area": "六本松",
     "description": "六本松のスポット",
     "url": "areas/ropponmatsu.html"
+  },
+  {
+    "type": "article",
+    "category": "記事",
+    "name": "福岡でゆっくり読書できるカフェ4選",
+    "area": "",
+    "description": "福岡でひとりで本を読んだり、落ち着いて話したりできるカフェを、実際に訪れた中から4つ紹介。作業向きかどうかも書いています。",
+    "url": "articles/fukuoka-cafe-reading.html"
+  },
+  {
+    "type": "article",
+    "category": "記事",
+    "name": "目的別・福岡のサウナの選び方",
+    "area": "",
+    "description": "1日ゆっくり、ととのいの追求、宿泊、薪サウナ。実際に訪れた福岡のサウナを目的別に紹介します。",
+    "url": "articles/fukuoka-sauna-by-purpose.html"
   }
 ]
