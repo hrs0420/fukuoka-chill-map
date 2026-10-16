@@ -265,6 +265,26 @@ function checkSitemap() {
     });
 }
 
+function checkGeneratedTextLineEndings() {
+    const generatedFiles = [
+        ...getFilesRecursively(path.join(ROOT_DIR, 'spots'), filePath => /\.(html|xml|json|md)$/i.test(filePath)),
+        ...getFilesRecursively(path.join(ROOT_DIR, 'areas'), filePath => /\.(html|xml|json|md)$/i.test(filePath)),
+        ...getFilesRecursively(path.join(ROOT_DIR, 'articles'), filePath => /\.(html|xml|json|md)$/i.test(filePath)),
+        ...getFilesRecursively(path.join(DATA_DIR, 'generated'), filePath => /\.(html|xml|json|md)$/i.test(filePath)),
+        path.join(ROOT_DIR, 'index.html'),
+        path.join(ROOT_DIR, 'search.html'),
+        path.join(ROOT_DIR, '404.html'),
+        path.join(ROOT_DIR, 'sitemap.xml'),
+        path.join(ROOT_DIR, 'docs', 'status.md'),
+    ].filter(filePath => fs.existsSync(filePath) && fs.statSync(filePath).isFile());
+
+    generatedFiles.forEach(filePath => {
+        if (fs.readFileSync(filePath, 'utf8').includes('\r')) {
+            report(`${path.relative(ROOT_DIR, filePath)}: 生成テキストに CR が含まれています`);
+        }
+    });
+}
+
 function checkSpotImageWarnings() {
     const knownSlugs = new Set();
     Object.values(CATEGORY_FILES).forEach(file => {
@@ -285,6 +305,7 @@ checkAreas(parsedData);
 checkHtmlLinks();
 checkSitemap();
 checkSpotImageWarnings();
+checkGeneratedTextLineEndings();
 if (warnings.length > 0) {
     console.warn(`Warnings (${warnings.length}):`);
     warnings.forEach(warning => console.warn(`- ${warning}`));

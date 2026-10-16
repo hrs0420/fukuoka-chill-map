@@ -3,6 +3,14 @@ const path = require('path');
 
 const BASE_URL = 'https://hrs0420.github.io/fukuoka-chill-map/';
 
+function writeTextFile(filePath, content) {
+    fs.writeFileSync(filePath, String(content).replace(/\r\n/g, '\n'), 'utf8');
+}
+
+function readTextFile(filePath) {
+    return fs.readFileSync(filePath, 'utf8').replace(/\r\n/g, '\n');
+}
+
 // FIELD_CONFIG matching js/categories.js
 const FIELD_CONFIG = {
     cafe: [
@@ -106,14 +114,14 @@ function readImageDimensions(filePath) {
 
 function addItemListSchema(filePath, entries) {
     const schema = { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: entries.map((entry, index) => ({ '@type': 'ListItem', position: index + 1, name: entry.name, item: entry.url })) };
-    let html = fs.readFileSync(filePath, 'utf8');
+    let html = readTextFile(filePath);
     html = html.replace(/\s*<script type="application\/ld\+json" data-generated-itemlist>[\s\S]*?<\/script>/, '');
-    fs.writeFileSync(filePath, html.replace('</head>', `    <script type="application/ld+json" data-generated-itemlist>\n${JSON.stringify(schema, null, 2)}\n    </script>\n</head>`), 'utf8');
+    writeTextFile(filePath, html.replace('</head>', `    <script type="application/ld+json" data-generated-itemlist>\n${JSON.stringify(schema, null, 2)}\n    </script>\n</head>`));
 }
 
 function addSearchAction(rootDir) {
     const filePath = path.join(rootDir, 'index.html');
-    let html = fs.readFileSync(filePath, 'utf8');
+    let html = readTextFile(filePath);
     html = html.replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/, (whole, content) => {
         try {
             const data = JSON.parse(content);
@@ -121,7 +129,7 @@ function addSearchAction(rootDir) {
             return `<script type="application/ld+json">\n${JSON.stringify(data, null, 2)}\n    </script>`;
         } catch { return whole; }
     });
-    fs.writeFileSync(filePath, html, 'utf8');
+    writeTextFile(filePath, html);
 }
 
 function enhanceHTMLImages(rootDir) {
@@ -129,7 +137,7 @@ function enhanceHTMLImages(rootDir) {
         const filePath = path.join(directory, entry.name);
         if (entry.isDirectory() && !['.git', 'node_modules'].includes(entry.name)) return visit(filePath);
         if (!entry.isFile() || !entry.name.endsWith('.html')) return;
-        const html = fs.readFileSync(filePath, 'utf8');
+        const html = readTextFile(filePath);
         let cardImageCount = 0;
         const relativePage = path.relative(rootDir, filePath).replace(/\\/g, '/');
         const eagerCardPage = /^spots\/(cafe|sauna|running)\/index\.html$/.test(relativePage) || /^areas\/(?!index\.html)[^/]+\.html$/.test(relativePage);
@@ -161,7 +169,7 @@ function enhanceHTMLImages(rootDir) {
             else if (!/\bloading\s*=/.test(tag) && !/header-monument-img|footer-monument-img/.test(tag)) tag = tag.replace(/<img\b/i, '<img loading="lazy"');
             return tag;
         });
-        fs.writeFileSync(filePath, enhanced, 'utf8');
+        writeTextFile(filePath, enhanced);
     });
     visit(rootDir);
 }
@@ -203,7 +211,7 @@ function writeStatusReport(rootDir, allSpots, articles) {
         });
         lines.push('');
     }
-    fs.writeFileSync(path.join(rootDir, 'docs', 'status.md'), `${lines.join('\n')}\n`, 'utf8');
+    writeTextFile(path.join(rootDir, 'docs', 'status.md'), `${lines.join('\n')}\n`);
 }
 
 function createSearchIndex(rootDir, allSpots, areas, articles) {
@@ -216,7 +224,7 @@ function createSearchIndex(rootDir, allSpots, areas, articles) {
     entries.push(...articles.filter(article => !article.draft).map(article => ({
         type: 'article', category: '記事', name: article.title, area: '', description: article.description || '', url: `articles/${encodeURIComponent(article.slug)}.html`,
     })));
-    fs.writeFileSync(path.join(rootDir, 'data', 'generated', 'search-index.json'), `${JSON.stringify(entries, null, 2)}\n`, 'utf8');
+    writeTextFile(path.join(rootDir, 'data', 'generated', 'search-index.json'), `${JSON.stringify(entries, null, 2)}\n`);
 }
 
 function generateSearchPageHTML() {
@@ -261,7 +269,7 @@ function addSearchNavigationAndDefer(rootDir) {
     });
     visit(rootDir);
     htmlFiles.forEach(filePath => {
-        let html = fs.readFileSync(filePath, 'utf8');
+        let html = readTextFile(filePath);
         html = html.replace(/<script src="https:\/\/unpkg\.com\/lucide@0\.460\.0\/dist\/umd\/lucide\.min\.js"(?![^>]*\bdefer)[^>]*><\/script>/g, tag => tag.replace('<script ', '<script defer '));
         const navMatch = html.match(/<nav class="nav-menu"[^>]*>[\s\S]*?<\/nav>/);
         if (navMatch && !navMatch[0].includes('search.html')) {
@@ -269,7 +277,7 @@ function addSearchNavigationAndDefer(rootDir) {
             const link = `<a href="${relative}" class="nav-link"><i data-lucide="search"></i> 検索</a>\n        `;
             html = html.replace(navMatch[0], navMatch[0].replace('</nav>', `${link}</nav>`));
         }
-        fs.writeFileSync(filePath, html, 'utf8');
+        writeTextFile(filePath, html);
     });
 }
 
@@ -1236,9 +1244,9 @@ ${affiliateHTML ? `${affiliateHTML}\n\n` : ''}${relatedSpotsHTML}
 function build() {
     const rootDir = path.resolve(__dirname, '..');
     const spotsDir = path.join(rootDir, 'spots');
-    const affiliates = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'affiliates.json'), 'utf8'));
-    const articles = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'articles.json'), 'utf8'));
-    const areas = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', 'areas.json'), 'utf8'));
+    const affiliates = JSON.parse(readTextFile(path.join(rootDir, 'data', 'affiliates.json')));
+    const articles = JSON.parse(readTextFile(path.join(rootDir, 'data', 'articles.json')));
+    const areas = JSON.parse(readTextFile(path.join(rootDir, 'data', 'areas.json')));
     if (!Array.isArray(areas)) throw new Error('data/areas.json must contain an array');
     const areaSlugs = new Set();
     const areaNames = new Set();
@@ -1253,7 +1261,7 @@ function build() {
     });
     const areasByName = new Map(areas.map(area => [area.name, area]));
     const allSpots = Object.entries(CATEGORY_FILES).flatMap(([category, fileName]) => {
-        const spots = JSON.parse(fs.readFileSync(path.join(rootDir, 'data', fileName), 'utf8'));
+        const spots = JSON.parse(readTextFile(path.join(rootDir, 'data', fileName)));
         return spots.map(spot => ({ spot, category }));
     });
     createSearchIndex(rootDir, allSpots, areas, articles);
@@ -1263,11 +1271,11 @@ function build() {
         const dimensions = readImageDimensions(path.join(rootDir, image));
         return [slug, dimensions || { width: 400, height: 300 }];
     }));
-    fs.writeFileSync(path.join(rootDir, 'data', 'generated', 'image-sizes.json'), `${JSON.stringify(imageSizes, null, 2)}\n`, 'utf8');
+    writeTextFile(path.join(rootDir, 'data', 'generated', 'image-sizes.json'), `${JSON.stringify(imageSizes, null, 2)}\n`);
     writeStatusReport(rootDir, allSpots, articles);
     const generatedDir = path.join(rootDir, 'data', 'generated');
     fs.mkdirSync(generatedDir, { recursive: true });
-    fs.writeFileSync(path.join(generatedDir, 'images.json'), `${JSON.stringify(imageMap, null, 2)}\n`, 'utf8');
+    writeTextFile(path.join(generatedDir, 'images.json'), `${JSON.stringify(imageMap, null, 2)}\n`);
     const spotsById = new Map(allSpots.map(entry => [entry.spot.id, entry]));
     const spotsByArea = new Map();
     allSpots.forEach(entry => {
@@ -1292,14 +1300,14 @@ function build() {
 
     Object.entries(CATEGORY_FILES).forEach(([category, fileName]) => {
         const jsonPath = path.join(rootDir, 'data', fileName);
-        const spots = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+        const spots = JSON.parse(readTextFile(jsonPath));
         spots.forEach(spot => { spot.image = imageMap[spot.slug] || spot.image; });
 
         const categoryDir = path.join(spotsDir, category);
         fs.mkdirSync(categoryDir, { recursive: true });
 
         const categoryIndexPath = path.join(categoryDir, 'index.html');
-        fs.writeFileSync(categoryIndexPath, generateCategoryPageHTML(category, spots), 'utf8');
+        writeTextFile(categoryIndexPath, generateCategoryPageHTML(category, spots));
         addItemListSchema(categoryIndexPath, [...spots].sort((a, b) => Number(b.rating) - Number(a.rating)).map(spot => ({ name: spot.name, url: `${BASE_URL}spots/${category}/${encodeURIComponent(spot.slug)}.html` })));
         sitemapUrls.push({
             loc: `${BASE_URL}spots/${category}/index.html`,
@@ -1312,7 +1320,7 @@ function build() {
             }
             const htmlContent = generateSpotHTML(spot, category, affiliates, allSpots, areasByName);
             const htmlPath = path.join(categoryDir, `${spot.slug}.html`);
-            fs.writeFileSync(htmlPath, htmlContent, 'utf8');
+            writeTextFile(htmlPath, htmlContent);
 
             sitemapUrls.push({
                 loc: `${BASE_URL}spots/${category}/${spot.slug}.html`,
@@ -1325,7 +1333,7 @@ function build() {
     const articlesDir = path.join(rootDir, 'articles');
     fs.mkdirSync(articlesDir, { recursive: true });
     const articlesIndexPath = path.join(articlesDir, 'index.html');
-    fs.writeFileSync(articlesIndexPath, generateArticlesIndexHTML(articles), 'utf8');
+    writeTextFile(articlesIndexPath, generateArticlesIndexHTML(articles));
     addItemListSchema(articlesIndexPath, [...articles].filter(article => !article.draft).sort((a, b) => b.published.localeCompare(a.published)).map(article => ({ name: article.title, url: `${BASE_URL}articles/${encodeURIComponent(article.slug)}.html` })));
 
     let articleCount = 0;
@@ -1343,7 +1351,7 @@ function build() {
             return;
         }
 
-        fs.writeFileSync(articlePath, generateArticleHTML(article, spotsById), 'utf8');
+        writeTextFile(articlePath, generateArticleHTML(article, spotsById));
         sitemapUrls.push({
             loc: `${BASE_URL}articles/${article.slug}.html`,
             priority: '0.6',
@@ -1355,12 +1363,12 @@ function build() {
     fs.mkdirSync(areasDir, { recursive: true });
     const sortedAreas = [...areas].sort((a, b) => a.name.localeCompare(b.name, 'ja'));
     const areasIndexPath = path.join(areasDir, 'index.html');
-    fs.writeFileSync(areasIndexPath, generateAreasIndexHTML(sortedAreas, spotsByArea), 'utf8');
+    writeTextFile(areasIndexPath, generateAreasIndexHTML(sortedAreas, spotsByArea));
     addItemListSchema(areasIndexPath, sortedAreas.map(area => ({ name: area.name, url: `${BASE_URL}areas/${encodeURIComponent(area.slug)}.html` })));
     sortedAreas.forEach(area => {
         const areaPath = path.join(areasDir, `${area.slug}.html`);
         const areaSpots = [...(spotsByArea.get(area.name) || [])];
-        fs.writeFileSync(areaPath, generateAreaPageHTML(area, areaSpots), 'utf8');
+        writeTextFile(areaPath, generateAreaPageHTML(area, areaSpots));
         addItemListSchema(areaPath, areaSpots.map(({ spot, category }) => ({ name: spot.name, url: `${BASE_URL}spots/${category}/${encodeURIComponent(spot.slug)}.html` })));
         sitemapUrls.push({
             loc: `${BASE_URL}areas/${area.slug}.html`,
@@ -1368,8 +1376,8 @@ function build() {
         });
     });
 
-    fs.writeFileSync(path.join(rootDir, 'search.html'), generateSearchPageHTML(), 'utf8');
-    fs.writeFileSync(path.join(rootDir, '404.html'), generate404HTML(), 'utf8');
+    writeTextFile(path.join(rootDir, 'search.html'), generateSearchPageHTML());
+    writeTextFile(path.join(rootDir, '404.html'), generate404HTML());
     addSearchAction(rootDir);
     addSearchNavigationAndDefer(rootDir);
     enhanceHTMLImages(rootDir);
@@ -1381,7 +1389,7 @@ ${sitemapUrls.map(u => `  <url><loc>${u.loc}</loc><priority>${u.priority}</prior
 </urlset>
 `;
 
-    fs.writeFileSync(path.join(rootDir, 'sitemap.xml'), sitemapXML, 'utf8');
+    writeTextFile(path.join(rootDir, 'sitemap.xml'), sitemapXML);
 
     console.log(`Successfully generated ${spotCount} spot HTML files, ${articleCount} article HTML files, ${areas.length} area pages plus their index, and sitemap.xml.`);
 }
