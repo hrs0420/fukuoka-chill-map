@@ -45,116 +45,12 @@
 </header>
 
 <div class="detail">
-    <form id="request-form" class="comment-form">
-        <p class="form-intro">
-            あなたの知っている福岡のchillスポットを教えてください。<br>
-            管理者が内容を確認した後、サイトに掲載されます。
-        </p>
-
-        <div class="form-group">
-            <label for="category">カテゴリ</label>
-            <select id="category" required>
-                <option value="cafe">☕ カフェ</option>
-                <option value="sauna">🧖 サウナ</option>
-                <option value="running">🏃 ランニング</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="name">スポット名 *</label>
-            <input type="text" id="name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="area">エリア *</label>
-            <input type="text" id="area" required placeholder="例: 大濠、天神">
-        </div>
-
-        <div class="form-group">
-            <label for="rating">評価 (1.0〜5.0) *</label>
-            <input type="number" id="rating" required min="1" max="5" step="0.1" placeholder="例: 4.5">
-        </div>
-
-        <div class="form-group">
-            <label for="description">紹介文 *</label>
-            <textarea id="description" rows="3" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="image">スポットの画像</label>
-            <div class="file-drop-wrapper" id="file-drop-wrapper">
-                <div id="drop-instructions" class="drop-instructions">
-                    <i data-lucide="image-plus"></i>
-                    <p>クリックして選択、またはドラッグ&ドロップ</p>
-                    <p class="file-drop-hint">JPG / PNG / WEBP（5MBまで）</p>
-                    <input type="file" id="image" accept="image/png, image/jpeg, image/webp">
-                </div>
-                <div id="preview-wrapper" class="preview-wrapper" style="display:none;">
-                    <img loading="lazy" height="300" width="400" alt="" id="image-preview">
-                    <button type="button" id="remove-image-btn" class="remove-image-btn" aria-label="画像を削除">
-                        <i data-lucide="x"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="address">住所</label>
-            <input type="text" id="address">
-        </div>
-
-        <div class="form-group">
-            <label for="map">Googleマップリンク</label>
-            <input type="url" id="map" placeholder="https://maps.app.goo.gl/...">
-        </div>
-
-        <div id="category-fields"></div>
-
-        <hr>
-
-        <div class="form-group">
-            <label for="submitter-name">あなたのお名前（任意）</label>
-            <input type="text" id="submitter-name" placeholder="匿名">
-        </div>
-
-        <div class="form-group">
-            <label for="initial-review">追加依頼するスポットへの口コミ（任意）</label>
-            <textarea id="initial-review" rows="3" placeholder="実際に行ってみた感想があれば書いてください"></textarea>
-        </div>
-        
-        <div class="form-group">
-            <label for="submitter-note">管理者へのメモ（任意）</label>
-            <textarea id="submitter-note" rows="2" placeholder="補足情報があれば"></textarea>
-        </div>
-
-        <button type="button" id="open-confirm-btn" class="submit-btn">依頼を送信する</button>
-    </form>
-
-    <p id="form-status" style="text-align:center; margin-top:15px; color: var(--color-rose);"></p>
-</div>
-
-<div id="confirm-submit-modal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-icon">📮</div>
-        <h3>この内容で送信しますか？</h3>
-        <p>送信後、管理者の承認を待つ状態になります。</p>
-        <div style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap;">
-            <button type="button" class="modal-btn" id="cancel-confirm-btn" style="background:#999;">キャンセル</button>
-            <button type="button" class="modal-btn" id="proceed-submit-btn">送信する</button>
-        </div>
-    </div>
-</div>
-
-<div id="submit-success-modal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-icon">🎉</div>
-        <h3>依頼を送信しました！</h3>
-        <p>管理者の確認後、サイトに掲載されます。</p>
-        <div style="display:flex; gap:10px; justify-content:center; flex-wrap: wrap; margin-top: 10px;">
-            <a href="index.html" class="modal-btn">🏠 ホームへ戻る</a>
-            <button type="button" class="modal-btn" id="continue-btn" style="background:var(--color-accent);">📝 続けて入力する</button>
-        </div>
-    </div>
+    <h2>スポット追加依頼</h2>
+    <p>あなたの知っている、福岡でゆったり過ごせるカフェ・サウナ・ランニングスポットを教えてください。いただいた内容は運営者が確認し、実際に訪れたうえで掲載を検討します。必ず掲載されるとは限りませんので、あらかじめご了承ください。</p>
+    <p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScdJJ_ajw-hWmFZqTONkwXwVglNVS707i10w1HeZN0NlnFGFg/viewform" class="submit-btn" target="_blank" rel="noopener" style="display:inline-block; text-decoration:none;">依頼フォームを開く（Googleフォーム）</a>
+    </p>
+    <p><small>写真の送付は受け付けていません。掲載する写真は運営者が撮影したものを使用します。</small></p>
 </div>
 
 <footer>
@@ -164,7 +60,5 @@
 
 <script defer src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 <script src="js/utils.js"></script>
-<script src="js/categories.js"></script>
-<script src="js/request.js"></script>
 </body>
 </html>
