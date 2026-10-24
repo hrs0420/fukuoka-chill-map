@@ -18,6 +18,7 @@
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/sofu-coffee.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/school-bus-coffee-stop.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/cafe-plus-82.html</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/cafe/atori-coffee.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/index.html</loc><priority>0.8</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/wellbe-fukuoka.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/spots/sauna/tenpai-no-sato.html</loc><priority>0.6</priority></url>
@@ -55,5 +56,6 @@
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/areas/fukuoka-airport.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/areas/hirao.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/areas/beppu.html</loc><priority>0.6</priority></url>
+  <url><loc>https://hrs0420.github.io/fukuoka-chill-map/areas/yakuin.html</loc><priority>0.6</priority></url>
   <url><loc>https://hrs0420.github.io/fukuoka-chill-map/areas/ropponmatsu.html</loc><priority>0.6</priority></url>
 </urlset>
