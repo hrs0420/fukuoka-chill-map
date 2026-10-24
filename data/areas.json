@@ -17,5 +17,6 @@
     { "name": "福岡空港", "slug": "fukuoka-airport" },
     { "name": "平尾", "slug": "hirao" },
     { "name": "別府", "slug": "beppu" },
-    { "name": "六本松", "slug": "ropponmatsu" }
+    { "name": "六本松", "slug": "ropponmatsu" },
+    { "name": "薬院", "slug": "yakuin" }
 ]

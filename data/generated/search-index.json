@@ -81,6 +81,14 @@
   },
   {
     "type": "spot",
+    "category": "カフェ",
+    "name": "ATORI COFFEE",
+    "area": "薬院",
+    "description": "薬院のホテルのフロント横にあるおしゃれなカフェ。名物のとろけるバスクチーズケーキと、座り心地抜群のヴィンテージ風ソファが魅力。",
+    "url": "spots/cafe/atori-coffee.html"
+  },
+  {
+    "type": "spot",
     "category": "サウナ",
     "name": "ウェルビー福岡",
     "area": "中洲",
@@ -350,6 +358,14 @@
     "area": "六本松",
     "description": "六本松のスポット",
     "url": "areas/ropponmatsu.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "薬院",
+    "area": "薬院",
+    "description": "薬院のスポット",
+    "url": "areas/yakuin.html"
   },
   {
     "type": "article",
