@@ -4,7 +4,7 @@
     "category": "カフェ",
     "name": "REC COFFEE博多",
     "area": "博多駅",
-    "description": "スペシャルティコーヒー",
+    "description": "博多駅すぐ、ガラス張りの窓際と木の温もりある店内が魅力。PC作業の人が多く、電車や新幹線の待ち時間に集中したいときに便利なカフェ。",
     "url": "spots/cafe/rec-coffee-hakata.html"
   },
   {
@@ -12,7 +12,7 @@
     "category": "カフェ",
     "name": "FUK COFFEE",
     "area": "博多駅",
-    "description": "旅行気分を味わえるカフェ",
+    "description": "福岡行きの航空券をモチーフにした入口が目印。固めのプリンにアイスをのせられるスイーツと、FUKの文字入りカップが人気のカフェ。",
     "url": "spots/cafe/fuk-coffee.html"
   },
   {
@@ -60,7 +60,7 @@
     "category": "カフェ",
     "name": "そふ珈琲",
     "area": "別府",
-    "description": "渦巻き模様のカフェモカが名物",
+    "description": "白を基調とした店内に花が生けられた、居心地のよいカフェ。渦巻き模様のラテアートと手作りスイーツを、向かいの古本屋の本と一緒に。",
     "url": "spots/cafe/sofu-coffee.html"
   },
   {
@@ -68,7 +68,7 @@
     "category": "カフェ",
     "name": "SCHOOL BUS COFFEE STOP FUKUOKA",
     "area": "大濠",
-    "description": "朝活にもおすすめ、ワッフルカフェ",
+    "description": "ガラス張りの外観から自然光が差し込む、大濠公園近くのカフェ。朝ランのあとのコールドブリューや、テイクアウトして公園で過ごすのも◎。",
     "url": "spots/cafe/school-bus-coffee-stop.html"
   },
   {
@@ -76,14 +76,14 @@
     "category": "カフェ",
     "name": "Cafe+82",
     "area": "平尾",
-    "description": "薬院駅チカの韓国系カフェ",
+    "description": "フォトスポットや入口の木製ブランコが目を引く、平尾の韓国風カフェ。友人とにぎやかに過ごしたい日に。",
     "url": "spots/cafe/cafe-plus-82.html"
   },
   {
     "type": "spot",
     "category": "サウナ",
     "name": "ウェルビー福岡",
-    "area": "中州",
+    "area": "中洲",
     "description": "95度のサウナとシングルの水風呂が揃う中洲の人気施設。カプセルホテルに泊まれるので、宿泊費を抑えてリフレッシュできます。",
     "url": "spots/sauna/wellbe-fukuoka.html"
   },
@@ -92,7 +92,7 @@
     "category": "サウナ",
     "name": "天拝の郷",
     "area": "筑紫野",
-    "description": "自然を眺めながら外気浴",
+    "description": "温泉とサウナ、食材にこだわったビュッフェまで楽しめる筑紫野の温浴施設。セルフロウリュと地下天然水の水風呂で、ゆっくりととのえます。",
     "url": "spots/sauna/tenpai-no-sato.html"
   },
   {
@@ -108,7 +108,7 @@
     "category": "サウナ",
     "name": "サウナヨーガン福岡天神",
     "area": "天神",
-    "description": "屋上外気浴で最高の体験を",
+    "description": "溶岩をサウナストーンに使った97度のサウナと、9度の水風呂、屋上の外気浴が魅力の天神のサウナ。食堂の海鮮丼とゴマサバ定食も絶品。",
     "url": "spots/sauna/sauna-yogan-tenjin.html"
   },
   {
@@ -124,7 +124,7 @@
     "category": "サウナ",
     "name": "伊都の湯どころ",
     "area": "糸島",
-    "description": "コスパ抜群の温浴施設",
+    "description": "95度・85度・70度の3つのサウナと2種類の水風呂がある、糸島の健康ランドのような温浴施設。運動でひと汗かいたあとの一服に。",
     "url": "spots/sauna/ito-no-yudokoro.html"
   },
   {
@@ -132,7 +132,7 @@
     "category": "サウナ",
     "name": "游心の湯",
     "area": "久留米",
-    "description": "イベント満載の源泉かけ流し温泉",
+    "description": "源泉かけ流しの温泉と85度・95度のサウナ、定期的なイベントもある久留米の温浴施設。平日890円とお手頃に楽しめます。",
     "url": "spots/sauna/yushin-no-yu.html"
   },
   {
@@ -140,7 +140,7 @@
     "category": "サウナ",
     "name": "照葉スパリゾート 本店",
     "area": "照葉",
-    "description": "福岡最大級の温浴施設",
+    "description": "3つのサウナ室と2種類の水風呂、20席ほどの外気浴がそろう福岡最大級の温浴施設。漫画コーナーもあり1日ゆっくり過ごせます。",
     "url": "spots/sauna/teriha-spa-resort.html"
   },
   {
@@ -164,7 +164,7 @@
     "category": "ランニング",
     "name": "シーサイドももちコース",
     "area": "百道",
-    "description": "海風を感じながら走れるロケーション抜群のコース。明け方や夕暮れ時が特におすすめ",
+    "description": "地行浜から海沿いを走る、信号の少ない平坦なコース。数キロごとに海岸・街中・公園・松林と景色が変わり、長距離でも飽きません。",
     "url": "spots/running/seaside-momochi.html"
   },
   {
@@ -172,7 +172,7 @@
     "category": "ランニング",
     "name": "西公園コース",
     "area": "大濠",
-    "description": "クセになるアップダウン。正面の坂はトレーニングにもってこいの距離と勾配",
+    "description": "ほとんどが上り坂の、坂練習にぴったりなコース。頂上付近の展望台からは福岡を一望でき、老舗のホットドッグ屋さんもあります。",
     "url": "spots/running/nishi-park.html"
   },
   {
@@ -180,7 +180,7 @@
     "category": "ランニング",
     "name": "室見川コース",
     "area": "室見",
-    "description": "川沿いの整備された直線コース。水と緑が調和しており自然を感じながら気持ちよく走れる",
+    "description": "室見駅前から川沿いを7〜8km走れる、ほぼ平坦なコース。歩行者・自転車・ランナーの通行帯が分かれていて、自然を感じながら走れます。",
     "url": "spots/running/muromi-river.html"
   },
   {
@@ -188,7 +188,7 @@
     "category": "ランニング",
     "name": "福岡空港コース",
     "area": "福岡空港",
-    "description": "アスファルトの道でも信号や橋がなく長距離を走るのに快適。博多駅から地下鉄で5分の好立地",
+    "description": "福岡空港の国内線前から1周約10km。信号がなく、止まらずに長距離を走れる平坦なコース。間近で飛行機を見られるスポットもあります。",
     "url": "spots/running/fukuoka-airport.html"
   },
   {
@@ -196,7 +196,7 @@
     "category": "ランニング",
     "name": "志賀島コース",
     "area": "志賀島",
-    "description": "陸続きの島を一周しながら自然を満喫。",
+    "description": "島を一周する約9kmの、ほぼ平坦なコース。車やサイクリングの人は多いものの歩行者は少なく、景色や観光施設を楽しみながら走れます。",
     "url": "spots/running/shikanoshima.html"
   },
   {
@@ -290,9 +290,9 @@
   {
     "type": "area",
     "category": "エリア",
-    "name": "中州",
-    "area": "中州",
-    "description": "中州のスポット",
+    "name": "中洲",
+    "area": "中洲",
+    "description": "中洲のスポット",
     "url": "areas/nakasu.html"
   },
   {
