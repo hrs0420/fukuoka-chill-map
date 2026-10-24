@@ -41,7 +41,6 @@ fukuoka-chill-map/
 │   ├── list.js         # 一覧ページ
 │   ├── detail.js       # 詳細ページ・口コミ
 │   ├── favorites.js    # お気に入りページ
-│   └── request.js      # スポット追加依頼ページ（現在は受付停止中）
 ├── scripts/
 │   ├── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
 │   └── check.js        # データ・リンク・sitemapの品質チェック
@@ -64,7 +63,7 @@ fukuoka-chill-map/
 - `CATEGORY_CONFIG`: データファイル名、絞り込み項目、並び替えの選択肢、検索対象、お気に入りの保存キーなど
 - `FIELD_CONFIG`: 詳細ページに表示する項目と、申請フォームの入力項目
 
-`list.js` / `detail.js` / `favorites.js` / `request.js` はこの設定を読んで画面を組み立てるだけなので、
+`list.js` / `detail.js` / `favorites.js` はこの設定を読んで画面を組み立てるだけなので、
 **項目を追加・変更するときは `categories.js` を編集すればよく、HTMLや他のJSを触る必要はない。**
 
 ## データの形式
@@ -143,13 +142,12 @@ JSONを `fetch` で読み込んでいるため、HTMLファイルをダブルク
 
 ## スポット追加依頼機能について
 
-以前は Flask + SQLite のバックエンドで申請を受け付けていたが、本番運用のコストとセキュリティ面を考慮し、現在は受付を停止している。
-`js/utils.js` の `API_BASE_URL` が空文字のあいだは、バックエンドへの通信は一切行わず、`request.html` には受付停止の案内だけが表示される。
-バックエンドのコードはこのリポジトリから外して別途保管している。
+現在は[Googleフォーム](https://docs.google.com/forms/d/e/1FAIpQLScdJJ_ajw-hWmFZqTONkwXwVglNVS707i10w1HeZN0NlnFGFg/viewform)でスポット追加依頼を受け付けている。運営者が内容を確認し、実際に訪問したうえで掲載を検討する。写真の送付は受け付けず、掲載写真は運営者が撮影したものを使用する。
+
+以前はFlask + SQLiteのバックエンドで申請を受け付けていたが、現在はGoogleフォームに切り替えている。バックエンドのコードはこのリポジトリから外して別途保管している。
 
 ## 今後の予定
 
 - プライバシーポリシー・運営者情報・お問い合わせページの追加
 - スポット数の拡充と紹介文の充実
 - アフィリエイト導線と記事コンテンツの追加
-- スポット追加依頼の再開（外部フォームを利用予定）
