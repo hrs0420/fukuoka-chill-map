@@ -44,6 +44,7 @@
 
 - 写真は `images/spots/{slug}.jpg` に置く。build で自動的に使われるので、JSON の `image` を書き換える必要はない
 - 写真は1枚500KB以下にする
+- iPhone の写真（HEIC）は、拡張子を変えるだけでなく、必ず JPEG に変換してから置く
 
 ## 作業の進め方
 
