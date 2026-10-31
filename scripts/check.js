@@ -300,11 +300,41 @@ function checkSpotImageWarnings() {
     });
 }
 
+function detectImageFormat(buffer) {
+    if (buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return 'JPEG';
+    if (buffer.length >= 8 && buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'PNG';
+    if (buffer.length >= 12 && buffer.toString('ascii', 0, 4) === 'RIFF' && buffer.toString('ascii', 8, 12) === 'WEBP') return 'WebP';
+    if (buffer.length >= 12 && buffer.toString('ascii', 4, 8) === 'ftyp') return buffer.toString('ascii', 8, 10) === 'av' ? 'AVIF' : 'HEIC';
+    return '不明な形式';
+}
+
+function checkSpotImageFormats() {
+    const expectedFormats = { '.jpg': 'JPEG', '.jpeg': 'JPEG', '.png': 'PNG', '.webp': 'WebP' };
+    const imageDir = path.join(ROOT_DIR, 'images', 'spots');
+    if (!fs.existsSync(imageDir)) return;
+    fs.readdirSync(imageDir, { withFileTypes: true }).filter(entry => entry.isFile() && /\.(jpe?g|png|webp)$/i.test(entry.name)).forEach(entry => {
+        const expected = expectedFormats[path.extname(entry.name).toLowerCase()];
+        const actual = detectImageFormat(fs.readFileSync(path.join(imageDir, entry.name)));
+        if (actual !== expected) report(`images/spots/${entry.name}: 拡張子は ${expected} ですが、中身は ${actual} です`);
+    });
+}
+
+function checkGeneratedImageSizes() {
+    const imageSizes = readJsonFile(path.join(DATA_DIR, 'generated', 'image-sizes.json'));
+    const imageMap = readJsonFile(path.join(DATA_DIR, 'generated', 'images.json'));
+    if (!imageSizes || !imageMap) return;
+    Object.entries(imageSizes).filter(([, size]) => size.fallback).forEach(([slug]) => {
+        report(`${imageMap[slug] || slug}: 画像サイズを読み取れず、仮の値（400×300）が使われています`);
+    });
+}
+
 const { parsedData } = checkDataFiles();
 checkAreas(parsedData);
 checkHtmlLinks();
 checkSitemap();
 checkSpotImageWarnings();
+checkSpotImageFormats();
+checkGeneratedImageSizes();
 checkGeneratedTextLineEndings();
 if (warnings.length > 0) {
     console.warn(`Warnings (${warnings.length}):`);

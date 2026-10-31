@@ -1277,7 +1277,8 @@ function build() {
     allSpots.forEach(({ spot }) => { spot.image = imageMap[spot.slug]; });
     const imageSizes = Object.fromEntries(Object.entries(imageMap).map(([slug, image]) => {
         const dimensions = readImageDimensions(path.join(rootDir, image));
-        return [slug, dimensions || { width: 400, height: 300 }];
+        // 読み取れなかった場合は check.js でエラーにできるよう、仮の値であることを記録する
+        return [slug, dimensions || { width: 400, height: 300, fallback: true }];
     }));
     writeTextFile(path.join(rootDir, 'data', 'generated', 'image-sizes.json'), `${JSON.stringify(imageSizes, null, 2)}\n`);
     writeStatusReport(rootDir, allSpots, articles);
