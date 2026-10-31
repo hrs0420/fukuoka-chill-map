@@ -89,6 +89,14 @@
   },
   {
     "type": "spot",
+    "category": "カフェ",
+    "name": "stong coffee lab 姪浜",
+    "area": "姪浜",
+    "description": "姪浜駅南の複合施設にある、コンクリート基調の洗練されたカフェ。立派なエスプレッソマシンを眺めながら、作業にも会話にも使えます。",
+    "url": "spots/cafe/stong-coffee-lab-meinohama.html"
+  },
+  {
+    "type": "spot",
     "category": "サウナ",
     "name": "ウェルビー福岡",
     "area": "中洲",
@@ -366,6 +374,14 @@
     "area": "薬院",
     "description": "薬院のスポット",
     "url": "areas/yakuin.html"
+  },
+  {
+    "type": "area",
+    "category": "エリア",
+    "name": "姪浜",
+    "area": "姪浜",
+    "description": "姪浜のスポット",
+    "url": "areas/meinohama.html"
   },
   {
     "type": "article",
