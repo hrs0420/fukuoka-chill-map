@@ -7,7 +7,7 @@
 ## 使用技術
 
 - HTML / CSS / JavaScript（フレームワーク・ビルドツールなし）
-- ホスティング: GitHub Pages（`main` ブランチにpushすると自動で公開される）
+- ホスティング: GitHub Pages（`main` ブランチにpushすると自動で公開される。作業者は `main` に直接pushせず、ブランチで作業し、マージを経て公開する）
 - 口コミ・お気に入り: ブラウザの LocalStorage に保存（その端末でのみ表示される）
 - アイコン: lucide（0.460.0 に固定）
 
@@ -32,8 +32,15 @@ fukuoka-chill-map/
 │   ├── saunas.json     # サウナのデータ
 │   ├── running.json    # ランニングスポットのデータ
 │   ├── articles.json   # まとめ記事のデータ
-│   └── areas.json      # エリア名とURL用slug
-├── images/             # スポット写真・ロゴ
+│   ├── areas.json      # エリア名とURL用slug
+│   ├── affiliates.json # アフィリエイト商品のデータ
+│   └── generated/      # 自動生成されたデータ（検索用インデックス・画像情報）
+├── docs/
+│   ├── notes.md        # 作業メモ
+│   └── status.md       # 運営状況レポート（自動生成）
+├── images/             # ヘッダー・フッターの画像
+│   ├── spots/          # 運営者撮影のスポット写真（{slug}.jpg）
+│   └── placeholders/   # 写真がないスポット用の仮画像
 ├── js/
 │   ├── categories.js   # カテゴリごとの設定（最重要）
 │   ├── utils.js        # 全ページ共通の処理（データ読み込み・escapeHTML・メニュー）
@@ -41,6 +48,7 @@ fukuoka-chill-map/
 │   ├── list.js         # 一覧ページ
 │   ├── detail.js       # 詳細ページ・口コミ
 │   ├── favorites.js    # お気に入りページ
+│   └── search.js       # 検索ページ
 ├── scripts/
 │   ├── build.js        # 静的詳細HTML・sitemap.xml生成スクリプト
 │   └── check.js        # データ・リンク・sitemapの品質チェック
@@ -52,6 +60,13 @@ fukuoka-chill-map/
 ├── detail.html         # 詳細（?name=スポット名&type=カテゴリ、旧URL用）
 ├── favorites.html      # お気に入り
 ├── request.html        # スポット追加依頼
+├── search.html         # 検索
+├── about.html          # 運営者情報
+├── contact.html        # お問い合わせ
+├── privacy.html        # プライバシーポリシー
+├── 404.html            # ページが見つからないときの表示
+├── AGENTS.md           # AIエージェント向けの作業ルール
+├── CLAUDE.md           # Claude Code 用（AGENTS.md を読み込むだけ）
 ├── robots.txt
 └── sitemap.xml
 ```
@@ -98,9 +113,10 @@ fukuoka-chill-map/
 
 ## スポットを追加する手順
 
-1. `images/` に写真を追加する
-2. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる。`slug` も含む）
+1. 該当カテゴリのJSON（`data/*.json`）に1件追加する（上の形式に合わせる。`slug` も含む）。新しいエリアの場合は `data/areas.json` にも追加する
+2. 写真がある場合は `images/spots/{slug}.jpg` に置く（1枚500KB以下）。`image` は `images/placeholders/` の仮画像のままでよく、ビルド時に写真が自動で使われる
 3. `node scripts/build.js` を実行し、スポット詳細ページ・カテゴリ一覧ページ・`sitemap.xml` を更新する
+4. `node scripts/check.js` を実行し、成功することを確認する
 
 ## 記事を追加する手順
 
@@ -148,6 +164,5 @@ JSONを `fetch` で読み込んでいるため、HTMLファイルをダブルク
 
 ## 今後の予定
 
-- プライバシーポリシー・運営者情報・お問い合わせページの追加
 - スポット数の拡充と紹介文の充実
-- アフィリエイト導線と記事コンテンツの追加
+- 記事コンテンツとアフィリエイト商品の追加
