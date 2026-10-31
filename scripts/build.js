@@ -166,7 +166,7 @@ function enhanceHTMLImages(rootDir) {
             const isCard = /class=["'][^"']*cafe-image/.test(tag);
             const eager = eagerCardPage && isCard && cardImageCount++ < 3;
             if (eager) tag = tag.replace(/\sloading=["']lazy["']/i, '');
-            else if (!/\bloading\s*=/.test(tag) && !/header-monument-img|footer-monument-img/.test(tag)) tag = tag.replace(/<img\b/i, '<img loading="lazy"');
+            else if (!/\bloading\s*=|\bfetchpriority\s*=/.test(tag) && !/header-monument-img|footer-monument-img/.test(tag)) tag = tag.replace(/<img\b/i, '<img loading="lazy"');
             return tag;
         });
         writeTextFile(filePath, enhanced);
@@ -956,7 +956,15 @@ function generateSpotHTML(spot, category, affiliates, allSpots, areasByName) {
     const visitedHTML = spot.visited
         ? `    <p class="visited-date">訪問時期: ${escapeHTML(spot.visited)}</p>\n`
         : '';
-    const checkedLabel = typeof spot.checked === 'string' && /^\d{4}-\d{2}$/.test(spot.checked)
+    // 運営者が撮影した写真があるスポットだけ、詳細ページに写真を表示する
+    const photoCredit = spot.visited ? `撮影：Fukuoka Chill Map（${escapeHTML(spot.visited)}）` : '撮影：Fukuoka Chill Map';
+    const photoHTML = String(spot.image || '').startsWith('images/spots/')
+        ? `    <figure class="detail-photo">
+        <img src="../../${escapeAttribute(spot.image)}" alt="${escapeAttribute(spot.name)}" fetchpriority="high">
+        <figcaption>${photoCredit}</figcaption>
+    </figure>\n`
+        : '';
+    const checkedLabel =typeof spot.checked === 'string' && /^\d{4}-\d{2}$/.test(spot.checked)
         ? `${spot.checked.slice(0, 4)}年${Number(spot.checked.slice(5, 7))}月`
         : (spot.visited || '');
     const checkedHTML = checkedLabel
@@ -1129,7 +1137,7 @@ ${breadcrumbJsonLd}
         <span aria-hidden="true">&gt;</span>
         <span aria-current="page">${spotNameEsc}</span>
     </nav>
-    <h2 id="spot-name">${spotNameEsc}</h2>
+${photoHTML}    <h2 id="spot-name">${spotNameEsc}</h2>
 
     <p id="area" class="detail-meta"><i data-lucide="map-pin"></i> <span>エリア: ${areaLinkHTML}</span></p>
     <p id="rating" class="detail-meta"><i data-lucide="star"></i> <span>評価: ${spotRatingEsc}</span></p>
