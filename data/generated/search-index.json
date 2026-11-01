@@ -97,6 +97,14 @@
   },
   {
     "type": "spot",
+    "category": "カフェ",
+    "name": "good up coffee",
+    "area": "薬院",
+    "description": "白と木材を組み合わせた温かみのある店内と、テラス席が魅力の白金のカフェ。休日にゆっくり過ごす日にも、モーニングで朝活する日にも。",
+    "url": "spots/cafe/good-up-coffee.html"
+  },
+  {
+    "type": "spot",
     "category": "サウナ",
     "name": "ウェルビー福岡",
     "area": "中洲",
