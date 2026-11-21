@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ratingEl = document.getElementById("rating");
     if (ratingEl) {
         ratingEl.className = "detail-meta";
-        ratingEl.innerHTML = `<i data-lucide="star"></i> <span>評価: ${escapeHTML(spot.rating || "0.0")}</span>`;
+        ratingEl.innerHTML = `<i data-lucide="star"></i> <span>評価: ${escapeHTML(formatRating(spot.rating))}</span>`;
     }
 
     // カテゴリ固有項目をFIELD_CONFIGに沿って動的に生成

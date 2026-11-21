@@ -105,6 +105,22 @@
   },
   {
     "type": "spot",
+    "category": "カフェ",
+    "name": "FEELS GOOD",
+    "area": "薬院",
+    "description": "ヴィンテージ感のある空間で、おしゃれな雑貨やオリジナルグッズも選べる薬院大通のカフェ。コーヒーと一緒に、雑貨探しも楽しみたい日に。",
+    "url": "spots/cafe/feels-good.html"
+  },
+  {
+    "type": "spot",
+    "category": "カフェ",
+    "name": "PADDLERS COFFEE FUKUOKA",
+    "area": "六本松",
+    "description": "東京で話題のコーヒー店が西日本に初上陸。100年前のダイニングテーブルやヴィンテージ雑貨に囲まれて、コーヒーとクッキーを楽しめる六本松のカフェ。",
+    "url": "spots/cafe/paddlers-coffee-fukuoka.html"
+  },
+  {
+    "type": "spot",
     "category": "サウナ",
     "name": "ウェルビー福岡",
     "area": "中洲",

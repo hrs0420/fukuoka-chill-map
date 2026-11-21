@@ -296,7 +296,7 @@ function displayList(items) {
             <div class="card">
                 <div class="card-media">
                     <img src="${assetPrefix}${escapeHTML(item.image)}" width="${escapeHTML(item.imageWidth || 400)}" height="${escapeHTML(item.imageHeight || 300)}" alt="${escapeHTML(item.name)}" class="cafe-image" ${index < 3 ? '' : 'loading="lazy"'}>
-                    <span class="rating-badge">⭐ ${escapeHTML(item.rating)}</span>
+                    <span class="rating-badge">⭐ ${escapeHTML(formatRating(item.rating))}</span>
                     <span class="favorite" data-name="${escapeHTML(item.name)}">
                         ${favorites.includes(item.name) ? "❤️" : "🩶"}
                     </span>

@@ -51,7 +51,7 @@ function displayTopRanking() {
                 <a href="${detailUrl}" class="card-link">
                     <div class="card-media">
                         <img src="${escapeHTML(spot.image || `images/placeholders/${cfg.type}.jpg`)}" width="${escapeHTML(spot.imageWidth || 400)}" height="${escapeHTML(spot.imageHeight || 300)}" alt="${escapeHTML(spot.name)}" class="cafe-image">
-                        <span class="rating-badge">⭐ ${escapeHTML(spot.rating || "0.0")}</span>
+                        <span class="rating-badge">⭐ ${escapeHTML(formatRating(spot.rating))}</span>
                     </div>
                     <div class="card-body">
                         <h3>${escapeHTML(spot.name)}</h3>

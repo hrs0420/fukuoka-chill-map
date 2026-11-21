@@ -77,6 +77,13 @@ function escapeHTML(value) {
         .replace(/'/g, '&#039;');
 }
 
+// 評価を画面表示用に小数1桁の文字列にする（例: 5 → "5.0"、値がないときは "0.0"）
+function formatRating(value) {
+    if (value === undefined || value === null || value === '') return '0.0';
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(1) : String(value);
+}
+
 function escapeAttribute(value) {
     return escapeHTML(value);
 }
@@ -341,7 +348,7 @@ function generateRelatedSpotsHTML(spot, category, allSpots) {
             <article class="card">
                 <div class="card-media">
                     <img src="${escapeAttribute(imagePath)}" alt="${escapeAttribute(relatedSpot.name)}" loading="lazy">
-                    <span class="rating-badge">⭐ ${escapeHTML(relatedSpot.rating !== undefined ? relatedSpot.rating : '0.0')}</span>
+                    <span class="rating-badge">⭐ ${escapeHTML(formatRating(relatedSpot.rating))}</span>
                 </div>
                 <div class="card-body">
                     ${categoryLabel}<h4>${escapeHTML(relatedSpot.name)}</h4>
@@ -377,7 +384,7 @@ function generateCategoryCardHTML(spot, category) {
             <article class="card">
                 <div class="card-media">
                     <img src="../../${escapeAttribute(spot.image)}" alt="${escapeAttribute(spot.name)}" class="cafe-image" loading="lazy">
-                    <span class="rating-badge">⭐ ${escapeHTML(spot.rating)}</span>
+                    <span class="rating-badge">⭐ ${escapeHTML(formatRating(spot.rating))}</span>
                     <span class="favorite" data-name="${escapeAttribute(spot.name)}">🩶</span>
                 </div>
                 <div class="card-body">
@@ -506,7 +513,7 @@ function generateArticleSpotCard(spotEntry) {
         <a href="../spots/${category}/${escapeAttribute(encodeURIComponent(spot.slug))}.html" class="card-link">
             <div class="card-media">
                 <img src="../${escapeAttribute(spot.image)}" alt="${escapeAttribute(spot.name)}" loading="lazy">
-                <span class="rating-badge">⭐ ${escapeHTML(spot.rating)}</span>
+                <span class="rating-badge">⭐ ${escapeHTML(formatRating(spot.rating))}</span>
             </div>
             <div class="card-body">
                 <h3>${escapeHTML(spot.name)}</h3>
@@ -744,7 +751,7 @@ function generateAreaSpotCard({ spot, category }) {
             <article class="card">
                 <div class="card-media">
                     <img src="../${escapeAttribute(spot.image)}" alt="${escapeAttribute(spot.name)}" class="cafe-image" loading="lazy">
-                    <span class="rating-badge">⭐ ${escapeHTML(spot.rating)}</span>
+                    <span class="rating-badge">⭐ ${escapeHTML(formatRating(spot.rating))}</span>
                 </div>
                 <div class="card-body">
                     <small class="area-card-category">${escapeHTML(categoryLabel)}</small>
@@ -944,7 +951,7 @@ ${areaItems}
 function generateSpotHTML(spot, category, affiliates, allSpots, areasByName) {
     const spotNameEsc = escapeHTML(spot.name);
     const spotAreaEsc = escapeHTML(spot.area || '情報なし');
-    const spotRatingEsc = escapeHTML(spot.rating !== undefined ? spot.rating : '0.0');
+    const spotRatingEsc = escapeHTML(formatRating(spot.rating));
     const area = areasByName.get(spot.area);
     if (!area) throw new Error(`Spot area is not registered: ${spot.id} - ${spot.area}`);
     const areaLinkHTML = `<a href="../../areas/${escapeAttribute(area.slug)}.html">${spotAreaEsc}</a>`;
