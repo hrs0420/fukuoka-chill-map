@@ -67,6 +67,13 @@ async function loadData(fileName) {
     return await response.json();
 }
 
+// 評価を画面表示用に小数1桁の文字列にする（例: 5 → "5.0"、値がないときは "0.0"）
+function formatRating(value) {
+    if (value === undefined || value === null || value === "") return "0.0";
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(1) : String(value);
+}
+
 // HTMLエスケープ（全ページ共通）。innerHTML に外部データを入れるときは必ず通す。
 function escapeHTML(value) {
     if (value === undefined || value === null) return "";
